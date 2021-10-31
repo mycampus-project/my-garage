@@ -21,7 +21,7 @@
     "eslint-config-garage": "^1.0.0"
   },
   "scripts": {
-    "start": "cross-env PORT=8080 react-scripts start",
+    "dev": "cross-env PORT=8080 react-scripts start",
     "lint": "eslint --ext ts,tsx",
     "build": "react-scripts build",
     "test": "react-scripts test",
