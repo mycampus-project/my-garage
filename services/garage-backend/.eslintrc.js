@@ -1,7 +1,7 @@
 module.exports = {
-  extends: ["eslint-config-garage"],
+  extends: ['eslint-config-garage'],
   parserOptions: {
     tsconfigRootDir: __dirname,
-    project: "./tsconfig.json",
+    project: './tsconfig.json',
   },
 };

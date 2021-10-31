@@ -21,7 +21,7 @@
   ],
   "private": true,
   "scripts": {
-    "postinstall": "lerna bootstrap"
+    "lint": "lerna run lint"
   },
   "devDependencies": {
     "lerna": "^4.0.0"
