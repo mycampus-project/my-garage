@@ -1,6 +1,9 @@
 {
   "name": "my-garage",
   "version": "0.0.1",
+  "engines": {
+    "node": "^16.9.0"
+  },
   "workspaces": [
     "packages/*"
   ],
