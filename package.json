@@ -5,7 +5,9 @@
     "node": "^16.9.0"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "apps/*",
+    "services/*"
   ],
   "repository": "https://github.com/mjcarterdev/MyGarageProject.git",
   "contributors": [
@@ -17,5 +19,11 @@
       "email": "sergey@ushakov.io"
     }
   ],
-  "private": true
+  "private": true,
+  "scripts": {
+    "postinstall": "lerna bootstrap"
+  },
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  }
 }

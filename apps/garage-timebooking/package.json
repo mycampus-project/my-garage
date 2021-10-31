@@ -2,5 +2,8 @@
   "name": "garage-timebooking",
   "version": "1.0.0",
   "description": "Web app for booking garage services and assets.",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "eslint-config-garage": "^1.0.0"
+  }
 }
