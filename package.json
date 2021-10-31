@@ -23,9 +23,13 @@
   "scripts": {
     "lint": "lerna run lint",
     "prepare": "husky install",
-    "start:admin": "yarn workspace garage-admin run start"
+    "dev:admin": "yarn workspace garage-admin run dev",
+    "dev:timebooking": "yarn workspace garage-timebooking run dev",
+    "dev:backend": "yarn workspace garage-backend run dev",
+    "dev": "concurrently --names admin,timebooking,backend \"yarn dev:admin\" \"yarn dev:timebooking\" \"yarn dev:backend\""
   },
   "devDependencies": {
+    "concurrently": "^6.3.0",
     "husky": "^7.0.0",
     "lerna": "^4.0.0",
     "prettier": "^2.4.1",
