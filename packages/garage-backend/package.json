@@ -1,0 +1,6 @@
+{
+  "name": "garage-backend",
+  "version": "1.0.0",
+  "description": "Backend service for my-garage project.",
+  "private": true
+}

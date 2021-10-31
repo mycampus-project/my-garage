@@ -1,0 +1,7 @@
+{
+  "name": "eslint-config-garage",
+  "version": "1.0.0",
+  "description": "ESLint config for my-garage projects.",
+  "main": ".eslintrc.js",
+  "private": true
+}

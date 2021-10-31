@@ -1,0 +1,6 @@
+{
+  "name": "garage-timebooking",
+  "version": "1.0.0",
+  "description": "Web app for booking garage services and assets.",
+  "private": true
+}

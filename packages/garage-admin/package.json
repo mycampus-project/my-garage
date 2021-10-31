@@ -1,0 +1,6 @@
+{
+  "name": "garage-admin",
+  "version": "1.0.0",
+  "description": "Administration interface for my-garage project.",
+  "private": true
+}
