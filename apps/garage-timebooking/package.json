@@ -1,5 +1,5 @@
 {
-  "name": "garage-timebooking",
+  "name": "@my-garage/garage-timebooking",
   "description": "Web app for booking garage services and assets.",
   "version": "0.1.0",
   "private": true,
