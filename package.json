@@ -23,10 +23,10 @@
   "scripts": {
     "lint": "lerna run lint",
     "prepare": "husky install",
-    "dev:admin": "yarn workspace garage-admin run dev",
-    "dev:timebooking": "yarn workspace garage-timebooking run dev",
-    "dev:backend": "yarn workspace garage-backend run dev",
-    "dev": "concurrently --names admin,timebooking,backend \"yarn dev:admin\" \"yarn dev:timebooking\" \"yarn dev:backend\""
+    "dev": "lerna run dev --parallel --stream",
+    "dev:backend": "lerna --scope=@my-garage/{garage-backend,common} run dev --parallel --stream",
+    "dev:admin": "lerna --scope=@my-garage/{garage-admin,common} run dev --parallel --stream",
+    "dev:timebooking": "lerna --scope=@my-garage/{garage-timebooking,common} run dev --parallel --stream"
   },
   "devDependencies": {
     "concurrently": "^6.3.0",
