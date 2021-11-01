@@ -7,11 +7,10 @@
     "incremental": true,
 
     /* Language and Environment */
-    "target": "es5",
-    "jsx": "preserve" /* Specify what JSX code is generated. */,
+    "target": "ES6",
 
     /* Modules */
     "module": "commonjs",
-    "rootDir": "./"
+    "baseUrl": "."
   }
 }
