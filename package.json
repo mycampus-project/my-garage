@@ -22,6 +22,7 @@
   "private": true,
   "scripts": {
     "lint": "lerna run lint",
+    "install": "lerna bootstrap",
     "prepare": "husky install",
     "dev": "lerna run dev --parallel --stream",
     "dev:backend": "lerna --scope=@my-garage/{garage-backend,common} run dev --parallel --stream",
