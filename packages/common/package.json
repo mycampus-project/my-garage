@@ -1,0 +1,14 @@
+{
+  "name": "@my-garage/common",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "dev": "tsc -w --preserveWatchOutput",
+    "build": "tsc",
+    "prepare": "yarn build"
+  },
+  "dependencies": {
+    "eslint-config-garage": "^1.0.0"
+  }
+}
