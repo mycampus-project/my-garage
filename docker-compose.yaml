@@ -15,6 +15,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
+    env_file:
+      - .env.dev
     volumes:
       - ./services/:/app/services
       - ./packages/:/app/packages
@@ -25,6 +27,5 @@ services:
       - 3000:3000
       - 8080:8080
       - 8081:8081
-
     depends_on:
       - database
