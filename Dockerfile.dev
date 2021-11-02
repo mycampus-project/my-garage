@@ -1,0 +1,10 @@
+FROM node:16.9 as builder
+WORKDIR /app
+
+COPY --chown=node:node package.json yarn.lock lerna.json tsconfig.json ./
+COPY --chown=node:node packages ./packages
+COPY --chown=node:node apps ./apps
+COPY --chown=node:node services ./services
+RUN yarn install
+
+CMD ["yarn", "dev"]

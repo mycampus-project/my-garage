@@ -1,0 +1,25 @@
+{
+  "name": "eslint-config-garage",
+  "version": "1.0.0",
+  "description": "ESLint config for my-garage projects.",
+  "main": "base.js",
+  "private": true,
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.14.7",
+    "@typescript-eslint/eslint-plugin": "^4.0.0",
+    "@typescript-eslint/parser": "^4.0.0",
+    "babel-preset-react-app": "^10.0.0",
+    "eslint": "^7.5.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-airbnb-typescript": "^14.0.1",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-config-react-app": "^6.0.0",
+    "eslint-import-resolver-typescript": "^2.5.0",
+    "eslint-plugin-flowtype": "^5.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-react": "^7.20.3",
+    "eslint-plugin-react-hooks": "^4.0.8",
+    "eslint-plugin-unused-imports": "^1.1.5"
+  }
+}

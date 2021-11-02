@@ -1,0 +1,49 @@
+{
+  "name": "my-garage",
+  "version": "0.0.1",
+  "engines": {
+    "node": "^16.9.0"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "services/*"
+  ],
+  "repository": "https://github.com/mycampus-project/my-garage.git",
+  "contributors": [
+    {
+      "name": "Ashif Iqbal",
+      "email": "ashifi@metropolia.fi"
+    },
+    {
+      "name": "Sergey Ushakov",
+      "email": "sergeyu@metropolia.fi"
+    },
+    {
+      "name": "Michael Carter",
+      "email": "michael.carter@metropolia.fi"
+    },
+    {
+      "name": "Sahar Nagar",
+      "email": "saharn@metropolia.fi"
+    }
+  ],
+  "private": true,
+  "scripts": {
+    "lint": "lerna run lint",
+    "install": "lerna bootstrap",
+    "prepare": "husky install",
+    "dev": "lerna run dev --parallel --stream",
+    "dev:backend": "lerna --scope=@my-garage/{garage-backend,common} run dev --parallel --stream",
+    "dev:admin": "lerna --scope=@my-garage/{garage-admin,common} run dev --parallel --stream",
+    "dev:timebooking": "lerna --scope=@my-garage/{garage-timebooking,common} run dev --parallel --stream"
+  },
+  "devDependencies": {
+    "concurrently": "^6.3.0",
+    "husky": "^7.0.0",
+    "lerna": "^4.0.0",
+    "prettier": "^2.4.1",
+    "pretty-quick": "^3.1.1",
+    "typescript": "^4.4.4"
+  }
+}

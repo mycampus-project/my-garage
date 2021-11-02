@@ -1,0 +1,31 @@
+version: "3.8"
+volumes:
+  db_data:
+
+services:
+  database:
+    image: "mongo"
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - db_data:/data/db
+    restart: unless-stopped
+  project:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    env_file:
+      - .env.dev
+    volumes:
+      - ./services/:/app/services
+      - ./packages/:/app/packages
+      - ./apps/:/app/apps
+    links:
+      - "database:database"
+    ports:
+      - 3000:3000
+      - 8080:8080
+      - 8081:8081
+    depends_on:
+      - database

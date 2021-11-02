@@ -1,0 +1,7 @@
+{
+  "extends": ["eslint-config-garage"],
+  "parserOptions": {
+    "tsconfigRootDir": "./",
+    "project": "./tsconfig.json"
+  }
+}
