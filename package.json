@@ -9,14 +9,23 @@
     "apps/*",
     "services/*"
   ],
-  "repository": "https://github.com/mjcarterdev/MyGarageProject.git",
+  "repository": "https://github.com/mycampus-project/my-garage.git",
   "contributors": [
     {
-      "name": "Michael Carter"
+      "name": "Ashif Iqbal",
+      "email": "ashifi@metropolia.fi"
     },
     {
       "name": "Sergey Ushakov",
-      "email": "sergey@ushakov.io"
+      "email": "sergeyu@metropolia.fi"
+    },
+    {
+      "name": "Michael Carter",
+      "email": "michael.carter@metropolia.fi"
+    },
+    {
+      "name": "Sahar Nagar",
+      "email": "saharn@metropolia.fi"
     }
   ],
   "private": true,
