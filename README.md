@@ -10,7 +10,9 @@ There's 2 ways of running all apps and services all together for local devlopmen
 
 This should be the most compatible way to run projects for non unix-like machines. Also it's the most easiest to set up.
 
-Run
+Step 1: Get Docker
+
+Step 2:Run
 
 ```sh
 docker-compose up --build
