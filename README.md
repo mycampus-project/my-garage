@@ -1,18 +1,31 @@
 # MyGarageProject
 
+## Prerequisites
+
+### Node.JS
+
+Install `nvm` on your machine:
+https://github.com/nvm-sh/nvm
+
+Then go to this project root folder and run `nvm install`.
+This will install Node.JS version that is best for this project (specified in `.nvmrc`).
+
+### Yarn
+
+Make sure you have yarn installed by running `yarn`. If it's not, run `npm install -g yarn`.
+This will install `yarn` for that versions of node.
+
 ## Development
 
-Start by cloning this project locally.
+Run
 
-There's 2 ways of running all apps and services all together for local devlopment: with Docker and without.
+```sh
+yarn install
+```
 
-### With Docker
+in the root folder of the project. This will install all dependencies for this project.
 
-This should be the most compatible way to run projects for non unix-like machines. Also it's the most easiest to set up.
-
-Step 1: Get Docker
-
-Step 2:Run
+Run
 
 ```sh
 docker-compose up --build
@@ -20,24 +33,21 @@ docker-compose up --build
 
 This will take care of linking the packages together, installing all necessary dependencies and starting development builds of all apps and services together.
 
-Main downsides of developing this way is that console is quite hard to follow due to many things being blasted there at the same time with imperfect formatting. Also, there's a negligible performance impact of running everything in Docker.
-
-### Without Docker
-
-1. Install dependencies
-
-```sh
-yarn install
-```
-
-2. Start development builds of all projects
-
-```sh
-yarn dev
-```
-
 If you want to run only some of the services and not all, you can:
 
 - `yarn dev:backend` starts dev builds of `common` and `backend`
 - `yarn dev:admin` starts dev builds of `common` and `admin`
 - `yarn dev:timebooking` starts dev builds of `common` and `timebooking`
+
+### Adding new dependencies
+
+In order to add new dependencies to a specific project, run:
+
+```sh
+yarn workspace @my-garage/<project name> add <dependency>
+```
+
+Replace `<project name>` with name of the project, like `garage-backend`.
+
+If you're following a tutorial, it'll probably say you to run something like `yarn add x` or `npm install x`.
+You need to replace that with `yarn workspace @my-garage/<project name> add x`
