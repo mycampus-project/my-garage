@@ -4,9 +4,10 @@ on:
   push:
     branches:
       - main
-        - "apps/garage-timebooking/**"
-        - "packages/**"
-        - ".github/workflows/azure-static-web-apps-yellow-flower-0d381bd03.yml"
+    paths:
+      - "apps/garage-timebooking/**"
+      - "packages/**"
+      - ".github/workflows/azure-static-web-apps-yellow-flower-0d381bd03.yml"
   # pull_request:
   #   types: [opened, synchronize, reopened, closed]
   #   branches:
