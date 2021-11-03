@@ -1,4 +1,4 @@
-name: Azure Static Web Apps CI/CD Garage Timebooking
+name: CD Timebooking to Azure
 
 on:
   push:

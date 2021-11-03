@@ -1,4 +1,4 @@
-name: Azure Static Web Apps CI/CD Garage Admin
+name: CD Admin to Azure
 
 on:
   push:
