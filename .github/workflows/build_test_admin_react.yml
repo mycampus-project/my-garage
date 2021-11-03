@@ -16,9 +16,6 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build_test:
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x, 15.x]
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -26,12 +23,12 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 14
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: "14.17"
       - name: yarn build and test admin frontend
         run: |
-          yarn workspace @my-garage/garage-admin install --frozen-lockfile
+          yarn install
           yarn workspace @my-garage/garage-admin run build --if-present
           yarn workspace @my-garage/garage-admin run test
