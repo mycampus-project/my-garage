@@ -1,16 +1,16 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Build and Test Admin
+name: Build and Test Timebooking
 
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
     paths:
-      - "apps/garage-admin/**"
+      - "apps/garage-timebooking/**"
       - "packages/**"
-      - ".github/workflows/azure-static-web-apps-agreeable-moss-0c522ba03.yml"
-      - ".github/workflows/build_test_admin_react.yml"
+      - ".github/workflows/azure-static-web-apps-yellow-flower-0d381bd03.yml"
+      - ".github/workflows/build_test_timebooking_react.yml"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -27,8 +27,8 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: "14.17"
-      - name: yarn build and test admin frontend
+      - name: yarn build and test timebooking frontend
         run: |
           yarn install
-          yarn workspace @my-garage/garage-admin run build --if-present
-          yarn workspace @my-garage/garage-admin run test
+          yarn workspace @my-garage/garage-timebooking run build --if-present
+          yarn workspace @my-garage/garage-timebooking run test
