@@ -7,13 +7,13 @@ on:
         - "apps/garage-timebooking/**"
         - "packages/**"
         - ".github/workflows/azure-static-web-apps-yellow-flower-0d381bd03.yml"
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - main
-      - "apps/garage-timebooking/**"
-      - "packages/**"
-      - ".github/workflows/azure-static-web-apps-yellow-flower-0d381bd03.yml"
+  # pull_request:
+  #   types: [opened, synchronize, reopened, closed]
+  #   branches:
+  #     - main
+  #     - "apps/garage-timebooking/**"
+  #     - "packages/**"
+  #     - ".github/workflows/azure-static-web-apps-yellow-flower-0d381bd03.yml"
 
 jobs:
   build_and_deploy_job:

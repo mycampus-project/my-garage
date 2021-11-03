@@ -8,14 +8,14 @@ on:
       - "apps/garage-admin/**"
       - "packages/**"
       - ".github/workflows/azure-static-web-apps-agreeable-moss-0c522ba03.yml"
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - main
-    paths:
-      - "apps/garage-admin/**"
-      - "packages/**"
-      - ".github/workflows/azure-static-web-apps-agreeable-moss-0c522ba03.yml"
+  # pull_request:
+  #   types: [opened, synchronize, reopened, closed]
+  #   branches:
+  #     - main
+  #   paths:
+  #     - "apps/garage-admin/**"
+  #     - "packages/**"
+  #     - ".github/workflows/azure-static-web-apps-agreeable-moss-0c522ba03.yml"
 
 jobs:
   build_and_deploy_job:
