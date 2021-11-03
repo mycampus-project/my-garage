@@ -7,7 +7,8 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.tsx</code> and save to reload. This is admin app running on Azure.
+          Edit <code>src/App.tsx</code> and save to reload. This is admin app running on Azure. Now
+          we have testing!
         </p>
         <a
           className="App-link"
