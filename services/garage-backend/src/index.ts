@@ -13,4 +13,6 @@ const listen = () => {
   });
 };
 
-mongo.once('open', listen);
+listen();
+console.log(process.env.MONGODB_URL);
+mongo.once('open', () => console.log('Mongo connection open'));
