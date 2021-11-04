@@ -38,7 +38,7 @@
     "dev:backend": "lerna --scope=@my-garage/{garage-backend,common} run dev --parallel --stream",
     "dev:admin": "lerna --scope=@my-garage/{garage-admin,common} run dev --parallel --stream",
     "dev:timebooking": "lerna --scope=@my-garage/{garage-timebooking,common} run dev --parallel --stream",
-    "start:backend": "lerna --scope=@my-garage/garage-backend run start",
+    "start:backend": "yarn workspace @my-garage/garage-backend run start",
     "deploy:backend": "./scripts/deploy-backend.sh"
   },
   "dependencies": {
