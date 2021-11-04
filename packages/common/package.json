@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "tsc -w --preserveWatchOutput",
     "build": "tsc",
+    "clean": "rm -rf ./lib tsconfig.tsbuildinfo",
     "prepare": "yarn build"
   },
   "dependencies": {
