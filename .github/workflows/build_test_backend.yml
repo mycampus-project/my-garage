@@ -40,7 +40,7 @@ jobs:
   build_container:
     runs-on: ubuntu-latest
     env:
-      - CONTAINER_TAG: "mygaragebackend.azurecr.io/backend/garage-backend"
+      CONTAINER_TAG: "mygaragebackend.azurecr.io/backend/garage-backend"
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 14
