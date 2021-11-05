@@ -2,6 +2,7 @@ import mongoose, { Document } from 'mongoose';
 import { Thing } from '@my-garage/common';
 
 export type ThingDocument = Document & Thing;
+
 const thingSchema = new mongoose.Schema<ThingDocument>({
   name: {
     type: String,
@@ -20,15 +21,21 @@ const thingSchema = new mongoose.Schema<ThingDocument>({
     type: Date,
     required: true,
   },
+  createdBy: {
+    type: String,
+    required: true,
+  },
   isAvailable: {
     type: Boolean,
     required: true,
   },
-  removeAt: {
+  removedAt: {
     type: Date,
+    required: true,
   },
   removedBy: {
     type: String,
+    required: true,
   },
 });
 
