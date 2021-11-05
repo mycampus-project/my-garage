@@ -1,0 +1,30 @@
+name: Deploy backend
+
+on:
+  branches:
+    - main
+  paths:
+    - "services/garage-backend/**"
+    - "packages/**"
+    - ".github/workflows/deploy-backend.yml"
+    - "Dockerfile.backend"
+jobs:
+  build_container:
+    runs-on: ubuntu-latest
+    env:
+      CONTAINER_TAG: "mygaragebackend.azurecr.io/backend/garage-backend"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14.17"
+      - uses: azure/docker-login@v1
+        with:
+          login-server: "mygaragebackend.azurecr.io"
+          username: ${{ secrets.AZURE_CR_USERNAME }}
+          password: ${{ secrets.AZURE_CR_PASSWORD }}
+      - name: Build docker container
+        run: docker build -t $CONTAINER_TAG --file Dockerfile.backend .
+      - name: Push docker container
+        run: docker push $CONTAINER_TAG

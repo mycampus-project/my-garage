@@ -32,18 +32,23 @@
   "scripts": {
     "lint": "lerna run lint",
     "install": "lerna bootstrap",
+    "postinstall": "lerna --scope=@my-garage/common run build",
     "prepare": "husky install",
     "dev": "lerna run dev --parallel --stream",
     "dev:backend": "lerna --scope=@my-garage/{garage-backend,common} run dev --parallel --stream",
     "dev:admin": "lerna --scope=@my-garage/{garage-admin,common} run dev --parallel --stream",
-    "dev:timebooking": "lerna --scope=@my-garage/{garage-timebooking,common} run dev --parallel --stream"
+    "dev:timebooking": "lerna --scope=@my-garage/{garage-timebooking,common} run dev --parallel --stream",
+    "start:backend": "yarn workspace @my-garage/garage-backend run start",
+    "deploy:backend": "./scripts/deploy-backend.sh"
+  },
+  "dependencies": {
+    "lerna": "^4.0.0",
+    "typescript": "^4.4.4"
   },
   "devDependencies": {
     "concurrently": "^6.3.0",
     "husky": "^7.0.0",
-    "lerna": "^4.0.0",
     "prettier": "^2.4.1",
-    "pretty-quick": "^3.1.1",
-    "typescript": "^4.4.4"
+    "pretty-quick": "^3.1.1"
   }
 }

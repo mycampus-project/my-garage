@@ -1,0 +1,9 @@
+FROM node:14.17
+
+COPY --chown=node:node package.json yarn.lock lerna.json tsconfig.json ./
+COPY --chown=node:node packages ./packages
+COPY --chown=node:node services ./services
+
+RUN yarn install --production
+
+CMD ["yarn", "start:backend"]
