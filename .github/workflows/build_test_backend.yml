@@ -6,15 +6,10 @@ name: Build and Test Backend
 on:
   pull_request:
     types: [opened, synchronize]
+
 concurrency:
   group: ${{ github.ref }}
-  cancel-in-progress:
-    true
-    # paths:
-    # - "apps/garage-backend/**"
-    # - "packages/**"
-    # - ".github/workflows/build_test_backend.yml"
-    # - "Dockerfile.backend"
+  cancel-in-progress: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
