@@ -1,6 +1,6 @@
 import express from 'express';
 
-// import mongo from './mongo';
+import mongo from './mongo';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -13,6 +13,7 @@ const listen = () => {
   });
 };
 
-listen();
-console.log(process.env.MONGODB_URL);
-// mongo.once('open', () => console.log('Mongo connection open'));
+mongo.once('open', () => {
+  console.log('Mongo connection open');
+  listen();
+});
