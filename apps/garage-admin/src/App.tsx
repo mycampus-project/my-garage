@@ -1,7 +1,13 @@
-import logo from './logo.svg';
+import { useEffect } from 'react';
+import apiClient from './common/api';
 import './App.css';
+import logo from './logo.svg';
 
 function App() {
+  useEffect(() => {
+    apiClient.get('/');
+  }, []);
+
   return (
     <div className="App">
       <header className="App-header">

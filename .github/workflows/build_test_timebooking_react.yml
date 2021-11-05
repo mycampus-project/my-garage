@@ -5,7 +5,8 @@ name: Build and Test Timebooking
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
-  push:
+  pull_request:
+    types: [opened, synchronize]
     paths:
       - "apps/garage-timebooking/**"
       - "packages/**"
@@ -28,6 +29,8 @@ jobs:
         with:
           node-version: "14.17"
       - name: yarn build and test timebooking frontend
+        env:
+          REACT_APP_BACKEND_URL: "http://test"
         run: |
           yarn install
           yarn workspace @my-garage/garage-timebooking run build --if-present
