@@ -1,13 +1,14 @@
 name: Deploy backend
 
 on:
-  branches:
-    - main
-  paths:
-    - "services/garage-backend/**"
-    - "packages/**"
-    - ".github/workflows/deploy-backend.yml"
-    - "Dockerfile.backend"
+  push:
+    branches:
+      - main
+    paths:
+      - "services/garage-backend/**"
+      - "packages/**"
+      - ".github/workflows/deploy-backend.yml"
+      - "Dockerfile.backend"
 jobs:
   build_container:
     runs-on: ubuntu-latest
