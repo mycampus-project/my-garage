@@ -17,6 +17,7 @@ services:
       dockerfile: Dockerfile.dev
     env_file:
       - .env.dev
+    mem_limit: 4096m
     volumes:
       - ./services/:/app/services
       - ./packages/:/app/packages
