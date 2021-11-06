@@ -26,6 +26,7 @@ function Root() {
       <Sider breakpoint="lg" collapsedWidth="0" theme="light">
         <Logo />
         <Menu
+          data-testid="NavigationMenu"
           theme="light"
           mode="inline"
           selectable
