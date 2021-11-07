@@ -54,6 +54,14 @@ const assignUser = async (req: Request) => {
   req.user = user ?? undefined;
 };
 
+/**
+ * Assigns `req.token` and `req.user` to express Request object.
+ * Takes care of validating user's JWT and Nokia tokens when requred.
+ *
+ * @param req
+ * @param _
+ * @param next
+ */
 const authMiddleware: Handler = async (req, _, next) => {
   assignUser(req);
 
