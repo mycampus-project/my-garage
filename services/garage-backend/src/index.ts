@@ -1,13 +1,11 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import { json } from 'body-parser';
 
 import mongo from './mongo';
 import apiContentType from './middlewares/apiContentType';
 import apiErrorHandler from './middlewares/apiErrorHandler';
 
-dotenv.config();
 
 const app = express();
 app.use(json());
