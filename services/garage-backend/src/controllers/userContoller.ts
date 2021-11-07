@@ -5,7 +5,7 @@ import { validateToken } from '../helpers/nokiaLogin';
 import config from '../config';
 import { encrypt } from '../helpers/crypto';
 import { upsertUser } from '../services/userService';
-import { serializeUserDocument } from '../helpers/users';
+import { serializeUser } from '../serializers/users';
 
 // eslint-disable-next-line import/prefer-default-export
 export const loginHandler: Handler = async (req, res) => {
@@ -47,7 +47,7 @@ export const loginHandler: Handler = async (req, res) => {
     encryptedToken.iv,
   );
 
-  const serializedUser = serializeUserDocument(userDocument!);
+  const serializedUser = await serializeUser(userDocument!);
 
   const jwtToken = jwt.sign(serializedUser, config.jwtSecret);
 

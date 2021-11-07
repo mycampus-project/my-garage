@@ -1,3 +1,4 @@
+import Role from '../models/Role';
 import User from '../models/User';
 
 /**
@@ -20,30 +21,30 @@ export const upsertUser = async (
   tokenExp: number,
   tokenIv: string,
 ) => {
-  const user = await User.findOneAndUpdate(
-    {
-      email,
-    },
-    {
-      email,
+  const userFromDb = await User.findOne({ email });
+
+  if (userFromDb) {
+    await userFromDb.updateOne({
       fullName,
       token,
       tokenIv,
       tokenExp,
       tokenVerifiedAt: new Date(),
-    },
-    {
-      upsert: true,
-    },
-  );
-
-  // If a new user was created, `user` is null, hence we need to find it
-  // Dunno why
-  if (user === null) {
-    const userFromDb = await User.findOne({ email });
+    });
 
     return userFromDb;
   }
+  const userRole = await Role.findOne({ name: 'user' });
+
+  const user = new User({
+    email,
+    fullName,
+    token,
+    role: userRole,
+    tokenIv,
+    tokenExp,
+    tokenVerifiedAt: new Date(),
+  });
 
   await user?.save();
 
