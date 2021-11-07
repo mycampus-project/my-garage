@@ -11,10 +11,12 @@ const bookingSchema = new mongoose.Schema<BookingDocument>({
   thingId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Thing',
+    required: true,
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    required: true,
   },
   startAt: {
     type: Date,

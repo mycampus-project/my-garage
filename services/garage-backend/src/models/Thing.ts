@@ -27,6 +27,7 @@ const thingSchema = new mongoose.Schema<ThingDocument>({
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    required: true,
   },
   isAvailable: {
     type: Boolean,
