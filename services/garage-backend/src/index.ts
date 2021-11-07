@@ -5,7 +5,7 @@ import { json } from 'body-parser';
 import mongo from './mongo';
 import apiContentType from './middlewares/apiContentType';
 import apiErrorHandler from './middlewares/apiErrorHandler';
-
+import userRouter from './routers/userRouter';
 
 const app = express();
 app.use(json());
@@ -16,6 +16,7 @@ app.use(cors());
 app.use(apiContentType);
 
 app.get('/', (req, res) => res.send('Express + TypeScript Server'));
+app.use('/user', userRouter);
 
 const listen = () => {
   app.listen(PORT, () => {

@@ -1,7 +1,10 @@
-import { User } from '@my-garage/common';
 import { Handler } from 'express';
+import bcrypt from 'bcrypt';
+import { User } from '@my-garage/common';
+import jwt from 'jsonwebtoken';
 
 import { validateToken } from '../helpers/nokiaLogin';
+import config from '../config';
 
 export const loginHandler: Handler = async (req, res) => {
   const { token, email, name } = req.body;
@@ -37,12 +40,22 @@ export const loginHandler: Handler = async (req, res) => {
 
   // TODO: Create user if not present
 
-  const fakeUser: Partial<User> = {
+  // TODO: save token to db
+  // eslint-disable-next-line unused-imports/no-unused-vars
+  const hashedToken = await bcrypt.hash(token, 10);
+
+  const fakeUser: User = {
     fullName: name,
     email,
+    createdAt: new Date(),
+    roleId: '-1',
   };
 
-  res.status(200).send(fakeUser);
+  const jwtToken = jwt.sign(fakeUser, config.jwtSecret);
+
+  res.status(200).send({
+    token: jwtToken,
+  });
 };
 
 export const verifyTokenHandler: Handler = () => {};
