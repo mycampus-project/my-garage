@@ -1,7 +1,10 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, ObjectId } from 'mongoose';
 import { Thing } from '@my-garage/common';
 
-export type ThingDocument = Document & Thing;
+export interface ThingDocument extends Document, Omit<Thing, 'createdBy' | 'removedBy'> {
+  createdBy: ObjectId;
+  removedBy: ObjectId;
+}
 
 const thingSchema = new mongoose.Schema<ThingDocument>({
   name: {
@@ -22,8 +25,8 @@ const thingSchema = new mongoose.Schema<ThingDocument>({
     required: true,
   },
   createdBy: {
-    type: String,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
   },
   isAvailable: {
     type: Boolean,
@@ -34,8 +37,8 @@ const thingSchema = new mongoose.Schema<ThingDocument>({
     required: true,
   },
   removedBy: {
-    type: String,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
   },
 });
 

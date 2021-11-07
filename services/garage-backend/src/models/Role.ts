@@ -18,8 +18,8 @@ const roleSchema = new mongoose.Schema<RoleDocument>({
     required: true,
   },
   removedBy: {
-    type: String,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
   },
 });
 

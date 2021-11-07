@@ -1,10 +1,10 @@
 export type User = {
   fullName: string;
   email: string;
-  roleId: string;
+  role: Role;
   createdAt: Date;
-  removedAt: Date;
-  removedBy: string;
+  removedAt?: Date;
+  removedBy?: User;
 };
 
 export type Thing = {
@@ -14,15 +14,15 @@ export type Thing = {
   createdAt: Date;
   createdBy: string;
   isAvailable: boolean;
-  removedAt: Date;
-  removedBy: string;
+  removedAt?: Date;
+  removedBy?: User;
 };
 
 export type Role = {
   name: string;
   createdAt: Date;
-  removedAt: Date;
-  removedBy: string;
+  removedAt?: Date;
+  removedBy?: User;
 };
 
 export type Booking = {
@@ -31,5 +31,6 @@ export type Booking = {
   startAt: Date;
   endAt: Date;
   createdAt: Date;
-  removedAt: Date;
+  removedAt?: Date;
+  removedBy?: User;
 };

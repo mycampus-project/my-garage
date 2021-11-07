@@ -1,7 +1,9 @@
 import mongoose, { Document } from 'mongoose';
 import { User } from '@my-garage/common';
 
-export type UserDocument = Document & User;
+export interface UserDocument extends Document<ObjectId>, Omit<User, 'removedBy'> {
+  removedBy: ObjectId;
+}
 
 const userSchema = new mongoose.Schema<UserDocument>({
   fullName: {
@@ -11,25 +13,25 @@ const userSchema = new mongoose.Schema<UserDocument>({
   },
   email: {
     type: String,
+    index: true,
     required: true,
   },
-  roleId: [
-    {
+  role: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Role',
     },
-  ],
   createdAt: {
     type: Date,
     required: true,
+    default: new Date(),
   },
   removedAt: {
     type: Date,
-    required: true,
+    required: false,
   },
   removedBy: {
-    type: String,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
   },
 });
 
