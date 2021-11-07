@@ -7,10 +7,10 @@ module.exports = {
   extends: [
     'airbnb-base',
     'airbnb-typescript/base',
-    'prettier',
     'plugin:import/errors',
     'plugin:import/warnings',
     'plugin:import/typescript',
+    'prettier',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -20,6 +20,7 @@ module.exports = {
   plugins: ['@typescript-eslint', 'unused-imports'],
   rules: {
     '@typescript-eslint/no-unused-vars': 'off',
+    '@typescript-eslint/indent': 'off',
     'unused-imports/no-unused-vars': [
       'error',
       {

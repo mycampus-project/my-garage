@@ -1,7 +1,7 @@
 import mongoose, { Document, ObjectId } from 'mongoose';
 import { User } from '@my-garage/common';
 
-export interface UserDocument extends Document<ObjectId>, Omit<User, 'removedBy'> {
+export interface UserDocument extends Document<ObjectId>, Omit<User, 'removedBy' | 'role'> {
   removedBy: ObjectId;
   role: ObjectId;
 }
