@@ -10,6 +10,8 @@ services:
       - PGID=1000
     volumes:
       - db_data:/data/db
+    ports:
+      - 27017:27017
     restart: unless-stopped
   project:
     build:
