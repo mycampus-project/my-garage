@@ -6,7 +6,7 @@ import mongo from './mongo';
 import apiContentType from './middlewares/apiContentType';
 import apiErrorHandler from './middlewares/apiErrorHandler';
 import userRouter from './routers/userRouter';
-import { authMiddleware } from './middlewares/auth';
+import createRoles from './helpers/createRoles';
 
 const app = express();
 app.use(json());
@@ -28,7 +28,8 @@ const listen = () => {
   });
 };
 
-mongo.once('open', () => {
+mongo.once('open', async () => {
+  await createRoles();
   console.log('Mongo connection open');
   listen();
 });
