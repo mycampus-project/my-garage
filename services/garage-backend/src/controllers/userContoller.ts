@@ -1,16 +1,17 @@
 import { Handler } from 'express';
-import bcrypt from 'bcrypt';
-import { User } from '@my-garage/common';
 import jwt from 'jsonwebtoken';
 
 import { validateJwt } from '../helpers/auth';
 import { validateToken } from '../helpers/nokiaLogin';
 import config from '../config';
+import { encrypt } from '../helpers/crypto';
+import { upsertUser } from '../services/userService';
+import { serializeUserDocument } from '../helpers/users';
 
 export const loginHandler: Handler = async (req, res) => {
-  const { token, email, name } = req.body;
+  const { token, email, fullName, exp } = req.body;
 
-  if (!token || !email || !name) {
+  if (!token || !email || !fullName || !exp) {
     // TODO: better error handling
     res.status(400).send({
       errors: [
@@ -36,25 +37,26 @@ export const loginHandler: Handler = async (req, res) => {
 
     return;
   }
+  const encodedToken = encrypt(token);
 
-  // TODO: Check if user with that email exists
-
-  // TODO: Create user if not present
-
-  // TODO: save token to db
-  // eslint-disable-next-line unused-imports/no-unused-vars
-  const hashedToken = await bcrypt.hash(token, 10);
-
-  const fakeUser: User = {
-    fullName: name,
+  const userDocument = await upsertUser(
     email,
-    createdAt: new Date(),
-    roleId: '-1',
-  };
+    fullName,
+    encodedToken.content,
+    exp,
+    encodedToken.iv,
+  );
 
-  const jwtToken = jwt.sign(fakeUser, config.jwtSecret);
+  if (!userDocument) {
+    throw Error('Could not create user????');
+  }
+
+  const serializedUser = serializeUserDocument(userDocument);
+
+  const jwtToken = jwt.sign(serializedUser, config.jwtSecret);
 
   res.status(200).send({
+    user: serializedUser,
     token: jwtToken,
   });
 };
