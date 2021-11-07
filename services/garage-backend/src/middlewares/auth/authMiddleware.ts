@@ -9,7 +9,8 @@ import { validateToken } from '../../helpers/nokiaLogin';
 
 const TOKEN_REVALIDATION_TIME_SECONDS = 24 * 60 * 60; // 1 day. hours * minutes * seconds
 
-const validateNokiaToken = async ({ tokenExp, tokenVerifiedAt, tokenIv, token }: UserDocument) => {
+const validateNokiaToken = async (user: UserDocument) => {
+  const { tokenExp, tokenVerifiedAt, tokenIv, token } = user;
   const now = new Date();
 
   // Check if token is expired
@@ -23,7 +24,13 @@ const validateNokiaToken = async ({ tokenExp, tokenVerifiedAt, tokenIv, token }:
 
     if (!decryptedToken) return false;
 
-    return validateToken(decryptedToken);
+    const tokenValid = validateToken(decryptedToken);
+
+    if (!tokenValid) return false;
+
+    await user.update({ tokenVerifiedAt: new Date() });
+
+    return true;
   }
 
   return true;
@@ -45,11 +52,7 @@ const assignUser = async (req: Request) => {
   if (!id) return;
 
   const user = await User.findOne({ id });
-
   if (!user || !(await validateNokiaToken(user))) return;
-
-  user.tokenVerifiedAt = new Date();
-  await user.save();
 
   req.user = user ?? undefined;
 };
@@ -63,7 +66,7 @@ const assignUser = async (req: Request) => {
  * @param next
  */
 const authMiddleware: Handler = async (req, _, next) => {
-  assignUser(req);
+  await assignUser(req);
 
   next();
 };
