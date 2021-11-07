@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
-
+    "typeRoots": ["./@types/"],
     /* Projects */
     "incremental": true,
 

@@ -6,9 +6,11 @@ import mongo from './mongo';
 import apiContentType from './middlewares/apiContentType';
 import apiErrorHandler from './middlewares/apiErrorHandler';
 import userRouter from './routers/userRouter';
+import authMiddleware from './middlewares/auth/authMiddleware';
 
 const app = express();
 app.use(json());
+app.use(authMiddleware);
 
 const PORT = process.env.PORT ?? 3000;
 
