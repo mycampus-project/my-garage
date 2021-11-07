@@ -6,6 +6,7 @@ import mongo from './mongo';
 import apiContentType from './middlewares/apiContentType';
 import apiErrorHandler from './middlewares/apiErrorHandler';
 import userRouter from './routers/userRouter';
+import { authMiddleware, requireAuth } from './middlewares/auth';
 import createRoles from './helpers/createRoles';
 
 const app = express();
@@ -20,6 +21,8 @@ app.use(apiContentType);
 app.get('/', (req, res) => {
   res.send('Express + TypeScript Server');
 });
+
+app.get('/admin-only', requireAuth('admin'), (req, res) => res.send("Gratz, you're an admin"));
 app.use('/user', userRouter);
 
 const listen = () => {
