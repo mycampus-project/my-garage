@@ -6,7 +6,7 @@ import mongo from './mongo';
 import apiContentType from './middlewares/apiContentType';
 import apiErrorHandler from './middlewares/apiErrorHandler';
 import userRouter from './routers/userRouter';
-import authMiddleware from './middlewares/auth/authMiddleware';
+import { authMiddleware } from './middlewares/auth';
 
 const app = express();
 app.use(json());
@@ -17,7 +17,9 @@ const PORT = process.env.PORT ?? 3000;
 app.use(cors());
 app.use(apiContentType);
 
-app.get('/', (req, res) => res.send('Express + TypeScript Server'));
+app.get('/', (req, res) => {
+  res.send('Express + TypeScript Server');
+});
 app.use('/user', userRouter);
 
 const listen = () => {
