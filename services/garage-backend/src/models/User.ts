@@ -1,14 +1,14 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, ObjectId } from 'mongoose';
 import { User } from '@my-garage/common';
 
 export interface UserDocument extends Document<ObjectId>, Omit<User, 'removedBy'> {
   removedBy: ObjectId;
+  role: ObjectId;
 }
 
 const userSchema = new mongoose.Schema<UserDocument>({
   fullName: {
     type: String,
-    index: true,
     required: true,
   },
   email: {
@@ -17,13 +17,13 @@ const userSchema = new mongoose.Schema<UserDocument>({
     required: true,
   },
   role: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Role',
-    },
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Role',
+  },
   createdAt: {
     type: Date,
     required: true,
-    default: new Date(),
+    default: () => new Date(),
   },
   removedAt: {
     type: Date,

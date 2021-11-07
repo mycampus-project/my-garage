@@ -1,7 +1,9 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, ObjectId } from 'mongoose';
 import { Role } from '@my-garage/common';
 
-export type RoleDocument = Document & Role;
+export interface RoleDocument extends Document<ObjectId>, Omit<Role, 'removedBy'> {
+  removedBy: ObjectId;
+}
 
 const roleSchema = new mongoose.Schema<RoleDocument>({
   name: {
@@ -12,10 +14,11 @@ const roleSchema = new mongoose.Schema<RoleDocument>({
   createdAt: {
     type: Date,
     required: true,
+    default: () => new Date(),
   },
   removedAt: {
     type: Date,
-    required: true,
+    required: false,
   },
   removedBy: {
     type: mongoose.Schema.Types.ObjectId,

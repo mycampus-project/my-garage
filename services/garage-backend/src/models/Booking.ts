@@ -1,7 +1,7 @@
 import mongoose, { Document, ObjectId } from 'mongoose';
 import { Booking } from '@my-garage/common';
 
-export interface BookingDocument extends Document, Omit<Booking, 'thingId' | 'userId'> {
+export interface BookingDocument extends Document<ObjectId>, Omit<Booking, 'thingId' | 'userId'> {
   userId: ObjectId;
   thingId: ObjectId;
   removedBy: ObjectId;
@@ -27,6 +27,7 @@ const bookingSchema = new mongoose.Schema<BookingDocument>({
   createdAt: {
     type: Date,
     required: true,
+    default: () => new Date(),
   },
   removedAt: {
     type: Date,
