@@ -1,12 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
 
 import ApiError from '../helpers/apiError';
-import logger from '../util/logger';
 
-// eslint-disable-next-line func-names
-export default function (error: ApiError, req: Request, res: Response, next: NextFunction) {
+export default function apiErrorHandler(
+  error: ApiError,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   if (error.source) {
-    logger.error(error.source);
+    console.error(error.source);
   }
 
   res.status(error.statusCode).json({
