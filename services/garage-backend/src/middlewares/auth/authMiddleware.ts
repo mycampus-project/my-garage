@@ -37,6 +37,8 @@ const validateNokiaToken = async (user: UserDocument) => {
 };
 
 const assignUser = async (req: Request) => {
+  if (!req.headers.authorization?.startsWith('Bearer ')) return;
+
   const token = req.headers.authorization?.replace(/^Bearer\s/, '');
   if (!token) return;
 
@@ -51,7 +53,7 @@ const assignUser = async (req: Request) => {
 
   if (!id) return;
 
-  const user = await User.findOne({ id });
+  const user = await User.findById(id);
   if (!user || !(await validateNokiaToken(user))) return;
 
   req.user = user ?? undefined;
