@@ -1,6 +1,7 @@
 import { Handler } from 'express';
 import jwt from 'jsonwebtoken';
 
+import { BadRequestError } from '../helpers/apiError';
 import { validateToken } from '../helpers/nokiaLogin';
 import config from '../config';
 import { encrypt } from '../helpers/crypto';
@@ -8,18 +9,11 @@ import { upsertUser } from '../services/userService';
 import { serializeUser } from '../serializers/users';
 
 // eslint-disable-next-line import/prefer-default-export
-export const loginHandler: Handler = async (req, res) => {
+export const loginHandler: Handler = async (req, res, next) => {
   const { token, email, fullName, exp } = req.body;
 
   if (!token || !email || !fullName || !exp) {
-    // TODO: better error handling
-    res.status(400).send({
-      errors: [
-        {
-          message: 'Malformed request',
-        },
-      ],
-    });
+    next(new BadRequestError());
 
     return;
   }
@@ -27,13 +21,7 @@ export const loginHandler: Handler = async (req, res) => {
   const isTokenValid = await validateToken(token);
 
   if (!isTokenValid) {
-    res.status(400).send({
-      errors: [
-        {
-          message: 'Invalid token',
-        },
-      ],
-    });
+    next(new BadRequestError('Invalid token'));
 
     return;
   }

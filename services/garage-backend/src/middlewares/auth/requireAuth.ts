@@ -1,5 +1,6 @@
 import { Handler } from 'express';
 
+import { UnauthorizedError } from '../../helpers/apiError';
 import Role from '../../models/Role';
 import { UserDocument } from '../../models/User';
 
@@ -30,13 +31,7 @@ const requireAuth =
     if (isUserValid) {
       next();
     } else {
-      res.status(401).send({
-        errors: [
-          {
-            message: 'Authentication required',
-          },
-        ],
-      });
+      next(new UnauthorizedError());
     }
   };
 
