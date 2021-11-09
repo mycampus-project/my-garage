@@ -34,7 +34,7 @@ const adminRole: Role = {
 };
 
 const defaultUser: User = {
-  fullName: ' ',
+  fullName: '',
   email: '',
   role: adminRole,
   createdAt: new Date('05/31/2021 14:03:28'),
