@@ -1,18 +1,43 @@
+import { useContext } from 'react';
 import 'antd/dist/antd.css';
 import { PageHeader, Divider, Alert } from 'antd';
+import { AlertType } from '@my-garage/common';
+import styled from 'styled-components';
+import { AdminContext } from './AdminContext';
 
 interface BannerProps {
-  Title: String;
-  AlertMessage: String;
-  AlertType: 'success' | 'info' | 'warning' | 'error' | undefined;
+  title: String;
+  alertMessage: String;
+  alertType: AlertType;
 }
 
-function Banner({ Title, AlertMessage, AlertType }: BannerProps) {
+const Title = styled.h1`
+  font-size: 36px;
+`;
+
+function Banner({ title, alertMessage, alertType }: BannerProps) {
+  const { updateAlertMessage } = useContext(AdminContext);
   return (
     <>
-      <PageHeader title={Title} style={{ fontSize: 45 }} />
+      <PageHeader
+        title={<Title>{title}</Title>}
+        style={{}}
+        footer={
+          alertMessage.length > 0 && (
+            <>
+              <Alert
+                message={alertMessage}
+                type={alertType}
+                closable
+                afterClose={() => {
+                  updateAlertMessage('Test');
+                }}
+              />
+            </>
+          )
+        }
+      />
       <Divider />
-      <Alert message={AlertMessage} type={AlertType} closeText="Close Now" />
     </>
   );
 }

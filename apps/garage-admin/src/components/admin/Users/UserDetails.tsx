@@ -1,21 +1,24 @@
 import 'antd/dist/antd.css';
 import { Card } from 'antd';
+import { User } from '@my-garage/common';
 
 const Style = {
   card: {
-    width: '70%',
-    height: '70%',
-    boxShadow: '2px 2px 15px 2px rgba(0, 0, 0, 0.1)',
+    width: '100%',
+    height: '100%',
+    margin: '0',
   },
 };
 
-function UserDetails() {
+interface UserDetailsProps {
+  userDetail: User;
+}
+
+function UserDetails({ userDetail }: UserDetailsProps) {
   return (
     <>
-      <Card title="User Name" style={Style.card}>
-        <p>Card content</p>
-        <p>Card content</p>
-        <p>Card content</p>
+      <Card title={userDetail.fullName} style={Style.card}>
+        <p>{userDetail.email}</p>
       </Card>
     </>
   );

@@ -1,6 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
 import RouterRoot from './RouterRoot';
 import 'antd/dist/antd.css';
+import AdminContextProvider from './components/admin/Common/AdminContext';
 
 const GlobalStyles = createGlobalStyle`
   #root {
@@ -10,10 +11,10 @@ const GlobalStyles = createGlobalStyle`
 
 function App() {
   return (
-    <>
+    <AdminContextProvider>
       <GlobalStyles />
       <RouterRoot />
-    </>
+    </AdminContextProvider>
   );
 }
 

@@ -1,14 +1,17 @@
+import { useContext } from 'react';
+import { AdminContext } from '../Common/AdminContext';
 import WebLayout from '../Common/WebLayout';
-import UserList from './UserList';
-import UserDetails from './UserDetails';
+import UserContainer from './UserContainer';
+
 import Banner from '../Common/Banner';
 
 function Users() {
+  const { alertType, alertMessage } = useContext(AdminContext);
+
   return (
     <WebLayout
-      Title={<Banner Title="Users" AlertMessage="Success" AlertType="success" />}
-      List={<UserList />}
-      Details={<UserDetails />}
+      Title={<Banner title="Users" alertMessage={alertMessage} alertType={alertType} />}
+      Element={<UserContainer />}
     />
   );
 }
