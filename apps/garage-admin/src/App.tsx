@@ -1,17 +1,21 @@
-import { useEffect } from 'react';
-import apiClient from './common/api';
+import { createGlobalStyle } from 'styled-components';
+
+import RouterRoot from './RouterRoot';
 import './App.css';
-import UserList from './components/UserList';
+import 'antd/dist/antd.css';
+
+const GlobalStyles = createGlobalStyle`
+  #root {
+    height: 100%;
+  }
+`;
 
 function App() {
-  useEffect(() => {
-    apiClient.get('/');
-  }, []);
-
   return (
-    <div className="App">
-      <UserList />
-    </div>
+    <>
+      <GlobalStyles />
+      <RouterRoot />
+    </>
   );
 }
 
