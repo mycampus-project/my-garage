@@ -5,7 +5,7 @@ import { json } from 'body-parser';
 import mongo from './mongo';
 import apiContentType from './middlewares/apiContentType';
 import apiErrorHandler from './middlewares/apiErrorHandler';
-import userRouter from './routers/userRouter';
+import authRouter from './routers/authRouter';
 import { authMiddleware, requireAuth } from './middlewares/auth';
 import createRoles from './helpers/createRoles';
 
@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/admin-only', requireAuth('admin'), (req, res) => res.send("Gratz, you're an admin"));
-app.use('/user', userRouter);
+app.use('/auth', authRouter);
 
 const listen = () => {
   app.listen(PORT, () => {

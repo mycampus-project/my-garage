@@ -4,7 +4,7 @@ import { addSeconds, isAfter } from 'date-fns';
 
 import { decrypt } from '../../helpers/crypto';
 import User, { UserDocument } from '../../models/User';
-import { validateJwt } from '../../helpers/auth';
+import { validateJwt } from '../../helpers/authUtils';
 import { validateToken } from '../../helpers/nokiaLogin';
 
 const TOKEN_REVALIDATION_TIME_SECONDS = 24 * 60 * 60; // 1 day. hours * minutes * seconds
