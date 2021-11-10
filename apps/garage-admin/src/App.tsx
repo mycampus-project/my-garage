@@ -6,6 +6,8 @@ import AdminContextProvider from './components/admin/Common/AdminContext';
 const GlobalStyles = createGlobalStyle`
   #root {
     height: 100%;
+    --primaryColor: #124191;
+    --secondaryColor: #E6F7FF;
   }
 `;
 

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import 'antd/dist/antd.css';
-import { List, Avatar } from 'antd';
-import styled from 'styled-components';
+import { List } from 'antd';
 import { User, Role } from '@my-garage/common';
+import ListItem from './ListItem';
 
 const userRole: Role = {
   name: 'User',
@@ -107,18 +107,6 @@ const arrayOfUsers: User[] = [
   },
 ];
 
-const Name = styled.h1`
-  margin: 0;
-  margin-bottom: -8px;
-`;
-
-const listItemStyle = {};
-
-const listItemMeta = {
-  padding: '8px 16px',
-  cursor: 'pointer',
-};
-
 interface UserListProps {
   onClick: (name: User) => void;
 }
@@ -130,16 +118,7 @@ const UserList = ({ onClick }: UserListProps) => {
     <List
       style={{ width: '100%' }}
       dataSource={data}
-      renderItem={(item) => (
-        <List.Item onClick={() => onClick(item)} key={item.fullName} style={listItemStyle}>
-          <List.Item.Meta
-            style={listItemMeta}
-            avatar={<Avatar size={48} src="https://randomuser.me/api/portraits/men/75.jpg" />}
-            title={<Name>{item.fullName}</Name>}
-            description={item.email}
-          />
-        </List.Item>
-      )}
+      renderItem={(item) => <ListItem item={item} onClick={onClick} />}
     />
   );
 };

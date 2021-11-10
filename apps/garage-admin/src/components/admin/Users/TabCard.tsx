@@ -6,29 +6,29 @@ type TabList = {
   tab: string;
 };
 
-type TabElements = {
-  [article: string]: JSX.Element;
-  app: JSX.Element;
+type BookingsElements = {
+  [current: string]: JSX.Element;
+  previous: JSX.Element;
 };
 
 const tabListNoTitle: TabList[] = [
   {
-    key: 'article',
-    tab: 'article',
+    key: 'current',
+    tab: 'Current Bookings',
   },
   {
-    key: 'app',
-    tab: 'app',
+    key: 'previous',
+    tab: 'Previous Bookings',
   },
 ];
 
-const contentListNoTitle: TabElements = {
-  article: <p>article content</p>,
-  app: <p>app content</p>,
+const contentListNoTitle: BookingsElements = {
+  current: <p>Current Bookings Content</p>,
+  previous: <p>Previous Bookings Content</p>,
 };
 
 const TabsCard = () => {
-  const [activeTabKey, setActiveTabKey] = useState('article');
+  const [activeTabKey, setActiveTabKey] = useState('current');
 
   const onTabChange = (key: string) => {
     setActiveTabKey(key);

@@ -16,7 +16,7 @@ const Title = styled.h1`
 `;
 
 function Banner({ title, alertMessage, alertType }: BannerProps) {
-  const { updateAlertMessage } = useContext(AdminContext);
+  const { setAlertMessage } = useContext(AdminContext);
   return (
     <>
       <PageHeader
@@ -30,7 +30,7 @@ function Banner({ title, alertMessage, alertType }: BannerProps) {
                 type={alertType}
                 closable
                 afterClose={() => {
-                  updateAlertMessage('Test');
+                  setAlertMessage('Test');
                 }}
               />
             </>

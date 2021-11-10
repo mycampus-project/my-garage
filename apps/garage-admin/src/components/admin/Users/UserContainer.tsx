@@ -7,18 +7,16 @@ import UserDetails from './UserDetails';
 const OuterContainer = styled.div`
   display: flex;
   background-color: white;
-  margin: 34px;
+  margin: 32px;
   width: 100%;
   border-radius: 2px;
-  box-shadow: 2px 2px 15px 2px rgba(9, 41, 110, 0.2);
 `;
 
 const ListContainer = styled.div`
-  display: flex;
   max-width: 400px;
   width: 40%;
   overflow: auto;
-  padding: 0 16px;
+  padding: 0;
 `;
 
 const DetailsContainer = styled.div`
