@@ -1,0 +1,10 @@
+{
+  "verbose": true,
+  "env": {
+    "env": "development"
+  },
+  "exec": "yarn start",
+  "ignore": ["package.json"],
+  "ext": "ts,tsx",
+  "watch": ["src", ".env"]
+}
