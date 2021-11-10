@@ -14,7 +14,7 @@ const SelectedDiv = styled.div`
   align-self: end;
   justify-self: end;
   margin: 0;
-  width: 4px;
+  width: 6px;
   height: 82px;
   background-color: var(--primaryColor);
 `;
@@ -26,10 +26,9 @@ const Name = styled.h1`
 
 interface ListItemProps {
   item: User;
-  onClick: (item: User) => void;
 }
 
-const ListItem = ({ item, onClick }: ListItemProps) => {
+const ListItem = ({ item }: ListItemProps) => {
   const { userSelected, setUserSelected } = useContext(AdminContext);
 
   let isSelected;
@@ -39,7 +38,7 @@ const ListItem = ({ item, onClick }: ListItemProps) => {
     isSelected = <SelectedDiv />;
     listItemStyle = {
       padding: '0',
-      backgroundColor: 'var(--secondaryColor)',
+      backgroundColor: 'var(--highlightColor)',
     };
   } else {
     listItemStyle = {
@@ -50,7 +49,6 @@ const ListItem = ({ item, onClick }: ListItemProps) => {
   return (
     <List.Item
       onClick={() => {
-        onClick(item);
         setUserSelected(item);
       }}
       key={item.fullName}

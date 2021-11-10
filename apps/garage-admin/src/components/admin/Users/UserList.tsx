@@ -107,18 +107,14 @@ const arrayOfUsers: User[] = [
   },
 ];
 
-interface UserListProps {
-  onClick: (name: User) => void;
-}
-
-const UserList = ({ onClick }: UserListProps) => {
+const UserList = () => {
   const [data] = useState([...arrayOfUsers]);
 
   return (
     <List
       style={{ width: '100%' }}
       dataSource={data}
-      renderItem={(item) => <ListItem item={item} onClick={onClick} />}
+      renderItem={(item) => <ListItem item={item} />}
     />
   );
 };

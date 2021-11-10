@@ -1,7 +1,10 @@
+import { useContext } from 'react';
 import 'antd/dist/antd.css';
-import { Card } from 'antd';
-import { User } from '@my-garage/common';
+import { Card, Avatar, Button, Space } from 'antd';
+import styled from 'styled-components';
 import TabsCard from './TabCard';
+import { AdminContext } from '../Common/AdminContext';
+import UserDescription from './UserDescription';
 
 const Style = {
   card: {
@@ -14,16 +17,56 @@ const Style = {
   },
 };
 
-interface UserDetailsProps {
-  userDetail: User;
-}
+const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: end;
+`;
 
-function UserDetails({ userDetail }: UserDetailsProps) {
-  if (userDetail.fullName.length > 0) {
+const avatar = (
+  <Avatar
+    size={{ xs: 50, sm: 100, md: 100, lg: 100, xl: 100, xxl: 150 }}
+    src="https://randomuser.me/api/portraits/men/75.jpg"
+  />
+);
+
+function UserDetails() {
+  const { userSelected, setAlertMessage, setAlertType } = useContext(AdminContext);
+
+  if (userSelected.fullName.length > 0) {
     return (
       <>
-        <Card title={userDetail.fullName} style={Style.card} headStyle={Style.cardHeader}>
-          <p>{userDetail.email}</p>
+        <Card
+          title={userSelected.fullName}
+          style={Style.card}
+          headStyle={Style.cardHeader}
+          extra={avatar}
+        >
+          <ButtonContainer>
+            <Space>
+              <Button
+                type="primary"
+                onClick={() => {
+                  setAlertMessage('update successful');
+                  setAlertType('success');
+                }}
+              >
+                Edit
+              </Button>
+              <Button
+                type="primary"
+                onClick={() => {
+                  setAlertMessage('delete unsuccessful');
+                  setAlertType('error');
+                }}
+              >
+                Delete
+              </Button>
+            </Space>
+          </ButtonContainer>
+          <UserDescription />
+
           <TabsCard />
         </Card>
       </>
