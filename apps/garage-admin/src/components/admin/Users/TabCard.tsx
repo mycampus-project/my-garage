@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card } from 'antd';
+import { User, Role } from '@my-garage/common';
+import BookingsList from './BookingsList';
 
 type TabList = {
   key: string;
@@ -10,6 +12,70 @@ type BookingsElements = {
   [current: string]: JSX.Element;
   previous: JSX.Element;
 };
+
+type BookingData = {
+  title: string;
+  date: Date;
+  user: User;
+};
+
+const userRole: Role = {
+  name: 'User',
+  createdAt: new Date('05/31/2021 14:03:28'),
+};
+
+const defaultUser: User = {
+  fullName: 'Fred Jones',
+  email: 'fredjones@fake.com',
+  role: userRole,
+  createdAt: new Date('05/31/2021 14:03:28'),
+};
+
+const currentBooking: BookingData[] = [
+  {
+    title: 'Media Room',
+    date: new Date('October 13, 2014 11:13:00'),
+    user: defaultUser,
+  },
+  {
+    title: '3D Printer',
+    date: new Date('October 13, 2014 11:13:00'),
+    user: defaultUser,
+  },
+  {
+    title: 'VR Headset',
+    date: new Date('October 13, 2014 11:13:00'),
+    user: defaultUser,
+  },
+  {
+    title: 'Raspberry Pi',
+    date: new Date('October 13, 2014 11:13:00'),
+    user: defaultUser,
+  },
+];
+
+const previousBooking: BookingData[] = [
+  {
+    title: 'Meeting Room',
+    date: new Date('October 13, 2014 11:13:00'),
+    user: defaultUser,
+  },
+  {
+    title: '3D Printer',
+    date: new Date('October 13, 2014 11:13:00'),
+    user: defaultUser,
+  },
+  {
+    title: '3D Printer',
+    date: new Date('October 13, 2014 11:13:00'),
+    user: defaultUser,
+  },
+  {
+    title: 'VR Headset',
+    date: new Date('October 13, 2014 11:13:00'),
+    user: defaultUser,
+  },
+];
 
 const tabListNoTitle: TabList[] = [
   {
@@ -23,8 +89,8 @@ const tabListNoTitle: TabList[] = [
 ];
 
 const contentListNoTitle: BookingsElements = {
-  current: <p>Current Bookings Content</p>,
-  previous: <p>Previous Bookings Content</p>,
+  current: <BookingsList data={currentBooking} />,
+  previous: <BookingsList data={previousBooking} />,
 };
 
 const TabsCard = () => {

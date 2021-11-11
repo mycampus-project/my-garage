@@ -2,7 +2,7 @@ import { useState } from 'react';
 import 'antd/dist/antd.css';
 import { List } from 'antd';
 import { User, Role } from '@my-garage/common';
-import ListItem from './ListItem';
+import UserListItem from './UserListItem';
 
 const userRole: Role = {
   name: 'User',
@@ -114,7 +114,7 @@ const UserList = () => {
     <List
       style={{ width: '100%' }}
       dataSource={data}
-      renderItem={(item) => <ListItem item={item} />}
+      renderItem={(item) => <UserListItem item={item} />}
     />
   );
 };

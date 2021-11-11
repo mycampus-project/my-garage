@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import UserList from './UserList';
-import UserDetails from './UserDetails';
+import UserInfoPanel from './UserInfoPanel';
 
 const OuterContainer = styled.div`
   display: flex;
@@ -21,6 +21,7 @@ const ListContainer = styled.div`
 const DetailsContainer = styled.div`
   display: flex;
   flex-grow: 1;
+  overflow: auto;
 `;
 
 function UserContainer() {
@@ -30,7 +31,7 @@ function UserContainer() {
         <UserList />
       </ListContainer>
       <DetailsContainer>
-        <UserDetails />
+        <UserInfoPanel />
       </DetailsContainer>
     </OuterContainer>
   );

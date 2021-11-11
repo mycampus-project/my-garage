@@ -28,7 +28,7 @@ interface ListItemProps {
   item: User;
 }
 
-const ListItem = ({ item }: ListItemProps) => {
+const UserListItem = ({ item }: ListItemProps) => {
   const { userSelected, setUserSelected } = useContext(AdminContext);
 
   let isSelected;
@@ -65,4 +65,4 @@ const ListItem = ({ item }: ListItemProps) => {
   );
 };
 
-export default ListItem;
+export default UserListItem;

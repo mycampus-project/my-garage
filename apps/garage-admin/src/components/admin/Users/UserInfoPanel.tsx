@@ -21,7 +21,7 @@ const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  justify-content: end;
+  justify-content: space-between;
 `;
 
 const avatar = (
@@ -31,7 +31,7 @@ const avatar = (
   />
 );
 
-function UserDetails() {
+function UserInfoPanel() {
   const { userSelected, setAlertMessage, setAlertType } = useContext(AdminContext);
 
   if (userSelected.fullName.length > 0) {
@@ -44,15 +44,16 @@ function UserDetails() {
           extra={avatar}
         >
           <ButtonContainer>
-            <Space>
+            <UserDescription />
+            <Space align="start">
               <Button
                 type="primary"
                 onClick={() => {
-                  setAlertMessage('update successful');
+                  setAlertMessage('change role successful');
                   setAlertType('success');
                 }}
               >
-                Edit
+                Toggle Role
               </Button>
               <Button
                 type="primary"
@@ -65,7 +66,6 @@ function UserDetails() {
               </Button>
             </Space>
           </ButtonContainer>
-          <UserDescription />
 
           <TabsCard />
         </Card>
@@ -75,4 +75,4 @@ function UserDetails() {
   return null;
 }
 
-export default UserDetails;
+export default UserInfoPanel;
