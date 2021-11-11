@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Card } from 'antd';
-import { User, Role } from '@my-garage/common';
+import { User } from '@my-garage/common';
 import BookingsList from './BookingsList';
 
 type TabList = {
@@ -19,15 +19,11 @@ type BookingData = {
   user: User;
 };
 
-const userRole: Role = {
-  name: 'User',
-  createdAt: new Date('05/31/2021 14:03:28'),
-};
-
 const defaultUser: User = {
+  id: '1',
   fullName: 'Fred Jones',
   email: 'fredjones@fake.com',
-  role: userRole,
+  role: 'User',
   createdAt: new Date('05/31/2021 14:03:28'),
 };
 

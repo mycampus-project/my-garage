@@ -1,5 +1,5 @@
 import { createContext, useState, FC } from 'react';
-import { AlertType, User, Role } from '@my-garage/common';
+import { AlertType, User } from '@my-garage/common';
 
 interface AdminContextInterface {
   alertType: AlertType;
@@ -10,18 +10,14 @@ interface AdminContextInterface {
   setAlertMessage: (name: String) => void;
 }
 
-const adminRole: Role = {
-  name: 'Admin',
-  createdAt: new Date('05/31/2021 14:03:28'),
-};
-
 const defaultContextState: AdminContextInterface = {
   alertType: 'success',
   alertMessage: '',
   userSelected: {
+    id: '1',
     fullName: '',
     email: '',
-    role: adminRole,
+    role: 'Admin',
     createdAt: new Date('05/31/2021 14:03:28'),
   },
   setUserSelected: () => {},

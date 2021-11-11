@@ -19,7 +19,7 @@ const UserDescription = () => {
         {userSelected.email}
       </Descriptions.Item>
       <Descriptions.Item label={<h4 style={{ fontWeight: 500 }}>Role</h4>}>
-        {userSelected.role.name}
+        {userSelected.role}
       </Descriptions.Item>
       <Descriptions.Item label={<h4 style={{ fontWeight: 500 }}>Created At</h4>}>
         {userSelected.createdAt.toString}
