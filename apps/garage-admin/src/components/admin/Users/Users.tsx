@@ -1,15 +1,16 @@
 import { useContext } from 'react';
 import { AdminContext } from '../Common/AdminContext';
-import WebLayout from '../Common/WebLayout';
+import PageLayout from '../Common/PageLayout';
 import UserContainer from './UserContainer';
 
 import Banner from '../Common/Banner';
 
+// Entry point to the users webpage.
 function Users() {
   const { alertType, alertMessage } = useContext(AdminContext);
 
   return (
-    <WebLayout
+    <PageLayout
       Title={<Banner title="Users" alertMessage={alertMessage} alertType={alertType} />}
       Element={<UserContainer />}
     />

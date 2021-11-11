@@ -23,7 +23,7 @@ const DetailsContainer = styled.div`
   flex-grow: 1;
   overflow: auto;
 `;
-
+// Overall user component. List all users on right, and selected user details on left.
 function UserContainer() {
   return (
     <OuterContainer>

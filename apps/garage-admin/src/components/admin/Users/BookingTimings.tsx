@@ -22,7 +22,7 @@ const TimeContainer = styled.div`
 const Bold = styled.span`
   font-weight: 500;
 `;
-
+// Start and end times display component.
 const BookingTimings = ({ item }: BookingTimingsProps) => (
   <TimeContainer>
     <p>

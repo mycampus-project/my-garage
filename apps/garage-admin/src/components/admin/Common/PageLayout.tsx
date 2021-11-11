@@ -13,7 +13,7 @@ const HorizontalContainer = styled.div`
   height: 90vh;
 `;
 
-const TitleContainer = styled.div`
+const BannerContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -25,13 +25,13 @@ interface UserLayoutProps {
   Element: JSX.Element | JSX.Element[];
 }
 
-function WebLayout({ Title, Element }: UserLayoutProps) {
+function PageLayout({ Title, Element }: UserLayoutProps) {
   return (
     <VerticalContainer>
-      <TitleContainer>{Title}</TitleContainer>
+      <BannerContainer>{Title}</BannerContainer>
       <HorizontalContainer>{Element}</HorizontalContainer>
     </VerticalContainer>
   );
 }
 
-export default WebLayout;
+export default PageLayout;

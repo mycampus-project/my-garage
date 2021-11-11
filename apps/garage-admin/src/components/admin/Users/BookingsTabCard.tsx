@@ -89,9 +89,10 @@ const contentListNoTitle: BookingsElements = {
   previous: <BookingsList data={previousBooking} />,
 };
 
-const TabsCard = () => {
+const BookingsTabsCard = () => {
   const [activeTabKey, setActiveTabKey] = useState('current');
 
+  // Change display dependent on tab selected
   const onTabChange = (key: string) => {
     setActiveTabKey(key);
   };
@@ -112,4 +113,4 @@ const TabsCard = () => {
   );
 };
 
-export default TabsCard;
+export default BookingsTabsCard;

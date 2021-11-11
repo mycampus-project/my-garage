@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import 'antd/dist/antd.css';
 import { Card, Avatar, Button, Space } from 'antd';
 import styled from 'styled-components';
-import TabsCard from './TabCard';
+import TabsCard from './BookingsTabCard';
 import { AdminContext } from '../Common/AdminContext';
 import UserDescription from './UserDescription';
 
@@ -31,6 +31,8 @@ const avatar = (
   />
 );
 
+// Selected user panel to display user information, and their current and previous bookings.
+// has buttons to toggle user role and delete user from list.
 function UserInfoPanel() {
   const { userSelected, setAlertMessage, setAlertType } = useContext(AdminContext);
 

@@ -15,6 +15,7 @@ const Title = styled.h1`
   font-size: 36px;
 `;
 
+// Banner component contains page title and notification bar for success, warning and failure prompts.
 function Banner({ title, alertMessage, alertType }: BannerProps) {
   const { setAlertMessage, setAlertType } = useContext(AdminContext);
   return (
