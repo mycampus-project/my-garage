@@ -30,7 +30,7 @@ const UserListItem = ({ item }: ListItemProps) => {
   let listItemStyle;
 
   if (userSelected.fullName === item.fullName) {
-    isSelected = <SelectedDiv />;
+    isSelected = <SelectedDiv data-testid="userList.item.selected" />;
     listItemStyle = {
       padding: '0',
       backgroundColor: 'var(--highlightColor)',
@@ -43,6 +43,7 @@ const UserListItem = ({ item }: ListItemProps) => {
 
   return (
     <List.Item
+      data-testid="userList.item"
       onClick={() => {
         setUserSelected(item);
       }}
@@ -50,6 +51,7 @@ const UserListItem = ({ item }: ListItemProps) => {
       style={listItemStyle}
     >
       <List.Item.Meta
+        data-testid="userList.item.meta"
         style={listItemMeta}
         avatar={<Avatar size={48} src="https://randomuser.me/api/portraits/men/75.jpg" />}
         title={item.fullName}

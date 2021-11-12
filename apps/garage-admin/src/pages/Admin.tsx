@@ -34,7 +34,9 @@ function Admin() {
           onSelect={({ key }) => navigate(`/${key}`)}
         >
           <Menu.Item key="devices">Devices</Menu.Item>
-          <Menu.Item key="users">Users</Menu.Item>
+          <Menu.Item data-testid="nav.users" key="users">
+            Users
+          </Menu.Item>
           <Menu.Item key="dashboards">Dashboards</Menu.Item>
         </Menu>
       </Sider>
