@@ -16,12 +16,7 @@ const SelectedDiv = styled.div`
   margin: 0;
   width: 6px;
   height: 82px;
-  background-color: var(--primaryColor);
-`;
-
-const Name = styled.h1`
-  margin: 0;
-  margin-bottom: -8px;
+  background-color: var(--primaryNokiaColor);
 `;
 
 interface ListItemProps {
@@ -57,7 +52,7 @@ const UserListItem = ({ item }: ListItemProps) => {
       <List.Item.Meta
         style={listItemMeta}
         avatar={<Avatar size={48} src="https://randomuser.me/api/portraits/men/75.jpg" />}
-        title={<Name>{item.fullName}</Name>}
+        title={item.fullName}
         description={item.email}
       />
       {isSelected}

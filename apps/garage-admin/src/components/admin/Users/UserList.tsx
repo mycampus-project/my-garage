@@ -117,6 +117,7 @@ const UserList = () => {
 
   return (
     <List
+      data-testid="UserList"
       style={{ width: '100%' }}
       dataSource={data}
       renderItem={(item) => <UserListItem item={item} />}

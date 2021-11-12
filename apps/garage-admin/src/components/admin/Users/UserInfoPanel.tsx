@@ -1,10 +1,11 @@
 import { useContext } from 'react';
 import 'antd/dist/antd.css';
-import { Card, Avatar, Button, Space } from 'antd';
+import { Card, Avatar, Space } from 'antd';
 import styled from 'styled-components';
 import TabsCard from './BookingsTabCard';
 import { AdminContext } from '../Common/AdminContext';
 import UserDescription from './UserDescription';
+import CustomButton from '../Common/CustomButton';
 
 const Style = {
   card: {
@@ -36,6 +37,16 @@ const avatar = (
 function UserInfoPanel() {
   const { userSelected, setAlertMessage, setAlertType } = useContext(AdminContext);
 
+  const setAlertToggleRole = () => {
+    setAlertMessage('change role successful');
+    setAlertType('success');
+  };
+
+  const setAlertFailedDelete = () => {
+    setAlertMessage('delete unsuccessful');
+    setAlertType('error');
+  };
+
   if (userSelected.fullName.length > 0) {
     return (
       <>
@@ -48,24 +59,8 @@ function UserInfoPanel() {
           <ButtonContainer>
             <UserDescription />
             <Space align="start">
-              <Button
-                type="primary"
-                onClick={() => {
-                  setAlertMessage('change role successful');
-                  setAlertType('success');
-                }}
-              >
-                Toggle Role
-              </Button>
-              <Button
-                type="primary"
-                onClick={() => {
-                  setAlertMessage('delete unsuccessful');
-                  setAlertType('error');
-                }}
-              >
-                Delete
-              </Button>
+              <CustomButton onClick={setAlertToggleRole} Label="Toggle Role" />
+              <CustomButton onClick={setAlertFailedDelete} Label="Delete" />
             </Space>
           </ButtonContainer>
 

@@ -23,11 +23,11 @@ function Admin() {
 
   return (
     <FullHeightLayout>
-      <Sider breakpoint="lg" collapsedWidth="0" theme="light">
+      <Sider breakpoint="lg" collapsedWidth="0">
         <Logo />
         <Menu
           data-testid="NavigationMenu"
-          theme="light"
+          theme="dark"
           mode="inline"
           selectable
           selectedKeys={[activeMenuKey]}
