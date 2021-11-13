@@ -1,4 +1,4 @@
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Spin } from 'antd';
 import { useContext } from 'react';
 import { Navigate } from 'react-router';
 import { useLocation, useNavigate, Outlet } from 'react-router-dom';
@@ -9,6 +9,14 @@ const { Content, Sider } = Layout;
 
 const FullHeightLayout = styled(Layout)`
   height: 100vh;
+`;
+
+const SpinnerContainer = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 // TODO: Create logo
@@ -27,6 +35,16 @@ function Root() {
 
   if (!user && !isLoading) {
     return <Navigate replace to="/login" />;
+  }
+
+  if (isLoading) {
+    return (
+      <FullHeightLayout>
+        <SpinnerContainer>
+          <Spin size="large" />
+        </SpinnerContainer>
+      </FullHeightLayout>
+    );
   }
 
   return (

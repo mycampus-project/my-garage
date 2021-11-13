@@ -29,6 +29,9 @@ const AuthContextProvider: React.FC = ({ children }) => {
       if (!token) return Promise.resolve(null);
       return apiClient.get<User>('/auth/me', { headers: { Authorization: `Bearer ${token}` } });
     },
+    {
+      retry: 1,
+    },
   );
 
   return (
