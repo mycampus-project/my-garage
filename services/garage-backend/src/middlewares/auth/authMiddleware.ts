@@ -24,7 +24,7 @@ const validateNokiaToken = async (user: UserDocument) => {
 
     if (!decryptedToken) return false;
 
-    const tokenValid = validateToken(decryptedToken);
+    const tokenValid = validateToken(decryptedToken, user.email);
 
     if (!tokenValid) return false;
 

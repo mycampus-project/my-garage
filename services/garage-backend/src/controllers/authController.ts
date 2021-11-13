@@ -18,7 +18,7 @@ export const loginHandler: Handler = async (req, res, next) => {
     return;
   }
 
-  const isTokenValid = await validateToken(token);
+  const isTokenValid = await validateToken(token, email);
 
   if (!isTokenValid) {
     next(new BadRequestError('Invalid token'));
