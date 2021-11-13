@@ -1,9 +1,10 @@
 import express from 'express';
 
-import { loginHandler } from '../controllers/authController';
+import { getMe, postLogin } from '../controllers/authController';
 
 const userRouter = express.Router();
 
-userRouter.post('/login', loginHandler);
+userRouter.post('/login', postLogin);
+userRouter.get('/me', getMe);
 
 export default userRouter;

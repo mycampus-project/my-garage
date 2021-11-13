@@ -1,15 +1,14 @@
 import { Handler } from 'express';
 import jwt from 'jsonwebtoken';
 
-import { BadRequestError } from '../helpers/apiError';
+import { BadRequestError, UnauthorizedError } from '../helpers/apiError';
 import { validateToken } from '../helpers/nokiaLogin';
 import config from '../config';
 import { encrypt } from '../helpers/crypto';
 import { upsertUser } from '../services/userService';
 import { serializeUser } from '../serializers/users';
 
-// eslint-disable-next-line import/prefer-default-export
-export const loginHandler: Handler = async (req, res, next) => {
+export const postLogin: Handler = async (req, res, next) => {
   const { token, email, fullName, exp } = req.body;
 
   if (!token || !email || !fullName || !exp) {
@@ -43,4 +42,12 @@ export const loginHandler: Handler = async (req, res, next) => {
     user: serializedUser,
     token: jwtToken,
   });
+};
+
+export const getMe: Handler = (req, res, next) => {
+  if (req.user) {
+    res.json(serializeUser(req.user));
+  } else {
+    next(new UnauthorizedError());
+  }
 };
