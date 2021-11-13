@@ -31,6 +31,8 @@ const AuthContextProvider: React.FC = ({ children }) => {
     },
     {
       retry: 1,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
     },
   );
 
