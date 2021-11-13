@@ -4,6 +4,7 @@ import 'antd/dist/antd.css';
 import { createGlobalStyle } from 'styled-components';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import RouterRoot from './RouterRoot';
+import AuthContextProvider from './contexts/AuthContext';
 
 const client = new QueryClient();
 
@@ -16,8 +17,10 @@ const GlobalStyles = createGlobalStyle`
 function App() {
   return (
     <QueryClientProvider client={client}>
-      <GlobalStyles />
-      <RouterRoot />
+      <AuthContextProvider>
+        <GlobalStyles />
+        <RouterRoot />
+      </AuthContextProvider>
     </QueryClientProvider>
   );
 }
