@@ -1,5 +1,8 @@
 import { Layout, Menu } from 'antd';
+import { useContext } from 'react';
+import { Navigate } from 'react-router';
 import { useLocation, useNavigate, Outlet } from 'react-router-dom';
+import { AuthContext } from 'src/contexts/AuthContext';
 import styled from 'styled-components';
 
 const { Content, Sider } = Layout;
@@ -20,6 +23,11 @@ const useActiveMenuKey = () => {
 function Root() {
   const navigate = useNavigate();
   const activeMenuKey = useActiveMenuKey();
+  const { user, isLoading } = useContext(AuthContext);
+
+  if (!user && !isLoading) {
+    return <Navigate replace to="/login" />;
+  }
 
   return (
     <FullHeightLayout>
