@@ -22,8 +22,8 @@ app.get('/', (req, res) => {
   res.send('Express + TypeScript Server');
 });
 
-app.get('/admin-only', requireAuth('admin'), (req, res) => res.send("Gratz, you're an admin"));
 app.use('/auth', authRouter);
+app.get('/admin-only', requireAuth('admin'), (req, res) => res.send("Gratz, you're an admin"));
 
 const listen = () => {
   app.listen(PORT, () => {

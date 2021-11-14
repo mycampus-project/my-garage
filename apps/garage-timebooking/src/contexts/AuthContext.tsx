@@ -10,18 +10,20 @@ interface AuthContextValue {
   user: User | null;
   isLoading: boolean;
   error: AxiosError | null;
+  setAuthToken: (token: string) => void;
 }
 
 const defaultValue: AuthContextValue = {
   user: null,
   isLoading: false,
   error: null,
+  setAuthToken: () => {},
 };
 
 const AuthContext = createContext(defaultValue);
 
 const AuthContextProvider: React.FC = ({ children }) => {
-  const [token] = useLocalStorage('auth_token');
+  const [token, setAuthToken] = useLocalStorage('auth_token');
 
   const { data, error, isLoading } = useQuery<AxiosResponse<User> | null, AxiosError>(
     ['auth', token],
@@ -39,8 +41,8 @@ const AuthContextProvider: React.FC = ({ children }) => {
   return (
     <AuthContext.Provider
       value={useMemo(
-        () => ({ user: data?.data ?? null, isLoading, error }),
-        [data, isLoading, error],
+        () => ({ user: data?.data ?? null, isLoading, error, setAuthToken }),
+        [data, isLoading, error, setAuthToken],
       )}
     >
       {children}

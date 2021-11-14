@@ -1,4 +1,4 @@
-import { Layout, Menu, Spin } from 'antd';
+import { Button, Layout, Menu, Spin } from 'antd';
 import { useContext } from 'react';
 import { Navigate } from 'react-router';
 import { useLocation, useNavigate, Outlet } from 'react-router-dom';
@@ -31,7 +31,7 @@ const useActiveMenuKey = () => {
 function Root() {
   const navigate = useNavigate();
   const activeMenuKey = useActiveMenuKey();
-  const { user, isLoading } = useContext(AuthContext);
+  const { user, isLoading, setAuthToken } = useContext(AuthContext);
 
   if (!user && !isLoading) {
     return <Navigate replace to="/login" />;
@@ -63,6 +63,7 @@ function Root() {
           <Menu.Item key="current">Current bookings</Menu.Item>
           <Menu.Item key="history">History</Menu.Item>
         </Menu>
+        <Button onClick={() => setAuthToken('')}>Logout</Button>
       </Sider>
 
       <Content>
