@@ -37,6 +37,10 @@ function Root() {
     return <Navigate replace to="/login" />;
   }
 
+  if (!activeMenuKey) {
+    return <Navigate replace to={{ pathname: '/new' }} />;
+  }
+
   if (isLoading) {
     return (
       <FullHeightLayout>

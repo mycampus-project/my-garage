@@ -1,9 +1,8 @@
 import { Form, Input, Button, Alert, Row, Col } from 'antd';
 import { useContext } from 'react';
 import { Navigate } from 'react-router';
-import styled from 'styled-components';
-
 import { AuthContext } from 'src/contexts/AuthContext';
+import styled from 'styled-components';
 import useLogin from './useLogin';
 
 const Container = styled.div`

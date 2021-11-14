@@ -10,6 +10,7 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "eslint-config-garage": "^1.0.0"
+    "eslint-config-garage": "^1.0.0",
+    "react": "^17.0.2"
   }
 }
