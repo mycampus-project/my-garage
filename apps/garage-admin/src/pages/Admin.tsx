@@ -78,13 +78,21 @@ function Admin() {
               selectedKeys={[activeMenuKey]}
               onSelect={({ key }) => navigate(`/${key}`)}
             >
-              <Menu.Item key="devices">Devices</Menu.Item>
-              <Menu.Item key="users">Users</Menu.Item>
-              <Menu.Item key="dashboards">Dashboards</Menu.Item>
+              <Menu.Item data-testid="nav.devices" key="devices">
+                Devices
+              </Menu.Item>
+              <Menu.Item data-testid="nav.users" key="users">
+                Users
+              </Menu.Item>
+              <Menu.Item data-testid="nav.dashboard" key="dashboards">
+                Dashboards
+              </Menu.Item>
             </Menu>
             <Spacer />
             <ButtonContainer>
-              <Button onClick={() => setAuthToken('')}>Logout</Button>
+              <Button data-testid="nav.logout" onClick={() => setAuthToken('')}>
+                Logout
+              </Button>
             </ButtonContainer>
           </SiderContent>
         </Sider>
