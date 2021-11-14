@@ -1,11 +1,36 @@
-import { Layout, Menu } from 'antd';
-import { useLocation, useNavigate, Outlet } from 'react-router-dom';
+import { Button, Layout, Menu, Spin } from 'antd';
+import { useContext } from 'react';
+import { useLocation, useNavigate, Outlet, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
+import AdminContextProvider from '../components/admin/Common/AdminContext';
+import { AuthContext } from '../contexts/AuthContext';
 
 const { Content, Sider } = Layout;
 
 const FullHeightLayout = styled(Layout)`
   height: 100vh;
+`;
+
+const SpinnerContainer = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const ButtonContainer = styled.div`
+  padding-left: 24px;
+  padding-bottom: 16px;
+`;
+
+const SiderContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`;
+
+const Spacer = styled.div`
+  flex: 1;
 `;
 
 // TODO: Create logo
@@ -20,29 +45,55 @@ const useActiveMenuKey = () => {
 function Admin() {
   const navigate = useNavigate();
   const activeMenuKey = useActiveMenuKey();
+  const { user, isLoading, setAuthToken } = useContext(AuthContext);
 
+  if (!user && !isLoading) {
+    return <Navigate replace to="/login" />;
+  }
+
+  if (!activeMenuKey) {
+    return <Navigate replace to={{ pathname: '/devices' }} />;
+  }
+
+  if (isLoading) {
+    return (
+      <FullHeightLayout>
+        <SpinnerContainer>
+          <Spin size="large" />
+        </SpinnerContainer>
+      </FullHeightLayout>
+    );
+  }
   return (
-    <FullHeightLayout>
-      <Sider breakpoint="lg" collapsedWidth="0" theme="light">
-        <Logo />
-        <Menu
-          data-testid="NavigationMenu"
-          theme="light"
-          mode="inline"
-          selectable
-          selectedKeys={[activeMenuKey]}
-          onSelect={({ key }) => navigate(`/${key}`)}
-        >
-          <Menu.Item key="devices">Devices</Menu.Item>
-          <Menu.Item key="users">Users</Menu.Item>
-          <Menu.Item key="dashboards">Dashboards</Menu.Item>
-        </Menu>
-      </Sider>
+    <AdminContextProvider>
+      <FullHeightLayout>
+        <Sider breakpoint="lg" collapsedWidth="0" theme="light">
+          <SiderContent>
+            <Logo />
+            <Menu
+              data-testid="NavigationMenu"
+              theme="light"
+              mode="inline"
+              selectable
+              selectedKeys={[activeMenuKey]}
+              onSelect={({ key }) => navigate(`/${key}`)}
+            >
+              <Menu.Item key="devices">Devices</Menu.Item>
+              <Menu.Item key="users">Users</Menu.Item>
+              <Menu.Item key="dashboards">Dashboards</Menu.Item>
+            </Menu>
+            <Spacer />
+            <ButtonContainer>
+              <Button onClick={() => setAuthToken('')}>Logout</Button>
+            </ButtonContainer>
+          </SiderContent>
+        </Sider>
 
-      <Content>
-        <Outlet />
-      </Content>
-    </FullHeightLayout>
+        <Content>
+          <Outlet />
+        </Content>
+      </FullHeightLayout>
+    </AdminContextProvider>
   );
 }
 

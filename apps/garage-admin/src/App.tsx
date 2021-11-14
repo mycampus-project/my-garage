@@ -1,7 +1,9 @@
 import { createGlobalStyle } from 'styled-components';
+import { QueryClientProvider, QueryClient } from 'react-query';
 import RouterRoot from './RouterRoot';
 import 'antd/dist/antd.css';
-import AdminContextProvider from './components/admin/Common/AdminContext';
+
+import AuthContextProvider from './contexts/AuthContext';
 
 const GlobalStyles = createGlobalStyle`
   #root {
@@ -12,12 +14,16 @@ const GlobalStyles = createGlobalStyle`
   }
 `;
 
+const client = new QueryClient();
+
 function App() {
   return (
-    <AdminContextProvider>
-      <GlobalStyles />
-      <RouterRoot />
-    </AdminContextProvider>
+    <QueryClientProvider client={client}>
+      <AuthContextProvider>
+        <GlobalStyles />
+        <RouterRoot />
+      </AuthContextProvider>
+    </QueryClientProvider>
   );
 }
 
