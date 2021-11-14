@@ -12,7 +12,5 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          build: |
-            yarn install
-            yarn workspace @my-garage/garage-admin run build --if-present
+          build: yarn workspace @my-garage/garage-admin run build --if-present
           start: yarn dev:admin
