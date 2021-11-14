@@ -19,6 +19,21 @@ const SpinnerContainer = styled.div`
   align-items: center;
 `;
 
+const ButtonContainer = styled.div`
+  padding-left: 24px;
+  padding-bottom: 16px;
+`;
+
+const SiderContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`;
+
+const Spacer = styled.div`
+  flex: 1;
+`;
+
 // TODO: Create logo
 const Logo = styled.div``;
 
@@ -54,20 +69,25 @@ function Root() {
   return (
     <FullHeightLayout>
       <Sider breakpoint="lg" collapsedWidth="0" theme="light">
-        <Logo />
-        <Menu
-          data-testid="NavigationMenu"
-          theme="light"
-          mode="inline"
-          selectable
-          selectedKeys={[activeMenuKey]}
-          onSelect={({ key }) => navigate(`/${key}`)}
-        >
-          <Menu.Item key="new">New booking</Menu.Item>
-          <Menu.Item key="current">Current bookings</Menu.Item>
-          <Menu.Item key="history">History</Menu.Item>
-        </Menu>
-        <Button onClick={() => setAuthToken('')}>Logout</Button>
+        <SiderContent>
+          <Logo />
+          <Menu
+            data-testid="NavigationMenu"
+            theme="light"
+            mode="inline"
+            selectable
+            selectedKeys={[activeMenuKey]}
+            onSelect={({ key }) => navigate(`/${key}`)}
+          >
+            <Menu.Item key="new">New booking</Menu.Item>
+            <Menu.Item key="current">Current bookings</Menu.Item>
+            <Menu.Item key="history">History</Menu.Item>
+          </Menu>
+          <Spacer />
+          <ButtonContainer>
+            <Button onClick={() => setAuthToken('')}>Logout</Button>
+          </ButtonContainer>
+        </SiderContent>
       </Sider>
 
       <Content>
