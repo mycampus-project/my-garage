@@ -1,4 +1,4 @@
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, Alert, Row, Col } from 'antd';
 import { useContext } from 'react';
 import { Navigate } from 'react-router';
 import { AuthContext } from 'src/contexts/AuthContext';
@@ -11,7 +11,7 @@ const Container = styled.div`
 `;
 
 const LoginForm = () => {
-  const { onSubmit, isLoading } = useLogin();
+  const { onSubmit, isLoading, error } = useLogin();
   const { user } = useContext(AuthContext);
 
   if (user) {
@@ -21,12 +21,11 @@ const LoginForm = () => {
   return (
     <Container>
       <Form<{ email: string; password: string }>
-        name="basic"
+        name="login"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         initialValues={{ remember: true }}
         onFinish={onSubmit}
-        onFinishFailed={console.log}
         autoComplete="off"
       >
         <Form.Item
@@ -56,6 +55,14 @@ const LoginForm = () => {
             Submit
           </Button>
         </Form.Item>
+
+        {error && (
+          <Row>
+            <Col xs={{ offset: 0, span: 12 }} sm={{ offset: 8, span: 16 }}>
+              <Alert message={error} type="error" />
+            </Col>
+          </Row>
+        )}
       </Form>
     </Container>
   );

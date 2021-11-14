@@ -1,6 +1,6 @@
 import { useMutation } from 'react-query';
 import axios, { AxiosError } from 'axios';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import apiClient from 'src/common/api';
 import { AuthContext } from 'src/contexts/AuthContext';
 
@@ -57,10 +57,20 @@ const useLogin = () => {
     setAuthToken(garageLoginData.token);
   }, [garageLoginData, setAuthToken]);
 
+  const error = useMemo(() => {
+    if (nokiaLoginError) {
+      return nokiaLoginError.response?.data.errors.at(0).msg;
+    }
+    if (garageError) {
+      return garageError.response?.data.message;
+    }
+    return null;
+  }, [nokiaLoginError, garageError]);
+
   return {
     onSubmit,
     isLoading: isLoadingNokiaLogin || isLoadingGarageLogin,
-    error: nokiaLoginError ?? garageError,
+    error,
   };
 };
 
