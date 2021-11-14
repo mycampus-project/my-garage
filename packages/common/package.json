@@ -10,6 +10,7 @@
     "prepare": "yarn build"
   },
   "dependencies": {
+    "@types/react": "^17.0.34",
     "axios": "^0.24.0",
     "eslint-config-garage": "^1.0.0",
     "react": "^17.0.2"
