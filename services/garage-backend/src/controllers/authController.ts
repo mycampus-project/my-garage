@@ -11,8 +11,6 @@ import { serializeUser } from '../serializers/users';
 export const postLogin: Handler = async (req, res, next) => {
   const { token, email, fullName, exp } = req.body;
 
-  console.log(req.body);
-
   if (!token || !email || !fullName || !exp) {
     next(new BadRequestError());
 
