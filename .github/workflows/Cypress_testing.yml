@@ -14,3 +14,4 @@ jobs:
         with:
           build: yarn workspace @my-garage/garage-admin run build --if-present
           start: yarn dev:admin
+          wait-on: "http://localhost:8080"
