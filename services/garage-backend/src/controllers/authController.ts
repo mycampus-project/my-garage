@@ -44,9 +44,9 @@ export const postLogin: Handler = async (req, res, next) => {
   });
 };
 
-export const getMe: Handler = (req, res, next) => {
+export const getMe: Handler = async (req, res, next) => {
   if (req.user) {
-    res.json(serializeUser(req.user));
+    res.json(await serializeUser(req.user));
   } else {
     next(new UnauthorizedError());
   }

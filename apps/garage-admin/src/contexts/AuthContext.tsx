@@ -1,4 +1,4 @@
-import React, { createContext, useMemo } from 'react';
+import React, { createContext, useEffect, useMemo } from 'react';
 import { User, useLocalStorage, apiClient } from '@my-garage/common';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useQuery } from 'react-query';
@@ -34,6 +34,15 @@ const AuthContextProvider: React.FC = ({ children }) => {
       refetchOnReconnect: false,
     },
   );
+
+  // Log user out if their role is not admin
+  useEffect(() => {
+    if (!data?.data) return;
+
+    if (data.data.role !== 'admin') {
+      setAuthToken('');
+    }
+  }, [data, setAuthToken]);
 
   return (
     <AuthContext.Provider

@@ -44,7 +44,12 @@ const useLogin = () => {
           fullName: username,
           exp,
         })
-        .then((response) => response.data),
+        .then((response) => response.data)
+        .then((data) => {
+          if (data.user.role !== 'admin') throw Error('Only admin users can login');
+
+          return data;
+        }),
   );
 
   useEffect(() => {
@@ -62,7 +67,7 @@ const useLogin = () => {
       return nokiaLoginError.response?.data.errors.at(0).msg;
     }
     if (garageError) {
-      return garageError.response?.data.message;
+      return garageError.message;
     }
     return null;
   }, [nokiaLoginError, garageError]);
