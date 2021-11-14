@@ -1,12 +1,10 @@
-/*
-import Thing from 'src/models/Thing';
-import { ThingDocument } from 'src/models/Thing/';
+import Thing, { ThingDocument } from '../models/Thing';
 
-function create(thing: ThingDocument): Promise<ThingDocument> {
+function createThing(thing: ThingDocument): Promise<ThingDocument> {
   return thing.save();
 }
 
-function findById(thingId: string): Promise<ThingDocument> {
+function findThingById(thingId: string): Promise<ThingDocument> {
   return Thing.findById(thingId)
     .exec()
     .then((thing) => {
@@ -17,7 +15,39 @@ function findById(thingId: string): Promise<ThingDocument> {
     });
 }
 
-function findAll(): Promise<ThingDocument[]> {
+function findAllThings(): Promise<ThingDocument[]> {
   return Thing.find().sort({ name: 1, descripton: -1 }).exec();
 }
-*/
+
+function updateThing(
+  thingId: string,
+  update: Partial<ThingDocument>,
+): Promise<ThingDocument | null> {
+  return Thing.findByIdAndUpdate(thingId, update, { new: true })
+    .exec()
+    .then((thing) => {
+      if (!thing) {
+        throw new Error(`Movie ${thingId} not found`);
+      }
+      return thing;
+    });
+}
+
+function deleteThing(thingId: string): Promise<ThingDocument | null> {
+  return Thing.findByIdAndDelete(thingId)
+    .exec()
+    .then((thing) => {
+      if (!thing) {
+        throw new Error(`Movie ${thingId} not found`);
+      }
+      return thing;
+    });
+}
+
+export default {
+  createThing,
+  findThingById,
+  findAllThings,
+  updateThing,
+  deleteThing,
+};
