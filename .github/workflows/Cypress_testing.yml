@@ -15,7 +15,7 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_TOKEN }}
           CRYPTO_SECRET: ${{ secrets.CRYPTO_SECRET }}
         with:
-          build: docker-compose up --build
+          build: docker-compose up --build -d
           runTests: false
 
       # Set-up mongodb with test data
@@ -32,7 +32,7 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           install: false
-          wait-on: "http://localhost:8080"
+          wait-on: "http://localhost:8080, http://localhost:3000"
 
       # If cypress tests fail will upload a screenshot of the error
       - name: Save failure screenshots artifacts
