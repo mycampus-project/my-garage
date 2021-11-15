@@ -68,14 +68,14 @@ function Root() {
 
   return (
     <FullHeightLayout>
-      <Sider breakpoint="lg" collapsedWidth="0" theme="light">
+      <Sider breakpoint="lg" collapsedWidth="0">
         <SiderContent>
           <Logo />
           <Menu
             data-testid="NavigationMenu"
-            theme="light"
             mode="inline"
             selectable
+            theme="dark"
             selectedKeys={[activeMenuKey]}
             onSelect={({ key }) => navigate(`/${key}`)}
           >
@@ -85,7 +85,9 @@ function Root() {
           </Menu>
           <Spacer />
           <ButtonContainer>
-            <Button onClick={() => setAuthToken('')}>Logout</Button>
+            <Button type="primary" onClick={() => setAuthToken('')}>
+              Logout
+            </Button>
           </ButtonContainer>
         </SiderContent>
       </Sider>
