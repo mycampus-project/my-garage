@@ -17,7 +17,12 @@ jobs:
 
       # Set-up mongodb with test data
       - name: Populate database with test data
-        run: mongoimport --db=my-garage --collection=users --drop --file ./services/garage-backend/fixtures/users.json
+        env:
+          ADMIN_USER_RECORD: ${{ secrets.ADMIN_USER_RECORD }}
+        run: |
+          echo $ADMIN_USER_RECORD >> ./services/garage-backend/fixtures/users.json
+          mongoimport --db=my-garage --collection=roles --drop --file ./services/garage-backend/fixtures/roles.json
+          mongoimport --db=my-garage --collection=users --drop --file ./services/garage-backend/fixtures/users.json
 
       # Run cypress tests
       - name: Cypress run tests
