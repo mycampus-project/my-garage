@@ -13,5 +13,5 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           build: docker-compose up --build
-          start: yarn dev:admin
+          start: yarn run cypress open
           wait-on: "http://localhost:8080"
