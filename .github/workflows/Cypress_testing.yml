@@ -11,9 +11,11 @@ jobs:
       # Build docker-compose container with frontend, backend and mongodb, cache them correctly
       - name: Build docker-compose
         uses: cypress-io/github-action@v2
-
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          CRYPTO_SECRET: ${{ secrets.CRYPTO_SECRET }}
         with:
-          build: JWT_SECRET=${{ secrets.JWT_SECRET }} CRYPTO_SECRET=${{ secrets.CRYPTO_SECRET }} docker-compose up --build
+          build: docker-compose up --build JWT_SECRET=${{JWT_SECRET}} CRYPTO_SECRET=${{CRYPTO_SECRET}}
           runTests: false
 
       # Set-up mongodb with test data
