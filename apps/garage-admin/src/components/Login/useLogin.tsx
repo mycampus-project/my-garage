@@ -1,7 +1,7 @@
 import { useMutation } from 'react-query';
 import axios, { AxiosError } from 'axios';
 import { useContext, useEffect, useMemo } from 'react';
-import apiClient from 'src/common/api';
+import { apiClient } from '@my-garage/common';
 import { AuthContext } from 'src/contexts/AuthContext';
 
 const useLogin = () => {
