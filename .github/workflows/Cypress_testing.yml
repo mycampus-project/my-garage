@@ -18,7 +18,6 @@ jobs:
 
       # Set-up mongodb with test data
       - name: Populate database with test data
-        if: always()
         run: echo "mongodb populate data base command goes here"
 
       # Run cypress tests
@@ -30,7 +29,7 @@ jobs:
 
       # If cypress tests fail will upload a screenshot of the error
       - name: Save failure screenshots artifacts
-      - uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v1
         if: failure()
         with:
           name: cypress-screenshots
@@ -38,7 +37,7 @@ jobs:
 
       # Test run video was always captured, so this action uses "always()" condition
       - name: Save video artifacts
-      - uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v1
         if: always()
         with:
           name: cypress-videos
@@ -46,5 +45,4 @@ jobs:
 
       # Close the docker-compose container incase there are zombie processes left
       - name: Stop containers
-        if: always()
         run: docker-compose down
