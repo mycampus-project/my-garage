@@ -18,8 +18,8 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     environment:
-      JWT_SECRET: ${JWT_SECRET}
-      CRYPTO_SECRET: ${CRYPTO_SECRET}
+      - JWT_SECRET
+      - CRYPTO_SECRET
     env_file:
       - .env.dev
     mem_limit: 4096m
