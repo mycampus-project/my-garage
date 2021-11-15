@@ -15,7 +15,7 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           CRYPTO_SECRET: ${{ secrets.CRYPTO_SECRET }}
         with:
-          build: docker-compose up --build -d
+          build: docker-compose up --build
           runTests: false
 
       # Set-up mongodb with test data
