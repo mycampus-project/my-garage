@@ -45,4 +45,5 @@ jobs:
 
       # Close the docker-compose container incase there are zombie processes left
       - name: Stop containers
+        if: always()
         run: docker-compose down
