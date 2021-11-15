@@ -1,8 +1,5 @@
 name: Cypress End to End Testing
-on:
-  pull_request:
-    types: [opened, synchronize]
-
+on: [push]
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
