@@ -12,6 +12,6 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          build: yarn workspace @my-garage/garage-admin run build --if-present
+          build: docker-compose up --build
           start: yarn dev:admin
           wait-on: "http://localhost:8080"
