@@ -13,7 +13,7 @@ test('on initial render the screen shows a user list', async () => {
   render(<Users />);
 
   await waitFor(() => {
-    expect(screen.getByTestId('UserList')).toBeDefined();
+    expect(screen.getByTestId('userList')).toBeDefined();
   });
 });
 
