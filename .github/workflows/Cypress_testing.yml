@@ -18,7 +18,7 @@ jobs:
 
       # Set-up mongodb with test data
       - name: Populate database with test data
-      - run: echo "mongodb populate data base command goes here"
+        run: echo "mongodb populate data base command goes here"
 
       # Run cypress tests
       - name: Cypress run tests
