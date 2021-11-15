@@ -16,7 +16,14 @@ const SelectedDiv = styled.div`
   margin: 0;
   width: 6px;
   height: 82px;
-  background-color: var(--primaryNokiaColor);
+  background-color: var(--ant-primary-color);
+`;
+
+const StyledListItem = styled(List.Item)<{
+  isSelected: boolean;
+}>`
+  padding: 0;
+  background-color: ${({ isSelected }) => (isSelected ? 'var(--ant-primary-1)' : 'transparent')};
 `;
 
 interface ListItemProps {
@@ -26,29 +33,16 @@ interface ListItemProps {
 const UserListItem = ({ item }: ListItemProps) => {
   const { userSelected, setUserSelected } = useContext(AdminContext);
 
-  let isSelected;
-  let listItemStyle;
-
-  if (userSelected.fullName === item.fullName) {
-    isSelected = <SelectedDiv data-testid="userList.item.selected" />;
-    listItemStyle = {
-      padding: '0',
-      backgroundColor: 'var(--highlightColor)',
-    };
-  } else {
-    listItemStyle = {
-      padding: '0',
-    };
-  }
+  const isThisUserSelected = userSelected.fullName === item.fullName;
 
   return (
-    <List.Item
-      data-testid="userList.item"
+    <StyledListItem
       onClick={() => {
         setUserSelected(item);
       }}
-      key={item.fullName}
-      style={listItemStyle}
+      data-testid="userList.item"
+      isSelected={isThisUserSelected}
+      key={item.id}
     >
       <List.Item.Meta
         data-testid="userList.item.meta"
@@ -57,8 +51,8 @@ const UserListItem = ({ item }: ListItemProps) => {
         title={item.fullName}
         description={item.email}
       />
-      {isSelected}
-    </List.Item>
+      {isThisUserSelected && <SelectedDiv data-testid="userList.item.selected" />}
+    </StyledListItem>
   );
 };
 
