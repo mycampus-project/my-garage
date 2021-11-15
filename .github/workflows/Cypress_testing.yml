@@ -18,7 +18,7 @@ jobs:
 
       # Set-up mongodb with test data
       - name: Populate database with test data
-        run: echo "mongodb populate data base command goes here"
+        run: mongoimport --db=my-garage --collection=users --drop --file ./services/garage-backend/fixtures/users.json
 
       # Run cypress tests
       - name: Cypress run tests
