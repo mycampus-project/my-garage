@@ -25,7 +25,4 @@ jobs:
         with:
           name: cypress-videos
           path: cypress/videos
-      - name: close container
-        if: always()
-        with:
-          run: docker-compose down
+        run: docker-compose down
