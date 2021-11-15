@@ -30,6 +30,9 @@ jobs:
       # Run cypress tests
       - name: Cypress run tests
         uses: cypress-io/github-action@v2
+        env:
+          CYPRESS_password: ${{secrets.CYPRESS_password}}
+          CYPRESS_username: ${{secrets.CYPRESS_email}}
         with:
           install: false
           wait-on: "http://localhost:8080, http://localhost:3000"

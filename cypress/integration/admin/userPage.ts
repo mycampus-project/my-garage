@@ -1,15 +1,24 @@
 describe('Admin webpage test suite', () => {
+  const username = Cypress.env('username');
+  const password = Cypress.env('password');
+
   // Test admin User Login
   it('should login into page as admin', () => {
+    expect(username, 'username was set').to.be.a('string').and.not.be.empty;
+    // but the password value should not be shown
+    if (typeof password !== 'string' || !password) {
+      throw new Error('Missing password value, set using CYPRESS_password=...');
+    }
+
     cy.visit('/');
     cy.findByRole('textbox', {
       name: /email/i,
-    }).type('sahar.nagar@nokia.com');
-    cy.findByLabelText(/password/i).type('testtest');
+    }).type(username, { log: false });
+    cy.findByLabelText(/password/i).type(password, { log: false });
     cy.findByRole('button', {
       name: /submit/i,
     }).click();
-    // cy.findByTestId('nav.users').should('be.visible');
+    cy.findByTestId('nav.users').should('be.visible');
   });
 
   // Test to select users tab and click user
