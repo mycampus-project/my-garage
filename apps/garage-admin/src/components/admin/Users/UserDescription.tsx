@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Descriptions } from 'antd';
-import { AdminContext } from '../Common/AdminContext';
+import { AdminContext } from '../../../contexts/AdminContext';
 
 const UserDescription = () => {
   const { userSelected } = useContext(AdminContext);

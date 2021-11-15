@@ -2,8 +2,7 @@ import { useContext } from 'react';
 import 'antd/dist/antd.css';
 import { PageHeader, Divider, Alert } from 'antd';
 import { AlertType } from '@my-garage/common';
-import styled from 'styled-components';
-import { AdminContext } from './AdminContext';
+import { AdminContext } from '../../../contexts/AdminContext';
 
 interface BannerProps {
   title: String;
@@ -11,17 +10,13 @@ interface BannerProps {
   alertType: AlertType;
 }
 
-const Title = styled.h1`
-  font-size: 36px;
-`;
-
 // Banner component contains page title and notification bar for success, warning and failure prompts.
 function Banner({ title, alertMessage, alertType }: BannerProps) {
   const { setAlertMessage, setAlertType } = useContext(AdminContext);
   return (
-    <>
+    <div data-testid="banner">
       <PageHeader
-        title={<Title>{title}</Title>}
+        title={title}
         footer={
           alertMessage.length > 0 && (
             <>
@@ -39,7 +34,7 @@ function Banner({ title, alertMessage, alertType }: BannerProps) {
         }
       />
       <Divider />
-    </>
+    </div>
   );
 }
 

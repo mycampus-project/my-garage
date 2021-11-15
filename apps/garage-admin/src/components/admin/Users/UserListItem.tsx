@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { List, Avatar } from 'antd';
 import { User } from '@my-garage/common';
 import styled from 'styled-components';
-import { AdminContext } from '../Common/AdminContext';
+import { AdminContext } from '../../../contexts/AdminContext';
 
 const listItemMeta = {
   padding: '16px',
@@ -16,12 +16,7 @@ const SelectedDiv = styled.div`
   margin: 0;
   width: 6px;
   height: 82px;
-  background-color: var(--primaryColor);
-`;
-
-const Name = styled.h1`
-  margin: 0;
-  margin-bottom: -8px;
+  background-color: var(--primaryNokiaColor);
 `;
 
 interface ListItemProps {
@@ -35,7 +30,7 @@ const UserListItem = ({ item }: ListItemProps) => {
   let listItemStyle;
 
   if (userSelected.fullName === item.fullName) {
-    isSelected = <SelectedDiv />;
+    isSelected = <SelectedDiv data-testid="userList.item.selected" />;
     listItemStyle = {
       padding: '0',
       backgroundColor: 'var(--highlightColor)',
@@ -48,6 +43,7 @@ const UserListItem = ({ item }: ListItemProps) => {
 
   return (
     <List.Item
+      data-testid="userList.item"
       onClick={() => {
         setUserSelected(item);
       }}
@@ -55,9 +51,10 @@ const UserListItem = ({ item }: ListItemProps) => {
       style={listItemStyle}
     >
       <List.Item.Meta
+        data-testid="userList.item.meta"
         style={listItemMeta}
         avatar={<Avatar size={48} src="https://randomuser.me/api/portraits/men/75.jpg" />}
-        title={<Name>{item.fullName}</Name>}
+        title={item.fullName}
         description={item.email}
       />
       {isSelected}

@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { Navigate } from 'react-router';
 import { AuthContext } from 'src/contexts/AuthContext';
 import styled from 'styled-components';
-import useLogin from './useLogin';
+import useLogin from '../../hooks/useLogin';
 
 const Container = styled.div`
   width: 400px;
