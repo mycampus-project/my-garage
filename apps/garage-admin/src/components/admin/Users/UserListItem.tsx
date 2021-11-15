@@ -9,21 +9,24 @@ const listItemMeta = {
   cursor: 'pointer',
 };
 
-const SelectedDiv = styled.div`
-  display: flex;
-  align-self: end;
-  justify-self: end;
-  margin: 0;
-  width: 6px;
-  height: 82px;
-  background-color: var(--ant-primary-color);
-`;
-
 const StyledListItem = styled(List.Item)<{
   isSelected: boolean;
 }>`
   padding: 0;
   background-color: ${({ isSelected }) => (isSelected ? 'var(--ant-primary-1)' : 'transparent')};
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    width: 6px;
+    height: 100%;
+    background-color: ${({ isSelected }) =>
+      isSelected ? 'var(--ant-primary-color)' : 'transparent'};
+    transition: transform 100ms ease-out;
+    transform: scaleY(${({ isSelected }) => (isSelected ? 1 : 0)});
+  }
 `;
 
 interface ListItemProps {
@@ -51,7 +54,6 @@ const UserListItem = ({ item }: ListItemProps) => {
         title={item.fullName}
         description={item.email}
       />
-      {isThisUserSelected && <SelectedDiv data-testid="userList.item.selected" />}
     </StyledListItem>
   );
 };
