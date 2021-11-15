@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { List, Avatar } from 'antd';
 import { User } from '@my-garage/common';
 import styled from 'styled-components';
-import { AdminContext } from '../Common/AdminContext';
+import { AdminContext } from '../../../contexts/AdminContext';
 
 const listItemMeta = {
   padding: '16px',

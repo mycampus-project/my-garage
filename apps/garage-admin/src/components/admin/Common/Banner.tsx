@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import 'antd/dist/antd.css';
 import { PageHeader, Divider, Alert } from 'antd';
 import { AlertType } from '@my-garage/common';
-import { AdminContext } from './AdminContext';
+import { AdminContext } from '../../../contexts/AdminContext';
 
 interface BannerProps {
   title: String;

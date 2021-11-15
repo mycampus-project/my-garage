@@ -3,7 +3,7 @@ import 'antd/dist/antd.css';
 import { Card, Avatar, Space } from 'antd';
 import styled from 'styled-components';
 import TabsCard from './BookingsTabCard';
-import { AdminContext } from '../Common/AdminContext';
+import { AdminContext } from '../../../contexts/AdminContext';
 import UserDescription from './UserDescription';
 import CustomButton from '../Common/CustomButton';
 

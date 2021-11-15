@@ -2,7 +2,7 @@ import { Button, Layout, Menu, Spin } from 'antd';
 import { useContext } from 'react';
 import { useLocation, useNavigate, Outlet, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
-import AdminContextProvider from '../components/admin/Common/AdminContext';
+import AdminContextProvider from '../contexts/AdminContext';
 import { AuthContext } from '../contexts/AuthContext';
 
 const { Content, Sider } = Layout;

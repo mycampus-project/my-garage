@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { AdminContext } from '../Common/AdminContext';
+import { AdminContext } from '../../../contexts/AdminContext';
 import PageLayout from '../Common/PageLayout';
 import UserContainer from './UserContainer';
 import Banner from '../Common/Banner';

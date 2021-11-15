@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import Users from './Users';
+import Users from '../admin/Users';
 
 window.matchMedia =
   window.matchMedia ||
