@@ -19,17 +19,17 @@ const TimeContainer = styled.div`
   justify-content: space-around;
 `;
 
-const Bold = styled.span`
-  font-weight: 500;
+const StyledSpan = styled.span`
+  font-weight: 700;
 `;
 // Start and end times display component.
 const BookingTimings = ({ item }: BookingTimingsProps) => (
   <TimeContainer>
     <p>
-      <Bold>Start Time:</Bold> {new Date(item.date).toLocaleTimeString()}
+      <StyledSpan>Start Time:</StyledSpan> {new Date(item.date).toLocaleTimeString()}
     </p>
     <p>
-      <Bold>End Time:</Bold> {new Date(item.date).toLocaleTimeString()}
+      <StyledSpan>End Time:</StyledSpan> {new Date(item.date).toLocaleTimeString()}{' '}
     </p>
   </TimeContainer>
 );

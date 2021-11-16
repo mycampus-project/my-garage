@@ -34,14 +34,14 @@ interface ListItemProps {
 }
 
 const UserListItem = ({ item }: ListItemProps) => {
-  const { userSelected, setUserSelected } = useContext(AdminContext);
+  const { selectedUser, setSelectedUser } = useContext(AdminContext);
 
-  const isThisUserSelected = userSelected.fullName === item.fullName;
+  const isThisUserSelected = selectedUser.fullName === item.fullName;
 
   return (
     <StyledListItem
       onClick={() => {
-        setUserSelected(item);
+        setSelectedUser(item);
       }}
       data-testid="userList.item"
       isSelected={isThisUserSelected}
