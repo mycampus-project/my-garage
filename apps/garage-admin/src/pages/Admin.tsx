@@ -67,12 +67,12 @@ function Admin() {
   return (
     <AdminContextProvider>
       <FullHeightLayout>
-        <Sider breakpoint="lg" collapsedWidth="0" theme="light">
+        <Sider breakpoint="lg" collapsedWidth="0">
           <SiderContent>
             <Logo />
             <Menu
               data-testid="NavigationMenu"
-              theme="light"
+              theme="dark"
               mode="inline"
               selectable
               selectedKeys={[activeMenuKey]}
@@ -90,7 +90,7 @@ function Admin() {
             </Menu>
             <Spacer />
             <ButtonContainer>
-              <Button data-testid="nav.logout" onClick={() => setAuthToken('')}>
+              <Button type="primary" data-testid="nav.logout" onClick={() => setAuthToken('')}>
                 Logout
               </Button>
             </ButtonContainer>
