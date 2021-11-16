@@ -1,22 +1,31 @@
 import { useContext } from 'react';
 import 'antd/dist/antd.css';
-import { Card, Avatar, Space } from 'antd';
+import { Card, Avatar, Space, Button } from 'antd';
 import styled from 'styled-components';
 import TabsCard from './BookingsTabCard';
 import { AdminContext } from '../../../contexts/AdminContext';
 import UserDescription from './UserDescription';
-import CustomButton from '../Common/CustomButton';
 
-const Style = {
-  card: {
-    width: '100%',
-    height: '100%',
-    margin: '0',
-  },
-  cardHeader: {
-    fontSize: '28px',
-  },
-};
+// const Style = {
+//   card: {
+//     width: '100%',
+//     height: '100%',
+//     margin: '0',
+//   },
+//   cardHeader: {
+//     fontSize: '28px',
+//   },
+// };
+
+const StyledCard = styled(Card)`
+  width: 100%;
+  height: 100%;
+  margin: 0;
+
+  .ant-card-head-title {
+    font-size: 28px;
+  }
+`;
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -35,7 +44,7 @@ const avatar = (
 // Selected user panel to display user information, and their current and previous bookings.
 // has buttons to toggle user role and delete user from list.
 function UserInfoPanel() {
-  const { userSelected, setAlertMessage, setAlertType } = useContext(AdminContext);
+  const { selectedUser, setAlertMessage, setAlertType } = useContext(AdminContext);
 
   const setAlertToggleRole = () => {
     setAlertMessage('change role successful');
@@ -47,25 +56,24 @@ function UserInfoPanel() {
     setAlertType('error');
   };
 
-  if (userSelected.fullName.length > 0) {
+  if (selectedUser.fullName.length > 0) {
     return (
       <>
-        <Card
-          title={userSelected.fullName}
-          style={Style.card}
-          headStyle={Style.cardHeader}
-          extra={avatar}
-        >
+        <StyledCard title={selectedUser.fullName} extra={avatar}>
           <ButtonContainer>
             <UserDescription />
             <Space align="start">
-              <CustomButton onClick={setAlertToggleRole} Label="Toggle Role" />
-              <CustomButton onClick={setAlertFailedDelete} Label="Delete" />
+              <Button type="primary" onClick={setAlertToggleRole}>
+                Toggle Role
+              </Button>
+              <Button type="primary" onClick={setAlertFailedDelete}>
+                Delete
+              </Button>
             </Space>
           </ButtonContainer>
 
           <TabsCard />
-        </Card>
+        </StyledCard>
       </>
     );
   }

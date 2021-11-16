@@ -1,30 +1,32 @@
 import { useContext } from 'react';
 import { Descriptions } from 'antd';
+import styled from 'styled-components';
 import { AdminContext } from '../../../contexts/AdminContext';
 
+const StyledDescriptions = styled(Descriptions)`
+  margin-bottom: 32px;
+  margin-top: 8px;
+  width: 70%;
+
+  .ant-descriptions-item-label > span {
+    font-weight: 600;
+  }
+`;
+
 const UserDescription = () => {
-  const { userSelected } = useContext(AdminContext);
+  const { selectedUser } = useContext(AdminContext);
 
   return (
-    <Descriptions
-      title="User Details"
-      bordered
-      column={1}
-      style={{ marginBottom: '32px', marginTop: '8px', width: '70%' }}
-    >
-      <Descriptions.Item label={<h4 style={{ fontWeight: 500 }}>Full Name</h4>}>
-        {userSelected.fullName}
-      </Descriptions.Item>
-      <Descriptions.Item label={<h4 style={{ fontWeight: 500 }}>Email</h4>}>
-        {userSelected.email}
-      </Descriptions.Item>
-      <Descriptions.Item label={<h4 style={{ fontWeight: 500 }}>Role</h4>}>
-        {userSelected.role}
-      </Descriptions.Item>
-      <Descriptions.Item label={<h4 style={{ fontWeight: 500 }}>Created At</h4>}>
-        {userSelected.createdAt.toString}
-      </Descriptions.Item>
-    </Descriptions>
+    <>
+      <StyledDescriptions title="User Details" bordered column={1}>
+        <Descriptions.Item className="testDescriptionItem" label="Full Name">
+          {selectedUser.fullName}
+        </Descriptions.Item>
+        <Descriptions.Item label="Email">{selectedUser.email}</Descriptions.Item>
+        <Descriptions.Item label="Role">{selectedUser.role}</Descriptions.Item>
+        <Descriptions.Item label="Created At">{selectedUser.createdAt.toString}</Descriptions.Item>
+      </StyledDescriptions>
+    </>
   );
 };
 

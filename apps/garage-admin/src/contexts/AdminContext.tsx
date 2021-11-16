@@ -4,8 +4,8 @@ import { AlertType, User } from '@my-garage/common';
 interface AdminContextInterface {
   alertType: AlertType;
   alertMessage: String;
-  userSelected: User;
-  setUserSelected: (name: User) => void;
+  selectedUser: User;
+  setSelectedUser: (name: User) => void;
   setAlertType: (type: AlertType) => void;
   setAlertMessage: (name: String) => void;
 }
@@ -13,14 +13,14 @@ interface AdminContextInterface {
 const defaultContextState: AdminContextInterface = {
   alertType: 'success',
   alertMessage: '',
-  userSelected: {
+  selectedUser: {
     id: '',
     fullName: '',
     email: '',
     role: '',
     createdAt: new Date(),
   },
-  setUserSelected: () => {},
+  setSelectedUser: () => {},
   setAlertType: () => {},
   setAlertMessage: () => {},
 };
@@ -30,15 +30,15 @@ export const AdminContext = createContext<AdminContextInterface>(defaultContextS
 const AdminContextProvider: FC = ({ children }) => {
   const [alertType, setAlertType] = useState<AlertType>(defaultContextState.alertType);
   const [alertMessage, setAlertMessage] = useState<String>(defaultContextState.alertMessage);
-  const [userSelected, setUserSelected] = useState<User>(defaultContextState.userSelected);
+  const [selectedUser, setSelectedUser] = useState<User>(defaultContextState.selectedUser);
 
   return (
     <AdminContext.Provider
       value={{
         alertType,
         alertMessage,
-        userSelected,
-        setUserSelected,
+        selectedUser,
+        setSelectedUser,
         setAlertType,
         setAlertMessage,
       }}
