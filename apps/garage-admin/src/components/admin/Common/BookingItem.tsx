@@ -10,16 +10,17 @@ type BookingData = {
 
 interface BookingItemProps {
   item: BookingData;
+  things: boolean;
 }
 
-const BookingItem = ({ item }: BookingItemProps) => (
+const BookingItem = ({ item, things }: BookingItemProps) => (
   <List.Item actions={[<Button>Edit</Button>, <Button>Delete</Button>]}>
     <List.Item.Meta
       avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
       title={item.title}
       description={new Date(item.date).toDateString()}
     />
-    <BookingTimings item={item} />
+    <BookingTimings item={item} things={things} />
   </List.Item>
 );
 

@@ -8,6 +8,20 @@ const StyledDescriptions = styled(Descriptions)`
   margin-top: 8px;
   width: 70%;
 
+  table {
+    table-layout: fixed;
+    width: 100%;
+
+    td {
+      width: 70%;
+      overflow: hidden;
+    }
+  }
+
+  .ant-descriptions-item-label {
+    min-width: 40%;
+  }
+
   .ant-descriptions-item-label > span {
     font-weight: 600;
   }

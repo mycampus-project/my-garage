@@ -84,12 +84,24 @@ const tabListNoTitle: TabList[] = [
   },
 ];
 
-const contentListNoTitle: BookingsElements = {
-  current: <BookingsList data={currentBooking} />,
-  previous: <BookingsList data={previousBooking} />,
+const contentListUsers: BookingsElements = {
+  current: <BookingsList data={currentBooking} things={false} />,
+  previous: <BookingsList data={previousBooking} things={false} />,
 };
 
-const BookingsTabsCard = () => {
+const contentListDevice: BookingsElements = {
+  current: <BookingsList data={currentBooking} things />,
+  previous: <BookingsList data={previousBooking} things />,
+};
+
+interface BookingsTabsCardProps {
+  things?: boolean;
+}
+const defaultProps = {
+  things: false,
+};
+
+const BookingsTabsCard = ({ things }: BookingsTabsCardProps) => {
   const [activeTabKey, setActiveTabKey] = useState('current');
 
   // Change display dependent on tab selected
@@ -107,10 +119,12 @@ const BookingsTabsCard = () => {
           onTabChange(key);
         }}
       >
-        {contentListNoTitle[activeTabKey]}
+        {things ? contentListDevice[activeTabKey] : contentListUsers[activeTabKey]}
       </Card>
     </>
   );
 };
+
+BookingsTabsCard.defaultProps = defaultProps;
 
 export default BookingsTabsCard;

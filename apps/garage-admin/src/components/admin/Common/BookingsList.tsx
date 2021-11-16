@@ -10,13 +10,14 @@ type BookingData = {
 
 interface DataProps {
   data: BookingData[];
+  things: boolean;
 }
 
-const BookingsList = ({ data }: DataProps) => (
+const BookingsList = ({ data, things }: DataProps) => (
   <List
     itemLayout="horizontal"
     dataSource={data}
-    renderItem={(item) => <BookingItem item={item} />}
+    renderItem={(item) => <BookingItem item={item} things={things} />}
   />
 );
 
