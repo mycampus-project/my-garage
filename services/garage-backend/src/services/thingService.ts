@@ -27,7 +27,7 @@ function updateThing(
     .exec()
     .then((thing) => {
       if (!thing) {
-        throw new Error(`Movie ${thingId} not found`);
+        throw new Error(`Thing ${thingId} not found`);
       }
       return thing;
     });
@@ -38,7 +38,7 @@ function deleteThing(thingId: string): Promise<ThingDocument | null> {
     .exec()
     .then((thing) => {
       if (!thing) {
-        throw new Error(`Movie ${thingId} not found`);
+        throw new Error(`Thing ${thingId} not found`);
       }
       return thing;
     });
