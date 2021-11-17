@@ -4,11 +4,7 @@ import { apiClient, Thing } from '@my-garage/common';
 
 const useThing = () => {
   function GetListOfThings(token: string) {
-    const {
-      data: listOfThings,
-      error: listOfThingsError,
-      isLoading: listOfThingsIsLoading,
-    } = useQuery<AxiosResponse<Thing[]> | null, AxiosError>(
+    const { data, error, isLoading } = useQuery<AxiosResponse<Thing[]> | null, AxiosError>(
       ['things'],
       () => {
         if (!token) return Promise.resolve(null);
@@ -16,14 +12,9 @@ const useThing = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
       },
-      {
-        retry: 1,
-        refetchOnWindowFocus: false,
-        refetchOnReconnect: false,
-      },
     );
 
-    return { listOfThings, listOfThingsError, listOfThingsIsLoading };
+    return { data, error, isLoading };
   }
 
   return { GetListOfThings };

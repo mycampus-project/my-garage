@@ -3,13 +3,15 @@ import { AlertType, Thing, User } from '@my-garage/common';
 
 interface AdminContextInterface {
   alertType: AlertType;
-  alertMessage: String;
+  alertMessage: string;
   selectedUser: User;
   selectedThing: Thing;
+  addDeviceIsVisible: boolean;
+  setAddDeviceIsVisible: (name: boolean) => void;
   setSelectedUser: (name: User) => void;
   setSelectedThing: (name: Thing) => void;
   setAlertType: (type: AlertType) => void;
-  setAlertMessage: (name: String) => void;
+  setAlertMessage: (name: string) => void;
 }
 
 const defaultContextState: AdminContextInterface = {
@@ -31,6 +33,8 @@ const defaultContextState: AdminContextInterface = {
     createdBy: { id: '', fullName: '' },
     isAvailable: true,
   },
+  addDeviceIsVisible: false,
+  setAddDeviceIsVisible: () => {},
   setSelectedUser: () => {},
   setSelectedThing: () => {},
   setAlertType: () => {},
@@ -41,9 +45,12 @@ export const AdminContext = createContext<AdminContextInterface>(defaultContextS
 
 const AdminContextProvider: FC = ({ children }) => {
   const [alertType, setAlertType] = useState<AlertType>(defaultContextState.alertType);
-  const [alertMessage, setAlertMessage] = useState<String>(defaultContextState.alertMessage);
+  const [alertMessage, setAlertMessage] = useState<string>(defaultContextState.alertMessage);
   const [selectedUser, setSelectedUser] = useState<User>(defaultContextState.selectedUser);
   const [selectedThing, setSelectedThing] = useState<Thing>(defaultContextState.selectedThing);
+  const [addDeviceIsVisible, setAddDeviceIsVisible] = useState<boolean>(
+    defaultContextState.addDeviceIsVisible,
+  );
 
   return (
     <AdminContext.Provider
@@ -51,6 +58,8 @@ const AdminContextProvider: FC = ({ children }) => {
         alertType,
         alertMessage,
         selectedUser,
+        addDeviceIsVisible,
+        setAddDeviceIsVisible,
         setSelectedUser,
         setAlertType,
         setAlertMessage,

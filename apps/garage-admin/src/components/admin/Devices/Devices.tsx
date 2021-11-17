@@ -5,23 +5,28 @@ import MainContainer from '../Common/MainContainer';
 import Banner from '../Common/Banner';
 import DeviceList from './DeviceList';
 import DeviceInfoPanel from './DeviceInfoPanel';
+import AddDeviceModel from './AddDeviceModel';
 
 function Devices() {
-  const { alertType, alertMessage } = useContext(AdminContext);
+  const { alertType, alertMessage, addDeviceIsVisible } = useContext(AdminContext);
 
   return (
-    <PageLayout
-      Title={
-        <Banner
-          data-testid="banner"
-          title="Devices"
-          alertMessage={alertMessage}
-          alertType={alertType}
-          showAddThing
-        />
-      }
-      Element={<MainContainer list={<DeviceList />} details={<DeviceInfoPanel />} />}
-    />
+    <>
+      {addDeviceIsVisible && <AddDeviceModel />}
+
+      <PageLayout
+        Title={
+          <Banner
+            data-testid="banner"
+            title="Devices"
+            alertMessage={alertMessage}
+            alertType={alertType}
+            showAddThing
+          />
+        }
+        Element={<MainContainer list={<DeviceList />} details={<DeviceInfoPanel />} />}
+      />
+    </>
   );
 }
 

@@ -6,19 +6,18 @@ import DeviceListItem from './DeviceListItem';
 
 const DeviceList = () => {
   const [token] = useLocalStorage('auth_token');
-  const { listOfThings, listOfThingsError, listOfThingsIsLoading } =
-    useThing().GetListOfThings(token);
+  const { data, error, isLoading } = useThing().GetListOfThings(token);
 
-  if (listOfThingsError) {
+  if (error) {
     return <div>Error</div>;
   }
 
   return (
     <List
       data-testid="userList"
-      loading={listOfThingsIsLoading}
+      loading={isLoading}
       style={{ width: '100%' }}
-      dataSource={listOfThings?.data}
+      dataSource={data?.data}
       renderItem={(item) => <DeviceListItem item={item} />}
     />
   );
