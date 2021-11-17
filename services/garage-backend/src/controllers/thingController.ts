@@ -36,7 +36,9 @@ export const createThing = async (req: Request, res: Response, next: NextFunctio
 // GET /things
 export const findAllThings = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    res.json(await ThingService.findAllThings());
+    const thingDocuments = await ThingService.findAllThings();
+    const arrayOfThings = await Promise.all(thingDocuments.map((item) => serializeThing(item)));
+    res.send(arrayOfThings);
   } catch (error: any) {
     next(new NotFoundError('Things not found', error));
   }

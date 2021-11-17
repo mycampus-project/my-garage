@@ -10,7 +10,7 @@ export const serializeThing = async (thing: ThingDocument): Promise<Thing> => {
     path: 'createdBy',
     model: User,
   });
-  const removeThingWithUser = await thing.populate<{ removedBy: UserDocument }>({
+  const removeThingWithUser = await thing.populate<{ removedBy: UserDocument | null }>({
     path: 'removedBy',
     model: User,
   });
@@ -27,9 +27,11 @@ export const serializeThing = async (thing: ThingDocument): Promise<Thing> => {
       fullName: createThingWithUser.createdBy.fullName,
     },
     removedAt,
-    removedBy: {
-      id: removeThingWithUser.removedBy.id,
-      fullName: removeThingWithUser.removedBy.fullName,
-    },
+    removedBy: removeThingWithUser.removedBy
+      ? {
+          id: removeThingWithUser.removedBy.id,
+          fullName: removeThingWithUser.removedBy.fullName,
+        }
+      : undefined,
   };
 };
