@@ -5,15 +5,12 @@ const createRoles = async () => {
 
   if (areThereAnyRoles) return;
 
-  const userRole = new Role({
+  await new Role({
     name: 'user',
-  });
-  const adminRole = new Role({
+  }).save();
+  await new Role({
     name: 'admin',
-  });
-
-  await userRole.save();
-  await adminRole.save();
+  }).save();
 };
 
 export default createRoles;
