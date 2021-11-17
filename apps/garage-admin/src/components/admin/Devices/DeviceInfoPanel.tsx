@@ -4,7 +4,7 @@ import { Card, Avatar, Space, Button } from 'antd';
 import styled from 'styled-components';
 import BookingsTabsCard from '../Common/BookingsTabCard';
 import { AdminContext } from '../../../contexts/AdminContext';
-import UserDescription from './UserDescription';
+import DeviceDescription from './DeviceDescription';
 
 const StyledCard = styled(Card)`
   width: 100%;
@@ -26,17 +26,17 @@ const ButtonContainer = styled.div`
 const avatar = (
   <Avatar
     size={{ xs: 50, sm: 100, md: 100, lg: 100, xl: 100, xxl: 150 }}
-    src="https://randomuser.me/api/portraits/men/75.jpg"
+    src="https://randomuser.me/api/portraits/men/22.jpg"
   />
 );
 
 // Selected user panel to display user information, and their current and previous bookings.
 // has buttons to toggle user role and delete user from list.
-function UserInfoPanel() {
-  const { selectedUser, setAlertMessage, setAlertType } = useContext(AdminContext);
+function DeviceInfoPanel() {
+  const { selectedThing, setAlertMessage, setAlertType } = useContext(AdminContext);
 
   const setAlertToggleRole = () => {
-    setAlertMessage('change role successful');
+    setAlertMessage('change availability successful');
     setAlertType('success');
   };
 
@@ -45,15 +45,15 @@ function UserInfoPanel() {
     setAlertType('error');
   };
 
-  if (selectedUser.fullName.length > 0) {
+  if (selectedThing.name.length > 0) {
     return (
       <>
-        <StyledCard title={selectedUser.fullName} extra={avatar}>
+        <StyledCard title={selectedThing.name} extra={avatar}>
           <ButtonContainer>
-            <UserDescription />
+            <DeviceDescription />
             <Space align="start">
               <Button type="primary" onClick={setAlertToggleRole}>
-                Toggle Role
+                Toggle Available
               </Button>
               <Button type="primary" onClick={setAlertFailedDelete}>
                 Delete
@@ -61,7 +61,7 @@ function UserInfoPanel() {
             </Space>
           </ButtonContainer>
 
-          <BookingsTabsCard />
+          <BookingsTabsCard things />
         </StyledCard>
       </>
     );
@@ -69,4 +69,4 @@ function UserInfoPanel() {
   return null;
 }
 
-export default UserInfoPanel;
+export default DeviceInfoPanel;

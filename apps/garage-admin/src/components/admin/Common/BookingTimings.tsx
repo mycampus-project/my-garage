@@ -1,9 +1,5 @@
 import styled from 'styled-components';
-
-type BookingData = {
-  title: string;
-  date: Date;
-};
+import { BookingData } from '../../../types/adminTypes';
 
 interface BookingTimingsProps {
   item: BookingData;

@@ -1,15 +1,15 @@
 import { useContext } from 'react';
 import { List, Avatar } from 'antd';
-import { User } from '@my-garage/common';
+import { Thing } from '@my-garage/common';
 import styled from 'styled-components';
 import { AdminContext } from '../../../contexts/AdminContext';
 
-interface StyledListItemProps {
-  isSelected: boolean;
+interface ListItemProps {
+  item: Thing;
 }
 
-interface ListItemProps {
-  item: User;
+interface StyledListItemProps {
+  isSelected: boolean;
 }
 
 const listItemMeta = {
@@ -37,29 +37,29 @@ const StyledListItem = styled(({ isSelected, ...props }) => (
   }
 `;
 
-const UserListItem = ({ item }: ListItemProps) => {
-  const { selectedUser, setSelectedUser } = useContext(AdminContext);
+const DeviceListItem = ({ item }: ListItemProps) => {
+  const { selectedThing, setSelectedThing } = useContext(AdminContext);
 
-  const isThisUserSelected = selectedUser.fullName === item.fullName;
+  const isThisUserSelected = selectedThing.name === item.name;
 
   return (
     <StyledListItem
       onClick={() => {
-        setSelectedUser(item);
+        setSelectedThing(item);
       }}
-      data-testid="userList.item"
+      data-testid="deviceList.item"
       isSelected={isThisUserSelected}
-      key={item.id}
+      key={item.name}
     >
       <List.Item.Meta
-        data-testid="userList.item.meta"
+        data-testid="deviceList.item.meta"
         style={listItemMeta}
-        avatar={<Avatar size={48} src="https://randomuser.me/api/portraits/men/75.jpg" />}
-        title={item.fullName}
-        description={item.email}
+        avatar={<Avatar size={48} src="https://randomuser.me/api/portraits/men/22.jpg" />}
+        title={item.name}
+        description={item.type}
       />
     </StyledListItem>
   );
 };
 
-export default UserListItem;
+export default DeviceListItem;

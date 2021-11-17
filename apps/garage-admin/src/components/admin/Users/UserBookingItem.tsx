@@ -1,26 +1,20 @@
 import { List, Avatar, Button } from 'antd';
-import { User } from '@my-garage/common';
-import BookingTimings from './BookingTimings';
+import { BookingData } from '../../../types/adminTypes';
+import BookingTimings from '../Common/BookingTimings';
 
-type BookingData = {
-  title: string;
-  date: Date;
-  user: User;
-};
-
-interface BookingItemProps {
+interface UserBookingItemProps {
   item: BookingData;
 }
 
-const BookingItem = ({ item }: BookingItemProps) => (
+const UserBookingItem = ({ item }: UserBookingItemProps) => (
   <List.Item actions={[<Button>Edit</Button>, <Button>Delete</Button>]}>
     <List.Item.Meta
       avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-      title={item.title}
+      title={item.thing.name}
       description={new Date(item.date).toDateString()}
     />
     <BookingTimings item={item} />
   </List.Item>
 );
 
-export default BookingItem;
+export default UserBookingItem;

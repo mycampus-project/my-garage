@@ -1,6 +1,4 @@
 import styled from 'styled-components';
-import UserList from './UserList';
-import UserInfoPanel from './UserInfoPanel';
 
 const StyledOuterContainer = styled.div`
   display: flex;
@@ -23,18 +21,20 @@ const StyledDetailsContainer = styled.div`
   flex-grow: 1;
   overflow: auto;
 `;
+
+interface MainContainerProps {
+  list: JSX.Element;
+  details: JSX.Element;
+}
+
 // Overall user component. List all users on right, and selected user details on left.
-function UserContainer() {
+function MainContainer({ list, details }: MainContainerProps) {
   return (
     <StyledOuterContainer>
-      <StyledListContainer>
-        <UserList />
-      </StyledListContainer>
-      <StyledDetailsContainer>
-        <UserInfoPanel />
-      </StyledDetailsContainer>
+      <StyledListContainer>{list}</StyledListContainer>
+      <StyledDetailsContainer>{details}</StyledDetailsContainer>
     </StyledOuterContainer>
   );
 }
 
-export default UserContainer;
+export default MainContainer;

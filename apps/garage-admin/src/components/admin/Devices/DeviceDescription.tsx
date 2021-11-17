@@ -27,23 +27,26 @@ const StyledDescriptions = styled(Descriptions)`
   }
 `;
 
-const UserDescription = () => {
-  const { selectedUser } = useContext(AdminContext);
-
+const DeviceDescription = () => {
+  const { selectedThing } = useContext(AdminContext);
   return (
     <>
       <StyledDescriptions title="User Details" bordered column={1}>
-        <Descriptions.Item className="testDescriptionItem" label="Full Name">
-          {selectedUser.fullName}
+        <Descriptions.Item className="testDescriptionItem" label="Name">
+          {selectedThing.name}
         </Descriptions.Item>
-        <Descriptions.Item label="Email">{selectedUser.email}</Descriptions.Item>
-        <Descriptions.Item label="Role">{selectedUser.role}</Descriptions.Item>
+        <Descriptions.Item label="Type">{selectedThing.type}</Descriptions.Item>
+        <Descriptions.Item label="Description">{selectedThing.description}</Descriptions.Item>
         <Descriptions.Item label="Created At">
-          {new Date(selectedUser.createdAt).toDateString()}
+          {new Date(selectedThing.createdAt).toDateString()}
+        </Descriptions.Item>
+        <Descriptions.Item label="Created By">{selectedThing.createdBy.fullName}</Descriptions.Item>
+        <Descriptions.Item label="Is Available">
+          {selectedThing.isAvailable ? 'Available' : 'Unavailable'}
         </Descriptions.Item>
       </StyledDescriptions>
     </>
   );
 };
 
-export default UserDescription;
+export default DeviceDescription;
