@@ -18,6 +18,7 @@ function Users() {
           title="Users"
           alertMessage={alertMessage}
           alertType={alertType}
+          showAddThing={false}
         />
       }
       Element={<MainContainer list={<UserList />} details={<UserInfoPanel />} />}

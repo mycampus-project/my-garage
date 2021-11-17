@@ -9,17 +9,20 @@ import DeviceInfoPanel from './DeviceInfoPanel';
 function Devices() {
   const { alertType, alertMessage } = useContext(AdminContext);
 
-  const banner = (
-    <Banner
-      data-testid="banner"
-      title="Devices"
-      alertMessage={alertMessage}
-      alertType={alertType}
+  return (
+    <PageLayout
+      Title={
+        <Banner
+          data-testid="banner"
+          title="Devices"
+          alertMessage={alertMessage}
+          alertType={alertType}
+          showAddThing
+        />
+      }
+      Element={<MainContainer list={<DeviceList />} details={<DeviceInfoPanel />} />}
     />
   );
-
-  const userMainContainer = <MainContainer list={<DeviceList />} details={<DeviceInfoPanel />} />;
-  return <PageLayout Title={banner} Element={userMainContainer} />;
 }
 
 export default Devices;
