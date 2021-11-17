@@ -1,5 +1,6 @@
 import express from 'express';
 
+import { requireAuth } from '../middlewares/auth';
 import {
   createThing,
   findThingById,
@@ -9,6 +10,7 @@ import {
 } from '../controllers/thingController';
 
 const router = express.Router();
+router.use(requireAuth());
 
 router.get('/', findAllThings);
 router.get('/:thingId', findThingById);

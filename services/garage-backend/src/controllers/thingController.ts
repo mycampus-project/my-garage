@@ -7,15 +7,13 @@ import ThingService from '../services/thingService';
 // POST /things
 export const createThing = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name, description, type, isAvailable, removedAt, removedBy } = req.body;
+    const { name, description, type, isAvailable } = req.body;
     const thing = new Thing({
       name,
       description,
       type,
       createdBy: req.user,
       isAvailable,
-      removedAt,
-      removedBy,
     });
 
     await ThingService.createThing(thing);

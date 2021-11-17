@@ -9,11 +9,12 @@ export type User = {
 };
 
 export type Thing = {
+  id: string;
   name: string;
   description: string;
   type: string;
   createdAt: Date;
-  createdBy: string;
+  createdBy: { id: string; fullName: string };
   isAvailable: boolean;
   removedAt?: Date;
   removedBy?: string;
