@@ -1,8 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 
 import Thing from '../models/Thing';
-import { BadRequestError, InternalServerError, NotFoundError } from '../helpers/apiError';
+import {
+  BadRequestError,
+  InternalServerError,
+  NotFoundError,
+  UnauthorizedError,
+} from '../helpers/apiError';
 import ThingService from '../services/thingService';
+import { serializeThing } from '../serializers/things';
 
 // POST /things
 export const createThing = async (req: Request, res: Response, next: NextFunction) => {
@@ -17,7 +23,7 @@ export const createThing = async (req: Request, res: Response, next: NextFunctio
     });
 
     await ThingService.createThing(thing);
-    res.json(thing);
+    res.json(await serializeThing(thing));
   } catch (error: any) {
     if (error.name === 'ValidationError') {
       next(new BadRequestError('Request Not Valid', error));
@@ -39,7 +45,8 @@ export const findAllThings = async (req: Request, res: Response, next: NextFunct
 // GET /things/:thingId
 export const findThingById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    res.json(await ThingService.findThingById(req.params.thingId));
+    const jsonThing = await ThingService.findThingById(req.params.thingId);
+    res.json(await serializeThing(jsonThing));
   } catch (error: any) {
     next(new NotFoundError('Thing not found', error));
   }
@@ -51,7 +58,7 @@ export const updateThing = async (req: Request, res: Response, next: NextFunctio
     const update = req.body;
     const { thingId } = req.params;
     const updatedThing = await ThingService.updateThing(thingId, update);
-    res.json(updatedThing);
+    res.json(await serializeThing(updatedThing));
   } catch (error: any) {
     next(new NotFoundError('Thing not found', error));
   }
@@ -60,8 +67,13 @@ export const updateThing = async (req: Request, res: Response, next: NextFunctio
 // DELETE /things/:thingId
 export const deleteThing = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await ThingService.deleteThing(req.params.thingId);
-    res.status(204).end();
+    if (!req.user) {
+      next(new UnauthorizedError('User not found'));
+      return;
+    }
+    const { thingId } = req.params;
+    const deletedThing = await ThingService.deleteThing(thingId, req.user.id, new Date());
+    res.json(await serializeThing(deletedThing));
   } catch (error: any) {
     next(new NotFoundError('Thing not found', error));
   }
