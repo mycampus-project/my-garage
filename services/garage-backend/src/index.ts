@@ -8,6 +8,7 @@ import apiErrorHandler from './middlewares/apiErrorHandler';
 import authRouter from './routers/authRouter';
 import { authMiddleware, requireAuth } from './middlewares/auth';
 import createRoles from './helpers/createRoles';
+import thingRouter from './routers/thingRouter';
 
 const app = express();
 app.use(json());
@@ -17,6 +18,8 @@ const PORT = process.env.PORT ?? 3000;
 
 app.use(cors());
 app.use(apiContentType);
+
+app.use('/things', thingRouter);
 
 app.get('/', (req, res) => {
   res.send('Express + TypeScript Server');

@@ -9,14 +9,15 @@ export type User = {
 };
 
 export type Thing = {
+  id: string;
   name: string;
   description: string;
   type: string;
   createdAt: Date;
-  createdBy: string;
+  createdBy: { id: string; fullName: string };
   isAvailable: boolean;
   removedAt?: Date;
-  removedBy?: string;
+  removedBy?: { id: string; fullName: string };
 };
 
 export type Role = {
@@ -27,8 +28,8 @@ export type Role = {
 };
 
 export type Booking = {
-  thingId: string;
-  userId: string;
+  thing: { id: string; name: string; description: string };
+  user: { id: string; fullName: string };
   startAt: Date;
   endAt: Date;
   createdAt: Date;
