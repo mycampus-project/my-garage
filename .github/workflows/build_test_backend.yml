@@ -31,6 +31,6 @@ jobs:
       - name: Check types
         run: yarn workspace @my-garage/garage-backend run tsc --noEmit
       - name: Test backend
-        run: yarn workspace @my-garage/garage-timebooking run test --ci
+        run: yarn workspace @my-garage/garage-backend run test --ci
       - name: Build backend
         run: yarn workspace @my-garage/garage-backend run build
