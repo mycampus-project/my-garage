@@ -28,7 +28,7 @@ const defaultContextState: AdminContextInterface = {
     description: '',
     type: '',
     createdAt: new Date(),
-    createdBy: '',
+    createdBy: { id: '', fullName: '' },
     isAvailable: true,
   },
   setSelectedUser: () => {},

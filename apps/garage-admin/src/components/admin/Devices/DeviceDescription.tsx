@@ -40,7 +40,7 @@ const DeviceDescription = () => {
         <Descriptions.Item label="Created At">
           {new Date(selectedThing.createdAt).toDateString()}
         </Descriptions.Item>
-        <Descriptions.Item label="Created By">{selectedThing.createdBy}</Descriptions.Item>
+        <Descriptions.Item label="Created By">{selectedThing.createdBy.fullName}</Descriptions.Item>
         <Descriptions.Item label="Is Available">
           {selectedThing.isAvailable ? 'Available' : 'Unavailable'}
         </Descriptions.Item>

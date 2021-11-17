@@ -116,7 +116,7 @@ export const ArrayOfThings: Thing[] = [
     description: 'Video editing software and computer area.',
     type: 'Room',
     createdAt: new Date(),
-    createdBy: 'Mike',
+    createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
   },
   {
@@ -125,7 +125,7 @@ export const ArrayOfThings: Thing[] = [
     description: 'Large 3D printer',
     type: 'Printer',
     createdAt: new Date(),
-    createdBy: 'Mike',
+    createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: false,
   },
   {
@@ -134,7 +134,7 @@ export const ArrayOfThings: Thing[] = [
     description: 'Augmented reality headset and controllers',
     type: 'AR',
     createdAt: new Date(),
-    createdBy: 'Mike',
+    createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
   },
   {
@@ -143,7 +143,7 @@ export const ArrayOfThings: Thing[] = [
     description: '10 seating office meeting room. With whiteboards and TV screen.',
     type: 'Room',
     createdAt: new Date(),
-    createdBy: 'Mike',
+    createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
   },
   {
@@ -152,7 +152,7 @@ export const ArrayOfThings: Thing[] = [
     description: 'Medium 3D printer',
     type: 'Printer',
     createdAt: new Date(),
-    createdBy: 'Mike',
+    createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
   },
   {
@@ -161,7 +161,7 @@ export const ArrayOfThings: Thing[] = [
     description: 'Small 3D printer',
     type: 'Printer',
     createdAt: new Date(),
-    createdBy: 'Mike',
+    createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
   },
   {
@@ -170,7 +170,7 @@ export const ArrayOfThings: Thing[] = [
     description: 'Model 4 micro computer',
     type: 'Computer',
     createdAt: new Date(),
-    createdBy: 'Mike',
+    createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: false,
   },
   {
@@ -179,7 +179,7 @@ export const ArrayOfThings: Thing[] = [
     description: 'Model 4 micro computer',
     type: 'Computer',
     createdAt: new Date(),
-    createdBy: 'Mike',
+    createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
   },
   {
@@ -188,7 +188,7 @@ export const ArrayOfThings: Thing[] = [
     description: 'Model 4 micro computer',
     type: 'Computer',
     createdAt: new Date(),
-    createdBy: 'Mike',
+    createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
   },
   {
@@ -197,7 +197,7 @@ export const ArrayOfThings: Thing[] = [
     description: 'Model 4 micro computer',
     type: 'Computer',
     createdAt: new Date(),
-    createdBy: 'Mike',
+    createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
   },
 ];
