@@ -1,7 +1,9 @@
 import mongoose, { Document, ObjectId } from 'mongoose';
 import { Thing } from '@my-garage/common';
 
-export interface ThingDocument extends Document<ObjectId>, Omit<Thing, 'createdBy' | 'removedBy'> {
+export interface ThingDocument
+  extends Document<ObjectId>,
+    Omit<Thing, 'createdBy' | 'removedBy' | 'id'> {
   createdBy: ObjectId;
   removedBy: ObjectId;
 }
