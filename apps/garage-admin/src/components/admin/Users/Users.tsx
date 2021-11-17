@@ -10,13 +10,19 @@ import UserInfoPanel from './UserInfoPanel';
 function Users() {
   const { alertType, alertMessage } = useContext(AdminContext);
 
-  const banner = (
-    <Banner data-testid="banner" title="Users" alertMessage={alertMessage} alertType={alertType} />
+  return (
+    <PageLayout
+      Title={
+        <Banner
+          data-testid="banner"
+          title="Users"
+          alertMessage={alertMessage}
+          alertType={alertType}
+        />
+      }
+      Element={<MainContainer list={<UserList />} details={<UserInfoPanel />} />}
+    />
   );
-
-  const userMainContainer = <MainContainer list={<UserList />} details={<UserInfoPanel />} />;
-
-  return <PageLayout Title={banner} Element={userMainContainer} />;
 }
 
 export default Users;

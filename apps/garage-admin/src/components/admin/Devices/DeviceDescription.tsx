@@ -29,7 +29,6 @@ const StyledDescriptions = styled(Descriptions)`
 
 const DeviceDescription = () => {
   const { selectedThing } = useContext(AdminContext);
-
   return (
     <>
       <StyledDescriptions title="User Details" bordered column={1}>
@@ -38,7 +37,9 @@ const DeviceDescription = () => {
         </Descriptions.Item>
         <Descriptions.Item label="Type">{selectedThing.type}</Descriptions.Item>
         <Descriptions.Item label="Description">{selectedThing.description}</Descriptions.Item>
-        <Descriptions.Item label="Created At">{selectedThing.createdAt.toString}</Descriptions.Item>
+        <Descriptions.Item label="Created At">
+          {new Date(selectedThing.createdAt).toDateString()}
+        </Descriptions.Item>
         <Descriptions.Item label="Created By">{selectedThing.createdBy}</Descriptions.Item>
         <Descriptions.Item label="Is Available">
           {selectedThing.isAvailable ? 'Available' : 'Unavailable'}

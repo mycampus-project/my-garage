@@ -9,6 +9,7 @@ export type User = {
 };
 
 export type Thing = {
+  id: string;
   name: string;
   description: string;
   type: string;

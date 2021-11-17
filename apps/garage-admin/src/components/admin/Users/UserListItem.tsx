@@ -4,14 +4,22 @@ import { User } from '@my-garage/common';
 import styled from 'styled-components';
 import { AdminContext } from '../../../contexts/AdminContext';
 
+interface StyledListItemProps {
+  isSelected: boolean;
+}
+
+interface ListItemProps {
+  item: User;
+}
+
 const listItemMeta = {
   padding: '16px',
   cursor: 'pointer',
 };
 
-const StyledListItem = styled(List.Item)<{
-  isSelected: boolean;
-}>`
+const StyledListItem = styled(({ isSelected, ...props }) => (
+  <List.Item {...props} />
+))<StyledListItemProps>`
   padding: 0;
   background-color: ${({ isSelected }) => (isSelected ? 'var(--ant-primary-1)' : 'transparent')};
   position: relative;
@@ -28,10 +36,6 @@ const StyledListItem = styled(List.Item)<{
     transform: scaleY(${({ isSelected }) => (isSelected ? 1 : 0)});
   }
 `;
-
-interface ListItemProps {
-  item: User;
-}
 
 const UserListItem = ({ item }: ListItemProps) => {
   const { selectedUser, setSelectedUser } = useContext(AdminContext);

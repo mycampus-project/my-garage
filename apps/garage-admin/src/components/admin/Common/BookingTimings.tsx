@@ -1,15 +1,8 @@
 import styled from 'styled-components';
-import { User } from '@my-garage/common';
-
-type BookingData = {
-  title: string;
-  date: Date;
-  user: User;
-};
+import { BookingData } from '../../../types/adminTypes';
 
 interface BookingTimingsProps {
   item: BookingData;
-  things: boolean;
 }
 
 const TimeContainer = styled.div`
@@ -26,13 +19,8 @@ const StyledSpan = styled.span`
   font-weight: 700;
 `;
 // Start and end times display component.
-const BookingTimings = ({ item, things }: BookingTimingsProps) => (
+const BookingTimings = ({ item }: BookingTimingsProps) => (
   <TimeContainer>
-    {things && (
-      <>
-        <StyledSpan>User:</StyledSpan> <p>{item.user.fullName}</p>
-      </>
-    )}
     <p>
       <StyledSpan>Start Time:</StyledSpan> {new Date(item.date).toLocaleTimeString()}
     </p>

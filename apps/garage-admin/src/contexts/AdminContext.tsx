@@ -23,6 +23,7 @@ const defaultContextState: AdminContextInterface = {
     createdAt: new Date(),
   },
   selectedThing: {
+    id: '',
     name: '',
     description: '',
     type: '',

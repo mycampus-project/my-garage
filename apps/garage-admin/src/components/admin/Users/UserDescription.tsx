@@ -38,7 +38,9 @@ const UserDescription = () => {
         </Descriptions.Item>
         <Descriptions.Item label="Email">{selectedUser.email}</Descriptions.Item>
         <Descriptions.Item label="Role">{selectedUser.role}</Descriptions.Item>
-        <Descriptions.Item label="Created At">{selectedUser.createdAt.toString}</Descriptions.Item>
+        <Descriptions.Item label="Created At">
+          {new Date(selectedUser.createdAt).toDateString()}
+        </Descriptions.Item>
       </StyledDescriptions>
     </>
   );

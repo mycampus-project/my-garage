@@ -1,77 +1,9 @@
 import { useState } from 'react';
 import { Card } from 'antd';
-import { User } from '@my-garage/common';
-import BookingsList from './BookingsList';
-
-type TabList = {
-  key: string;
-  tab: string;
-};
-
-type BookingsElements = {
-  [current: string]: JSX.Element;
-  previous: JSX.Element;
-};
-
-type BookingData = {
-  title: string;
-  date: Date;
-  user: User;
-};
-
-const defaultUser: User = {
-  id: '1',
-  fullName: 'Fred Jones',
-  email: 'fredjones@fake.com',
-  role: 'User',
-  createdAt: new Date('05/31/2021 14:03:28'),
-};
-
-const currentBooking: BookingData[] = [
-  {
-    title: 'Media Room',
-    date: new Date('October 13, 2014 11:13:00'),
-    user: defaultUser,
-  },
-  {
-    title: '3D Printer',
-    date: new Date('October 13, 2014 11:13:00'),
-    user: defaultUser,
-  },
-  {
-    title: 'VR Headset',
-    date: new Date('October 13, 2014 11:13:00'),
-    user: defaultUser,
-  },
-  {
-    title: 'Raspberry Pi',
-    date: new Date('October 13, 2014 11:13:00'),
-    user: defaultUser,
-  },
-];
-
-const previousBooking: BookingData[] = [
-  {
-    title: 'Meeting Room',
-    date: new Date('October 13, 2014 11:13:00'),
-    user: defaultUser,
-  },
-  {
-    title: '3D Printer',
-    date: new Date('October 13, 2014 11:13:00'),
-    user: defaultUser,
-  },
-  {
-    title: '3D Printer',
-    date: new Date('October 13, 2014 11:13:00'),
-    user: defaultUser,
-  },
-  {
-    title: 'VR Headset',
-    date: new Date('October 13, 2014 11:13:00'),
-    user: defaultUser,
-  },
-];
+import { BookingsElements, TabList } from '../../../types/adminTypes';
+import { CurrentBooking, PreviousBooking } from '../../tests/testData';
+import UserBookingsList from '../Users/UserBookingsList';
+import DeviceBookingList from '../Devices/DeviceBookingList';
 
 const tabListNoTitle: TabList[] = [
   {
@@ -85,13 +17,13 @@ const tabListNoTitle: TabList[] = [
 ];
 
 const contentListUsers: BookingsElements = {
-  current: <BookingsList data={currentBooking} things={false} />,
-  previous: <BookingsList data={previousBooking} things={false} />,
+  current: <UserBookingsList data={CurrentBooking} />,
+  previous: <UserBookingsList data={PreviousBooking} />,
 };
 
 const contentListDevice: BookingsElements = {
-  current: <BookingsList data={currentBooking} things />,
-  previous: <BookingsList data={previousBooking} things />,
+  current: <DeviceBookingList data={CurrentBooking} />,
+  previous: <DeviceBookingList data={PreviousBooking} />,
 };
 
 interface BookingsTabsCardProps {
