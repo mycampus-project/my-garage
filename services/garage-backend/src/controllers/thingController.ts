@@ -55,7 +55,11 @@ export const findThingById = async (req: Request, res: Response, next: NextFunct
 // PUT /things/:thingId
 export const updateThing = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const update = req.body;
+    const update = {
+      name: req.body.name,
+      description: req.body.description,
+      isAvailable: req.body.isAvailable,
+    };
     const { thingId } = req.params;
     const updatedThing = await ThingService.updateThing(thingId, update);
     res.json(await serializeThing(updatedThing));
