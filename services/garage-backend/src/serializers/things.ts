@@ -6,8 +6,12 @@ import { ThingDocument } from '../models/Thing';
 // eslint-disable-next-line import/prefer-default-export
 export const serializeThing = async (thing: ThingDocument): Promise<Thing> => {
   const { _id: id, name, description, type, isAvailable, createdAt, removedAt } = thing;
-  const thingWithUser = await thing.populate<{ createdBy: UserDocument }>({
+  const createThingWithUser = await thing.populate<{ createdBy: UserDocument }>({
     path: 'createdBy',
+    model: User,
+  });
+  const removeThingWithUser = await thing.populate<{ removedBy: UserDocument }>({
+    path: 'removedBy',
     model: User,
   });
 
@@ -17,8 +21,15 @@ export const serializeThing = async (thing: ThingDocument): Promise<Thing> => {
     description,
     type,
     isAvailable,
-    removedAt,
     createdAt,
-    createdBy: { id: thingWithUser.createdBy.id, fullName: thingWithUser.createdBy.fullName },
+    createdBy: {
+      id: createThingWithUser.createdBy.id,
+      fullName: createThingWithUser.createdBy.fullName,
+    },
+    removedAt,
+    removedBy: {
+      id: removeThingWithUser.removedBy.id,
+      fullName: removeThingWithUser.removedBy.fullName,
+    },
   };
 };

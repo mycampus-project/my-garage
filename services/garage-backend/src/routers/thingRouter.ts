@@ -12,10 +12,10 @@ import {
 const router = express.Router();
 router.use(requireAuth());
 
-router.get('/', findAllThings);
-router.get('/:thingId', findThingById);
-router.post('/', createThing);
-router.put('/:thingId', updateThing);
-router.delete('/:thingId', deleteThing);
+router.get('/', requireAuth('User'), findAllThings);
+router.get('/:thingId', requireAuth('User'), findThingById);
+router.post('/', requireAuth('Admin'), createThing);
+router.put('/:thingId', requireAuth('Admin'), updateThing);
+router.delete('/:thingId', requireAuth('Admin'), deleteThing);
 
 export default router;
