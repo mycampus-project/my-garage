@@ -28,8 +28,8 @@ export type Role = {
 };
 
 export type Booking = {
-  thing: { name: string; description: string };
-  user: { fullname: string; id: string };
+  thing: { id: string; name: string; description: string };
+  user: { id: string; fullName: string };
   startAt: Date;
   endAt: Date;
   createdAt: Date;
