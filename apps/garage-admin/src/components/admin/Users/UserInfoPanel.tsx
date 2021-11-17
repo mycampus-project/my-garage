@@ -1,21 +1,31 @@
 import { useContext } from 'react';
 import 'antd/dist/antd.css';
-import { Card, Avatar, Button, Space } from 'antd';
+import { Card, Avatar, Space, Button } from 'antd';
 import styled from 'styled-components';
 import TabsCard from './BookingsTabCard';
-import { AdminContext } from '../Common/AdminContext';
+import { AdminContext } from '../../../contexts/AdminContext';
 import UserDescription from './UserDescription';
 
-const Style = {
-  card: {
-    width: '100%',
-    height: '100%',
-    margin: '0',
-  },
-  cardHeader: {
-    fontSize: '28px',
-  },
-};
+// const Style = {
+//   card: {
+//     width: '100%',
+//     height: '100%',
+//     margin: '0',
+//   },
+//   cardHeader: {
+//     fontSize: '28px',
+//   },
+// };
+
+const StyledCard = styled(Card)`
+  width: 100%;
+  height: 100%;
+  margin: 0;
+
+  .ant-card-head-title {
+    font-size: 28px;
+  }
+`;
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -34,43 +44,36 @@ const avatar = (
 // Selected user panel to display user information, and their current and previous bookings.
 // has buttons to toggle user role and delete user from list.
 function UserInfoPanel() {
-  const { userSelected, setAlertMessage, setAlertType } = useContext(AdminContext);
+  const { selectedUser, setAlertMessage, setAlertType } = useContext(AdminContext);
 
-  if (userSelected.fullName.length > 0) {
+  const setAlertToggleRole = () => {
+    setAlertMessage('change role successful');
+    setAlertType('success');
+  };
+
+  const setAlertFailedDelete = () => {
+    setAlertMessage('delete unsuccessful');
+    setAlertType('error');
+  };
+
+  if (selectedUser.fullName.length > 0) {
     return (
       <>
-        <Card
-          title={userSelected.fullName}
-          style={Style.card}
-          headStyle={Style.cardHeader}
-          extra={avatar}
-        >
+        <StyledCard title={selectedUser.fullName} extra={avatar}>
           <ButtonContainer>
             <UserDescription />
             <Space align="start">
-              <Button
-                type="primary"
-                onClick={() => {
-                  setAlertMessage('change role successful');
-                  setAlertType('success');
-                }}
-              >
+              <Button type="primary" onClick={setAlertToggleRole}>
                 Toggle Role
               </Button>
-              <Button
-                type="primary"
-                onClick={() => {
-                  setAlertMessage('delete unsuccessful');
-                  setAlertType('error');
-                }}
-              >
+              <Button type="primary" onClick={setAlertFailedDelete}>
                 Delete
               </Button>
             </Space>
           </ButtonContainer>
 
           <TabsCard />
-        </Card>
+        </StyledCard>
       </>
     );
   }

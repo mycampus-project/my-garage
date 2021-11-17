@@ -157,3 +157,6 @@ sketch
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/react,visualstudiocode,node
+
+#This is a mongo script to set user to admin while running locally in docker-compose
+changeAdmin.js

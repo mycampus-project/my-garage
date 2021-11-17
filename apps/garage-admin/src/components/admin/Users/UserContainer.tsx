@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import UserList from './UserList';
 import UserInfoPanel from './UserInfoPanel';
 
-const OuterContainer = styled.div`
+const StyledOuterContainer = styled.div`
   display: flex;
   background-color: white;
   margin: 32px;
@@ -10,7 +10,7 @@ const OuterContainer = styled.div`
   border-radius: 2px;
 `;
 
-const ListContainer = styled.div`
+const StyledListContainer = styled.div`
   max-width: 400px;
   min-width: 260px;
   width: 40%;
@@ -18,7 +18,7 @@ const ListContainer = styled.div`
   padding: 0;
 `;
 
-const DetailsContainer = styled.div`
+const StyledDetailsContainer = styled.div`
   display: flex;
   flex-grow: 1;
   overflow: auto;
@@ -26,14 +26,14 @@ const DetailsContainer = styled.div`
 // Overall user component. List all users on right, and selected user details on left.
 function UserContainer() {
   return (
-    <OuterContainer>
-      <ListContainer>
+    <StyledOuterContainer>
+      <StyledListContainer>
         <UserList />
-      </ListContainer>
-      <DetailsContainer>
+      </StyledListContainer>
+      <StyledDetailsContainer>
         <UserInfoPanel />
-      </DetailsContainer>
-    </OuterContainer>
+      </StyledDetailsContainer>
+    </StyledOuterContainer>
   );
 }
 

@@ -1,0 +1,61 @@
+name: Cypress End to End Testing
+on:
+  pull_request:
+    types: [opened, synchronize]
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    steps:
+      # Get code to run tests on
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Build docker-compose container with frontend, backend and mongodb, cache them correctly
+      - name: Build docker-compose
+        uses: cypress-io/github-action@v2
+        env:
+          JWT_SECRET: ${{ secrets.JWT_TOKEN }}
+          CRYPTO_SECRET: ${{ secrets.CRYPTO_SECRET }}
+        with:
+          build: docker-compose up --build -d
+          runTests: false
+
+      # Set-up mongodb with test data
+      - name: Populate database with test data
+        env:
+          ADMIN_USER_RECORD: ${{ secrets.ADMIN_USER_RECORD }}
+        run: |
+          echo $ADMIN_USER_RECORD >> ./services/garage-backend/fixtures/users.json
+          mongoimport --db=my-garage --collection=roles --drop --file ./services/garage-backend/fixtures/roles.json
+          mongoimport --db=my-garage --collection=users --drop --file ./services/garage-backend/fixtures/users.json
+
+      # Run cypress tests
+      - name: Cypress run tests
+        uses: cypress-io/github-action@v2
+        env:
+          CYPRESS_password: ${{secrets.CYPRESS_password}}
+          CYPRESS_username: ${{secrets.CYPRESS_email}}
+        with:
+          install: false
+          wait-on: "http://localhost:8080, http://localhost:3000"
+
+      # If cypress tests fail will upload a screenshot of the error
+      - name: Save failure screenshots artifacts
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+
+      # Test run video was always captured, so this action uses "always()" condition
+      - name: Save video artifacts
+        uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos
+
+      # Close the docker-compose container incase there are zombie processes left
+      - name: Stop containers
+        if: always()
+        run: docker-compose down

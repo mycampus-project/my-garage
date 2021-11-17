@@ -1,5 +1,5 @@
 import { Layout } from 'antd';
-import LoginForm from 'src/components/Login/LoginForm';
+import LoginForm from 'src/components/login/LoginForm';
 import styled from 'styled-components';
 
 const { Content } = Layout;
