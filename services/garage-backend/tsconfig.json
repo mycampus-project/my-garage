@@ -1,9 +1,10 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "typeRoots": ["./@types", "node_modules"],
+    "typeRoots": ["./@types", "./node_modules/@types", "../../node_modules/@types"],
+
     /* Projects */
-    "incremental": true,
+    "noEmit": true,
 
     /* Language and Environment */
     "target": "ES6",
