@@ -1,5 +1,5 @@
 import Role from '../models/Role';
-import User from '../models/User';
+import User, { UserDocument } from '../models/User';
 
 /**
  * Function for updating/creating user.
@@ -49,4 +49,36 @@ export const upsertUser = async (
   await user?.save();
 
   return user;
+};
+
+function findUserById(userId: string): Promise<UserDocument> {
+  return User.findById(userId)
+    .exec()
+    .then((user) => {
+      if (!user) {
+        throw new Error(`User ${userId} not found`);
+      }
+      return user;
+    });
+}
+
+function findAllUser() {
+  return User.find().sort({ fullName: 1, email: -1 }).exec();
+}
+
+function updateUser(userId: string, update: Partial<UserDocument>): Promise<UserDocument> {
+  return User.findByIdAndUpdate(userId, update, { new: true })
+    .exec()
+    .then((user) => {
+      if (!user) {
+        throw new Error(`User ${userId} not found`);
+      }
+      return user;
+    });
+}
+
+export default {
+  findUserById,
+  findAllUser,
+  updateUser,
 };
