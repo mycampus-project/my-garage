@@ -35,11 +35,12 @@ const EditDeviceForm = ({ form }: AddDeviceFormProps) => {
         <TextArea defaultValue={selectedThing.description} rows={4} />
       </Form.Item>
       <Form.Item
+        initialValue={selectedThing.type}
         name="type"
         label="Type"
         rules={[{ required: true, message: 'Please select a type!' }]}
       >
-        <Select defaultValue={selectedThing.type} style={{ width: 120 }}>
+        <Select style={{ width: 120 }}>
           <Option value="Default">-</Option>
           <Option value="Room">Room</Option>
           <Option value="Printer">Printer</Option>

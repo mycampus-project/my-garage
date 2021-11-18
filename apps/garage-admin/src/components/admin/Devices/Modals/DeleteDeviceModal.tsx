@@ -1,12 +1,13 @@
 import { Modal } from 'antd';
 import { useLocalStorage } from '@my-garage/common';
 import { useContext } from 'react';
+import useThing from 'src/hooks/useThing';
 import { AdminContext } from '../../../../contexts/AdminContext';
 
 const DeleteDeviceModal = () => {
-  const { modelIsVisible, setModelIsVisible } = useContext(AdminContext);
+  const { modelIsVisible, setModelIsVisible, selectedThing } = useContext(AdminContext);
   const [token] = useLocalStorage('auth_token');
-  console.log(token);
+  const { onDelete } = useThing().DeleteThing(token);
 
   return (
     <Modal
@@ -14,7 +15,7 @@ const DeleteDeviceModal = () => {
       centered
       visible={modelIsVisible}
       onOk={() => {
-        setModelIsVisible(false);
+        onDelete(selectedThing.id);
       }}
       onCancel={() => setModelIsVisible(false)}
       width={500}

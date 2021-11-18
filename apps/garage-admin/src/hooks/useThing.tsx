@@ -6,7 +6,7 @@ import { AdminContext } from '../contexts/AdminContext';
 
 const useThing = () => {
   const client = useQueryClient();
-  const { setAlertMessage, setAlertType } = useContext(AdminContext);
+  const { setAlertMessage, setAlertType, setModelIsVisible } = useContext(AdminContext);
 
   function GetListOfThings(token: string) {
     const { data, error, isLoading } = useQuery<AxiosResponse<Thing[]> | null, AxiosError>(
@@ -71,21 +71,15 @@ const useThing = () => {
     return { onSubmit, responseThingData, isLoadingAddThing, addThingError };
   }
 
-  function DeleteThing(token: string, id: string) {
+  function DeleteThing(token: string) {
     const {
       mutate: onDelete,
       data: respDeleteThingData,
       isLoading: isLoadingDeleteThing,
       error: deleteThingError,
-    } = useMutation<
-      {
-        id: string;
-      },
-      AxiosError,
-      { id: string }
-    >(
-      ['addThing'],
-      () =>
+    } = useMutation<string, AxiosError, string>(
+      ['deleteThing'],
+      (id: string) =>
         apiClient
           .delete('/things/', {
             headers: { Authorization: `Bearer ${token}` },
@@ -98,12 +92,14 @@ const useThing = () => {
         onSuccess: () => {
           client.invalidateQueries('things');
           setAlertType('success');
-          setAlertMessage('Delete device was successful');
+          setAlertMessage('Adding device was successful');
+          setModelIsVisible(false);
         },
 
         onError: (error) => {
           setAlertType('error');
           setAlertMessage(`${error.message}`);
+          setModelIsVisible(false);
         },
       },
     );
