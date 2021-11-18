@@ -36,6 +36,7 @@ function Banner({ title, alertMessage, alertType, showAddThing }: BannerProps) {
         extra={
           showAddThing && [
             <Button
+              key={1}
               type="primary"
               onClick={() => {
                 setAddDeviceIsVisible(true);
