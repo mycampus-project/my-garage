@@ -30,7 +30,10 @@ jobs:
         run: yarn install
       - name: Check types
         run: yarn workspace @my-garage/garage-backend run tsc --noEmit
-      # - name: Test backend
-      #   run: yarn workspace @my-garage/garage-timebooking run test
+      - name: Test backend
+        env:
+          JWT_SECRET: ${{ secrets.JWT_TOKEN }}
+          CRYPTO_SECRET: ${{ secrets.CRYPTO_SECRET }}
+        run: yarn workspace @my-garage/garage-backend run test --ci
       - name: Build backend
         run: yarn workspace @my-garage/garage-backend run build
