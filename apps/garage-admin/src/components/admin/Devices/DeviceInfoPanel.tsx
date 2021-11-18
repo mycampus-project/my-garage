@@ -33,17 +33,7 @@ const avatar = (
 // Selected user panel to display user information, and their current and previous bookings.
 // has buttons to toggle user role and delete user from list.
 function DeviceInfoPanel() {
-  const { selectedThing, setAlertMessage, setAlertType } = useContext(AdminContext);
-
-  const setAlertToggleRole = () => {
-    setAlertMessage('change availability successful');
-    setAlertType('success');
-  };
-
-  const setAlertFailedDelete = () => {
-    setAlertMessage('delete unsuccessful');
-    setAlertType('error');
-  };
+  const { selectedThing, setModelIsVisible, setModelType } = useContext(AdminContext);
 
   if (selectedThing.name.length > 0) {
     return (
@@ -52,10 +42,22 @@ function DeviceInfoPanel() {
           <ButtonContainer>
             <DeviceDescription />
             <Space align="start">
-              <Button type="primary" onClick={setAlertToggleRole}>
-                Toggle Available
+              <Button
+                type="primary"
+                onClick={() => {
+                  setModelType('edit-device');
+                  setModelIsVisible(true);
+                }}
+              >
+                Edit
               </Button>
-              <Button type="primary" onClick={setAlertFailedDelete}>
+              <Button
+                type="primary"
+                onClick={() => {
+                  setModelType('delete-device');
+                  setModelIsVisible(true);
+                }}
+              >
                 Delete
               </Button>
             </Space>

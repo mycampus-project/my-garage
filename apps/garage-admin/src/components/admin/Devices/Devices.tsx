@@ -5,14 +5,14 @@ import MainContainer from '../Common/MainContainer';
 import Banner from '../Common/Banner';
 import DeviceList from './DeviceList';
 import DeviceInfoPanel from './DeviceInfoPanel';
-import AddDeviceModel from './AddDeviceModel';
+import ModelLauncher from '../Common/ModelLauncher';
 
 function Devices() {
-  const { alertType, alertMessage, addDeviceIsVisible } = useContext(AdminContext);
+  const { alertType, alertMessage, modelIsVisible } = useContext(AdminContext);
 
   return (
     <>
-      {addDeviceIsVisible && <AddDeviceModel />}
+      {modelIsVisible && <ModelLauncher />}
 
       <PageLayout
         Title={

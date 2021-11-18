@@ -1,13 +1,12 @@
-import { useContext } from 'react';
 import { Modal, Form } from 'antd';
-import { AdminContext } from 'src/contexts/AdminContext';
 import useThing from 'src/hooks/useThing';
 import { useLocalStorage } from '@my-garage/common';
+import { useContext } from 'react';
+import AddDeviceForm from '../Forms/AddDeviceForm';
+import { AdminContext } from '../../../../contexts/AdminContext';
 
-import AddDeviceForm from './AddDeviceForm';
-
-const AddDeviceModel = () => {
-  const { addDeviceIsVisible, setAddDeviceIsVisible } = useContext(AdminContext);
+const AddDeviceModal = () => {
+  const { modelIsVisible, setModelIsVisible } = useContext(AdminContext);
   const [form] = Form.useForm();
   const [token] = useLocalStorage('auth_token');
   const { onSubmit, isLoadingAddThing } = useThing().AddThing(token);
@@ -16,14 +15,14 @@ const AddDeviceModel = () => {
     <Modal
       title="Add New Device"
       centered
-      visible={addDeviceIsVisible}
+      visible={modelIsVisible}
       onOk={() => {
         const values = form.getFieldsValue();
         onSubmit(values);
-        setAddDeviceIsVisible(false);
+        setModelIsVisible(false);
       }}
       okButtonProps={{ loading: isLoadingAddThing }}
-      onCancel={() => setAddDeviceIsVisible(false)}
+      onCancel={() => setModelIsVisible(false)}
       width={500}
     >
       <AddDeviceForm form={form} />
@@ -31,4 +30,4 @@ const AddDeviceModel = () => {
   );
 };
 
-export default AddDeviceModel;
+export default AddDeviceModal;

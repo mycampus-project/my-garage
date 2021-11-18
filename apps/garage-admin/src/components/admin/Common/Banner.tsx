@@ -13,7 +13,8 @@ interface BannerProps {
 
 // Banner component contains page title and notification bar for success, warning and failure prompts.
 function Banner({ title, alertMessage, alertType, showAddThing }: BannerProps) {
-  const { setAlertMessage, setAlertType, setAddDeviceIsVisible } = useContext(AdminContext);
+  const { setAlertMessage, setAlertType, setModelIsVisible, setModelType } =
+    useContext(AdminContext);
   return (
     <div data-testid="banner">
       <PageHeader
@@ -39,11 +40,22 @@ function Banner({ title, alertMessage, alertType, showAddThing }: BannerProps) {
               key={1}
               type="primary"
               onClick={() => {
-                setAddDeviceIsVisible(true);
+                setModelType('add-device');
+                setModelIsVisible(true);
               }}
-              style={{ marginRight: '48px' }}
             >
               Add Device
+            </Button>,
+            <Button
+              key={2}
+              type="primary"
+              onClick={() => {
+                setModelType('restore-device');
+                setModelIsVisible(true);
+              }}
+              style={{ marginRight: '16px' }}
+            >
+              Restore Device
             </Button>,
           ]
         }

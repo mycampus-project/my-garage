@@ -6,8 +6,10 @@ interface AdminContextInterface {
   alertMessage: string;
   selectedUser: User;
   selectedThing: Thing;
-  addDeviceIsVisible: boolean;
-  setAddDeviceIsVisible: (name: boolean) => void;
+  modelIsVisible: boolean;
+  modelType: string;
+  setModelType: (name: string) => void;
+  setModelIsVisible: (name: boolean) => void;
   setSelectedUser: (name: User) => void;
   setSelectedThing: (name: Thing) => void;
   setAlertType: (type: AlertType) => void;
@@ -17,6 +19,7 @@ interface AdminContextInterface {
 const defaultContextState: AdminContextInterface = {
   alertType: 'success',
   alertMessage: '',
+  modelType: '',
   selectedUser: {
     id: '',
     fullName: '',
@@ -33,8 +36,9 @@ const defaultContextState: AdminContextInterface = {
     createdBy: { id: '', fullName: '' },
     isAvailable: true,
   },
-  addDeviceIsVisible: false,
-  setAddDeviceIsVisible: () => {},
+  modelIsVisible: false,
+  setModelType: () => {},
+  setModelIsVisible: () => {},
   setSelectedUser: () => {},
   setSelectedThing: () => {},
   setAlertType: () => {},
@@ -48,9 +52,8 @@ const AdminContextProvider: FC = ({ children }) => {
   const [alertMessage, setAlertMessage] = useState<string>(defaultContextState.alertMessage);
   const [selectedUser, setSelectedUser] = useState<User>(defaultContextState.selectedUser);
   const [selectedThing, setSelectedThing] = useState<Thing>(defaultContextState.selectedThing);
-  const [addDeviceIsVisible, setAddDeviceIsVisible] = useState<boolean>(
-    defaultContextState.addDeviceIsVisible,
-  );
+  const [modelIsVisible, setModelIsVisible] = useState<boolean>(defaultContextState.modelIsVisible);
+  const [modelType, setModelType] = useState<string>(defaultContextState.modelType);
 
   return (
     <AdminContext.Provider
@@ -58,8 +61,10 @@ const AdminContextProvider: FC = ({ children }) => {
         alertType,
         alertMessage,
         selectedUser,
-        addDeviceIsVisible,
-        setAddDeviceIsVisible,
+        modelIsVisible,
+        modelType,
+        setModelType,
+        setModelIsVisible,
         setSelectedUser,
         setAlertType,
         setAlertMessage,

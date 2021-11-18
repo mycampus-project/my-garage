@@ -70,7 +70,51 @@ const useThing = () => {
     );
     return { onSubmit, responseThingData, isLoadingAddThing, addThingError };
   }
-  return { GetListOfThings, AddThing };
+
+  function DeleteThing(token: string, id: string) {
+    const {
+      mutate: onDelete,
+      data: respDeleteThingData,
+      isLoading: isLoadingDeleteThing,
+      error: deleteThingError,
+    } = useMutation<
+      {
+        id: string;
+      },
+      AxiosError,
+      { id: string }
+    >(
+      ['addThing'],
+      () =>
+        apiClient
+          .delete('/things/', {
+            headers: { Authorization: `Bearer ${token}` },
+            params: {
+              id,
+            },
+          })
+          .then((response) => response.data),
+      {
+        onSuccess: () => {
+          client.invalidateQueries('things');
+          setAlertType('success');
+          setAlertMessage('Delete device was successful');
+        },
+
+        onError: (error) => {
+          setAlertType('error');
+          setAlertMessage(`${error.message}`);
+        },
+      },
+    );
+    return {
+      onDelete,
+      respDeleteThingData,
+      isLoadingDeleteThing,
+      deleteThingError,
+    };
+  }
+  return { GetListOfThings, AddThing, DeleteThing };
 };
 
 export default useThing;
