@@ -30,6 +30,7 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
     };
     const { userId } = req.params;
     const updatedUser = await userService.updateUser(userId, update);
+    console.log('updated user', updateUser);
     res.json(await serializeUser(updatedUser));
   } catch (error: any) {
     next(new NotFoundError('User not found', error));
