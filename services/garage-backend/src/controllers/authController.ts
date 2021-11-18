@@ -12,7 +12,7 @@ import { serializeUser } from '../serializers/users';
 export const postLogin: Handler = async (req, res, next) => {
   const { token, email, fullName, exp } = req.body;
 
-  if (!token || !email || !fullName || !exp || isBefore(fromUnixTime(1668783554), new Date())) {
+  if (!token || !email || !fullName || !exp || isBefore(fromUnixTime(exp), new Date())) {
     next(new BadRequestError());
 
     return;

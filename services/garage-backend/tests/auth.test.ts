@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { addMinutes, subSeconds } from 'date-fns';
+import { addMinutes, addSeconds, getUnixTime, subSeconds } from 'date-fns';
 import db from './db';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
@@ -82,7 +82,7 @@ describe('auth', () => {
           token: 'foobar',
           email: 'test.test@test.com',
           fullName: 'Test Test',
-          exp: subSeconds(new Date(), 10),
+          exp: getUnixTime(subSeconds(new Date(), 10)),
         },
       };
       const response = createMockResponse();
@@ -99,7 +99,7 @@ describe('auth', () => {
           token: 'foobar',
           email: 'test.test@test.com',
           fullName: 'Test Test',
-          exp: subSeconds(new Date(), 10),
+          exp: getUnixTime(addSeconds(new Date(), 10)),
         },
       };
       const response = createMockResponse();
@@ -107,16 +107,17 @@ describe('auth', () => {
 
       await auth.postLogin(request as Request, response, next);
 
-      expect(next).toBeCalledWith(new BadRequestError());
+      expect(next).not.toBeCalledWith(new BadRequestError());
     });
     it('validates name', async () => {
       const request: Partial<Request> = {
         body: {
           token: 'foobar',
           email: 'test.test@test.com',
-          exp: subSeconds(new Date(), 10),
+          exp: getUnixTime(addMinutes(new Date(), 10)),
         },
       };
+
       const response = createMockResponse();
       const next = jest.fn();
 
@@ -130,7 +131,7 @@ describe('auth', () => {
         body: {
           email: 'test.test@test.com',
           fullName: 'Test Test',
-          exp: subSeconds(new Date(), 10),
+          exp: getUnixTime(addMinutes(new Date(), 10)),
         },
       };
       const response = createMockResponse();
@@ -148,7 +149,7 @@ describe('auth', () => {
         body: {
           email: 'test.test@test.com',
           fullName: 'Test Test',
-          exp: subSeconds(new Date(), 10),
+          exp: getUnixTime(addMinutes(new Date(), 10)),
         },
       };
       const response = createMockResponse();
@@ -169,7 +170,7 @@ describe('auth', () => {
           token: 'foobar',
           email: 'test.test@test.com',
           fullName: 'Test Test',
-          exp: addMinutes(new Date(), 10),
+          exp: getUnixTime(addMinutes(new Date(), 10)),
         },
       };
       const response = createMockResponse();
