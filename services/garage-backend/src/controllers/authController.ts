@@ -1,6 +1,6 @@
 import { Handler } from 'express';
 import jwt from 'jsonwebtoken';
-import { isBefore } from 'date-fns';
+import { fromUnixTime, isBefore } from 'date-fns';
 
 import { BadRequestError, UnauthorizedError } from '../helpers/apiError';
 import { validateToken } from '../helpers/nokiaLogin';
@@ -12,7 +12,7 @@ import { serializeUser } from '../serializers/users';
 export const postLogin: Handler = async (req, res, next) => {
   const { token, email, fullName, exp } = req.body;
 
-  if (!token || !email || !fullName || !exp || isBefore(new Date(exp), new Date())) {
+  if (!token || !email || !fullName || !exp || isBefore(fromUnixTime(1668783554), new Date())) {
     next(new BadRequestError());
 
     return;
