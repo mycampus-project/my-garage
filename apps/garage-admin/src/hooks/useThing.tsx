@@ -1,8 +1,13 @@
-import { useQuery } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { AxiosError, AxiosResponse } from 'axios';
 import { apiClient, Thing } from '@my-garage/common';
+import { useContext } from 'react';
+import { AdminContext } from '../contexts/AdminContext';
 
 const useThing = () => {
+  const client = useQueryClient();
+  const { setAlertMessage, setAlertType } = useContext(AdminContext);
+
   function GetListOfThings(token: string) {
     const { data, error, isLoading } = useQuery<AxiosResponse<Thing[]> | null, AxiosError>(
       ['things'],
@@ -17,7 +22,55 @@ const useThing = () => {
     return { data, error, isLoading };
   }
 
-  return { GetListOfThings };
+  function AddThing(token: string) {
+    const {
+      mutate: onSubmit,
+      data: responseThingData,
+      isLoading: isLoadingAddThing,
+      error: addThingError,
+    } = useMutation<
+      {
+        token: string;
+        name: string;
+        description: string;
+        type: string;
+        isAvailable: boolean;
+      },
+      AxiosError,
+      { token: string; name: string; description: string; type: string; isAvailable: boolean }
+    >(
+      ['addThing'],
+      ({ name, description, type, isAvailable }) =>
+        apiClient
+          .post(
+            '/things/',
+            {
+              name,
+              description,
+              type,
+              isAvailable,
+            },
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          )
+          .then((response) => response.data),
+      {
+        onSuccess: () => {
+          client.invalidateQueries('things');
+          setAlertType('success');
+          setAlertMessage('Adding device was successful');
+        },
+
+        onError: (error) => {
+          setAlertType('error');
+          setAlertMessage(`${error.message}`);
+        },
+      },
+    );
+    return { onSubmit, responseThingData, isLoadingAddThing, addThingError };
+  }
+  return { GetListOfThings, AddThing };
 };
 
 export default useThing;

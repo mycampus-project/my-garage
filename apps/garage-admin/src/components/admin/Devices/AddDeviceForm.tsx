@@ -10,9 +10,7 @@ interface AddDeviceFormProps {
 const AddDeviceForm = ({ form }: AddDeviceFormProps) => {
   const onChange = () => {};
 
-  const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
-  };
+  const handleChange = () => {};
 
   return (
     <Form form={form} layout="vertical" name="userForm">
@@ -51,10 +49,10 @@ const AddDeviceForm = ({ form }: AddDeviceFormProps) => {
       <Form.Item
         valuePropName="checked"
         name="isAvailable"
-        label="Availability"
+        label="Available"
         rules={[{ required: true }]}
       >
-        <Switch checkedChildren="Available" unCheckedChildren="Unavailable" onChange={onChange} />
+        <Switch checkedChildren="Yes" unCheckedChildren="No" onChange={onChange} />
       </Form.Item>
     </Form>
   );
