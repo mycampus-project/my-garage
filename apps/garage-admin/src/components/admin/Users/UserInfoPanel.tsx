@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import BookingsTabsCard from '../Common/BookingsTabCard';
 import { AdminContext } from '../../../contexts/AdminContext';
 import UserDescription from './UserDescription';
+import openNotificationWithIcon from '../Common/OpenNotificationWithIcon';
 
 const StyledCard = styled(Card)`
   width: 100%;
@@ -33,17 +34,7 @@ const avatar = (
 // Selected user panel to display user information, and their current and previous bookings.
 // has buttons to toggle user role and delete user from list.
 function UserInfoPanel() {
-  const { selectedUser, setAlertMessage, setAlertType } = useContext(AdminContext);
-
-  const setAlertToggleRole = () => {
-    setAlertMessage('change role successful');
-    setAlertType('success');
-  };
-
-  const setAlertFailedDelete = () => {
-    setAlertMessage('delete unsuccessful');
-    setAlertType('error');
-  };
+  const { selectedUser } = useContext(AdminContext);
 
   if (selectedUser.fullName.length > 0) {
     return (
@@ -52,10 +43,16 @@ function UserInfoPanel() {
           <ButtonContainer>
             <UserDescription />
             <Space align="start">
-              <Button type="primary" onClick={setAlertToggleRole}>
+              <Button
+                type="primary"
+                onClick={() => openNotificationWithIcon('info', 'test', 'test')}
+              >
                 Toggle Role
               </Button>
-              <Button type="primary" onClick={setAlertFailedDelete}>
+              <Button
+                type="primary"
+                onClick={() => openNotificationWithIcon('info', 'test', 'test')}
+              >
                 Delete
               </Button>
             </Space>

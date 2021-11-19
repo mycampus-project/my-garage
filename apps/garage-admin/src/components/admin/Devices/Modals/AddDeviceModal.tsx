@@ -2,6 +2,7 @@ import { Modal, Form } from 'antd';
 import useThing from 'src/hooks/useThing';
 import { useLocalStorage } from '@my-garage/common';
 import { useContext, useState } from 'react';
+import isValidateAndShowButton from 'src/utilities/ModalFunctions';
 import AddDeviceForm from '../Forms/AddDeviceForm';
 import { AdminContext } from '../../../../contexts/AdminContext';
 import openNotificationWithIcon from '../../Common/OpenNotificationWithIcon';
@@ -11,7 +12,22 @@ const AddDeviceModal = () => {
   const [form] = Form.useForm();
   const [token] = useLocalStorage('auth_token');
   const { onSubmit } = useThing().AddThing(token);
-  const [isDisabled] = useState<boolean>(false);
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+
+  // const toggleButton = () => {
+  //   const isErrors = form.getFieldsError().some((field) => field.errors.length > 0);
+  //   const valueObj = form.getFieldsValue();
+  //   const isUndefined = checkForUndefined(valueObj);
+  //   if (isErrors || isUndefined) {
+  //     setIsDisabled(true);
+  //   } else {
+  //     setIsDisabled(false);
+  //   }
+  // };
+
+  const toggleButton = () => {
+    setIsDisabled(isValidateAndShowButton(form));
+  };
 
   return (
     <Modal
@@ -27,15 +43,15 @@ const AddDeviceModal = () => {
           .then(() => {
             setModelIsVisible(false);
           })
-          .catch((info) => {
-            openNotificationWithIcon('error', 'Something went wrong', info);
+          .catch(() => {
+            openNotificationWithIcon('error', 'Something went wrong', 'oops validation failed');
           });
       }}
       okButtonProps={{ disabled: isDisabled }}
       onCancel={() => setModelIsVisible(false)}
       width={500}
     >
-      <AddDeviceForm form={form} />
+      <AddDeviceForm form={form} showSubmit={toggleButton} />
     </Modal>
   );
 };

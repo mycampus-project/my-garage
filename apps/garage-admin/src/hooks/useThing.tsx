@@ -30,13 +30,7 @@ const useThing = () => {
       isLoading: isLoadingAddThing,
       error: addThingError,
     } = useMutation<
-      {
-        token: string;
-        name: string;
-        description: string;
-        type: string;
-        isAvailable: boolean;
-      },
+      Thing,
       AxiosError,
       { token: string; name: string; description: string; type: string; isAvailable: boolean }
     >(
@@ -80,7 +74,7 @@ const useThing = () => {
       data: respDeleteThingData,
       isLoading: isLoadingDeleteThing,
       error: deleteThingError,
-    } = useMutation<string, AxiosError, string>(
+    } = useMutation<Thing, AxiosError, string>(
       ['deleteThing'],
       (thingId: string) =>
         apiClient
@@ -89,9 +83,23 @@ const useThing = () => {
           })
           .then((response) => response.data),
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           client.invalidateQueries('things');
-          openNotificationWithIcon('success', 'Device Added', 'Device was successfully deleted');
+          openNotificationWithIcon(
+            'success',
+            'Device Deleted',
+            `${data.name} was successfully deleted`,
+          );
+          const newThing: Thing = {
+            ...selectedThing,
+            name: data.name,
+            description: data.description,
+            type: data.type,
+            isAvailable: data.isAvailable,
+            removedAt: data.removedAt,
+            removedBy: data.removedBy,
+          };
+          setSelectedThing(newThing);
           setModelIsVisible(false);
         },
 
@@ -116,14 +124,7 @@ const useThing = () => {
       isLoading: isLoadingUpdateThing,
       error: updateThingError,
     } = useMutation<
-      {
-        id: string;
-        token: string;
-        name: string;
-        description: string;
-        type: string;
-        isAvailable: boolean;
-      },
+      Thing,
       AxiosError,
       {
         thingId: string;
@@ -169,7 +170,7 @@ const useThing = () => {
         },
 
         onError: (error) => {
-          openNotificationWithIcon('error', 'Device Not Deleted', `${error.message}`);
+          openNotificationWithIcon('error', 'Device Not Updated', `${error.message}`);
         },
       },
     );
