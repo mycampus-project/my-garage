@@ -6,7 +6,8 @@ import { AdminContext } from '../contexts/AdminContext';
 
 const useThing = () => {
   const client = useQueryClient();
-  const { setAlertMessage, setAlertType, setModelIsVisible } = useContext(AdminContext);
+  const { setAlertMessage, setAlertType, setModelIsVisible, setSelectedThing, selectedThing } =
+    useContext(AdminContext);
 
   function GetListOfThings(token: string) {
     const { data, error, isLoading } = useQuery<AxiosResponse<Thing[]> | null, AxiosError>(
@@ -79,13 +80,10 @@ const useThing = () => {
       error: deleteThingError,
     } = useMutation<string, AxiosError, string>(
       ['deleteThing'],
-      (id: string) =>
+      (thingId: string) =>
         apiClient
-          .delete('/things/', {
+          .delete(`/things/${thingId}`, {
             headers: { Authorization: `Bearer ${token}` },
-            params: {
-              id,
-            },
           })
           .then((response) => response.data),
       {
@@ -110,7 +108,74 @@ const useThing = () => {
       deleteThingError,
     };
   }
-  return { GetListOfThings, AddThing, DeleteThing };
+
+  function UpdateThing(token: string) {
+    const {
+      mutate: onUpdate,
+      data: respUpdateThingData,
+      isLoading: isLoadingUpdateThing,
+      error: updateThingError,
+    } = useMutation<
+      {
+        id: string;
+        token: string;
+        name: string;
+        description: string;
+        type: string;
+        isAvailable: boolean;
+      },
+      AxiosError,
+      {
+        thingId: string;
+        token: string;
+        name: string;
+        description: string;
+        type: string;
+        isAvailable: boolean;
+      }
+    >(
+      ['updateThing'],
+      ({ thingId, name, description, type, isAvailable }) =>
+        apiClient
+          .put(
+            `/things/${thingId}`,
+            {
+              name,
+              description,
+              type,
+              isAvailable,
+            },
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          )
+          .then((response) => response.data),
+      {
+        onSuccess: (data) => {
+          client.invalidateQueries('things');
+          setAlertType('success');
+          setAlertMessage(`${data.name} id: ${data.id} was successfully updated`);
+          const newThing: Thing = {
+            ...selectedThing,
+            name: data.name,
+            description: data.description,
+            type: data.type,
+            isAvailable: data.isAvailable,
+          };
+          console.log(`this is the response ${data.type}`);
+          setSelectedThing(newThing);
+        },
+
+        onError: (error) => {
+          setAlertType('error');
+          setAlertMessage(`${error.message}`);
+        },
+      },
+    );
+    return { onUpdate, isLoadingUpdateThing, updateThingError, respUpdateThingData };
+  }
+
+  return { GetListOfThings, AddThing, DeleteThing, UpdateThing };
 };
 
 export default useThing;

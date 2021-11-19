@@ -61,6 +61,7 @@ export const updateThing = async (req: Request, res: Response, next: NextFunctio
       name: req.body.name,
       description: req.body.description,
       isAvailable: req.body.isAvailable,
+      type: req.body.type,
     };
     const { thingId } = req.params;
     const updatedThing = await ThingService.updateThing(thingId, update);

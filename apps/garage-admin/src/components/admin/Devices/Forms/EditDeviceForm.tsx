@@ -15,6 +15,7 @@ const EditDeviceForm = ({ form }: AddDeviceFormProps) => {
   return (
     <Form form={form} layout="vertical" name="userForm">
       <Form.Item
+        initialValue={selectedThing.name}
         name="name"
         label="Device Name"
         rules={[
@@ -25,14 +26,15 @@ const EditDeviceForm = ({ form }: AddDeviceFormProps) => {
           },
         ]}
       >
-        <Input defaultValue={selectedThing.name} />
+        <Input />
       </Form.Item>
       <Form.Item
+        initialValue={selectedThing.description}
         name="description"
         label="Description"
         rules={[{ required: true, message: 'Please input a description!' }]}
       >
-        <TextArea defaultValue={selectedThing.description} rows={4} />
+        <TextArea rows={4} />
       </Form.Item>
       <Form.Item
         initialValue={selectedThing.type}
@@ -47,12 +49,14 @@ const EditDeviceForm = ({ form }: AddDeviceFormProps) => {
           <Option value="Peripheral">Peripheral</Option>
         </Select>
       </Form.Item>
-      <Form.Item name="isAvailable" label="Available" rules={[{ required: true }]}>
-        <Switch
-          defaultChecked={selectedThing.isAvailable}
-          checkedChildren="Yes"
-          unCheckedChildren="No"
-        />
+      <Form.Item
+        valuePropName="checked"
+        initialValue={selectedThing.isAvailable}
+        name="isAvailable"
+        label="Available"
+        rules={[{ required: true }]}
+      >
+        <Switch checkedChildren="Yes" unCheckedChildren="No" />
       </Form.Item>
     </Form>
   );
