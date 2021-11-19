@@ -31,6 +31,7 @@ const EditDeviceModal = () => {
               thingId: selectedThing.id,
               ...values,
             };
+
             onUpdate(device);
           })
           .then(() => {
@@ -39,8 +40,6 @@ const EditDeviceModal = () => {
           .catch(() => {
             openNotificationWithIcon('error', 'Something went wrong', 'oops validation failed');
           });
-
-        setModelIsVisible(false);
       }}
       okButtonProps={{ disabled: isDisabled }}
       onCancel={() => setModelIsVisible(false)}
