@@ -60,6 +60,7 @@ export const updateThing = async (req: Request, res: Response, next: NextFunctio
     const update = {
       name: req.body.name,
       description: req.body.description,
+      type: req.body.type,
       isAvailable: req.body.isAvailable,
       type: req.body.type,
     };
@@ -72,6 +73,7 @@ export const updateThing = async (req: Request, res: Response, next: NextFunctio
 };
 
 // DELETE /things/:thingId
+
 export const deleteThing = async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!req.user) {
@@ -79,6 +81,11 @@ export const deleteThing = async (req: Request, res: Response, next: NextFunctio
       return;
     }
     const { thingId } = req.params;
+    const jsonThing = await ThingService.findThingById(thingId);
+    if (jsonThing.removedBy != null && jsonThing.removedAt != null) {
+      res.send('Thing already deleted');
+      return;
+    }
     const deletedThing = await ThingService.deleteThing(thingId, req.user.id, new Date());
     res.json(await serializeThing(deletedThing));
   } catch (error: any) {
