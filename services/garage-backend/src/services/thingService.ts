@@ -37,10 +37,6 @@ function deleteThing(
   removedBy: ObjectId,
   removedAt: Date,
 ): Promise<ThingDocument> {
-  /* if (removedBy != null && removedAt != null) {
-    throw new Error('Item is already removed');
-  }
-  */
   const update: Partial<ThingDocument> = { removedAt, removedBy };
   return Thing.findByIdAndUpdate(thingId, update, { new: true })
     .exec()
