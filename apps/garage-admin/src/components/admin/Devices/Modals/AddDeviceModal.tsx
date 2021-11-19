@@ -14,17 +14,6 @@ const AddDeviceModal = () => {
   const { onSubmit } = useThing().AddThing(token);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
-  // const toggleButton = () => {
-  //   const isErrors = form.getFieldsError().some((field) => field.errors.length > 0);
-  //   const valueObj = form.getFieldsValue();
-  //   const isUndefined = checkForUndefined(valueObj);
-  //   if (isErrors || isUndefined) {
-  //     setIsDisabled(true);
-  //   } else {
-  //     setIsDisabled(false);
-  //   }
-  // };
-
   const toggleButton = () => {
     setIsDisabled(isValidateAndShowButton(form));
   };

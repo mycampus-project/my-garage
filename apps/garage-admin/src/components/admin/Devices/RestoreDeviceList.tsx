@@ -1,11 +1,17 @@
 import 'antd/dist/antd.css';
-import { List } from 'antd';
 import useThing from 'src/hooks/useThing';
 import { useLocalStorage, Thing } from '@my-garage/common';
 import { useEffect, useState } from 'react';
-import DeviceListItem from './DeviceListItem';
+import styled from 'styled-components';
+import { List } from 'antd';
+import RestoreDeviceListItem from './RestoreDeviceListItem';
 
-const DeviceList = () => {
+const StyledListContainer = styled.div`
+  max-height: 800px;
+  overflow: auto;
+`;
+
+const RestoreDeviceList = () => {
   const [token] = useLocalStorage('auth_token');
   const { data, error, isLoading } = useThing().GetListOfThings(token);
   const [filteredData, setFilteredData] = useState<Thing[]>([]);
@@ -26,7 +32,7 @@ const DeviceList = () => {
 
   useEffect(() => {
     const sortedData = data ? sortedByNameAlphabetically(data.data) : new Array<Thing>();
-    const filteredArray = sortedData.filter((item: Thing) => item.removedBy === undefined);
+    const filteredArray = sortedData.filter((item: Thing) => item.removedBy !== undefined);
     setFilteredData(filteredArray);
   }, [data]);
 
@@ -35,14 +41,16 @@ const DeviceList = () => {
   }
 
   return (
-    <List
-      data-testid="deviceList"
-      loading={isLoading}
-      style={{ width: '100%' }}
-      dataSource={filteredData}
-      renderItem={(item) => <DeviceListItem item={item} />}
-    />
+    <StyledListContainer>
+      <List
+        data-testid="restoreDeviceList"
+        loading={isLoading}
+        style={{ width: '100%' }}
+        dataSource={filteredData}
+        renderItem={(item: Thing) => <RestoreDeviceListItem item={item} showRestoreButtons />}
+      />
+    </StyledListContainer>
   );
 };
 
-export default DeviceList;
+export default RestoreDeviceList;

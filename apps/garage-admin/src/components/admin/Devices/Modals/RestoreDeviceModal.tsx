@@ -2,6 +2,7 @@ import { Modal } from 'antd';
 import { useLocalStorage } from '@my-garage/common';
 import { useContext } from 'react';
 import { AdminContext } from '../../../../contexts/AdminContext';
+import RestoreDeviceList from '../RestoreDeviceList';
 
 const RestoreDeviceModal = () => {
   const { modelIsVisible, setModelIsVisible } = useContext(AdminContext);
@@ -18,8 +19,9 @@ const RestoreDeviceModal = () => {
       }}
       onCancel={() => setModelIsVisible(false)}
       width={500}
+      footer={[]}
     >
-      <p>Restore List goes here</p>
+      <RestoreDeviceList />
     </Modal>
   );
 };
