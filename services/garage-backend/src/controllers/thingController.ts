@@ -83,6 +83,7 @@ export const deleteThing = async (req: Request, res: Response, next: NextFunctio
     const jsonThing = await ThingService.findThingById(thingId);
     if (jsonThing.removedBy != null && jsonThing.removedAt != null) {
       res.send('Thing already deleted');
+      return;
     }
     const deletedThing = await ThingService.deleteThing(thingId, req.user.id, new Date());
     res.json(await serializeThing(deletedThing));
