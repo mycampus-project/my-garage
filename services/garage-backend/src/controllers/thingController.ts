@@ -60,6 +60,7 @@ export const updateThing = async (req: Request, res: Response, next: NextFunctio
     const update = {
       name: req.body.name,
       description: req.body.description,
+      body: req.body.type,
       isAvailable: req.body.isAvailable,
     };
     const { thingId } = req.params;
@@ -71,6 +72,7 @@ export const updateThing = async (req: Request, res: Response, next: NextFunctio
 };
 
 // DELETE /things/:thingId
+
 export const deleteThing = async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!req.user) {
