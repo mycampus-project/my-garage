@@ -3,11 +3,11 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { apiClient, Thing } from '@my-garage/common';
 import { useContext } from 'react';
 import { AdminContext } from '../contexts/AdminContext';
+import openNotificationWithIcon from '../components/admin/Common/OpenNotificationWithIcon';
 
 const useThing = () => {
   const client = useQueryClient();
-  const { setAlertMessage, setAlertType, setModelIsVisible, setSelectedThing, selectedThing } =
-    useContext(AdminContext);
+  const { setModelIsVisible, setSelectedThing, selectedThing } = useContext(AdminContext);
 
   function GetListOfThings(token: string) {
     const { data, error, isLoading } = useQuery<AxiosResponse<Thing[]> | null, AxiosError>(
@@ -57,15 +57,17 @@ const useThing = () => {
           )
           .then((response) => response.data),
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           client.invalidateQueries('things');
-          setAlertType('success');
-          setAlertMessage('Adding device was successful');
+          openNotificationWithIcon(
+            'success',
+            'Device Added',
+            `${data.name} was successfully added`,
+          );
         },
 
         onError: (error) => {
-          setAlertType('error');
-          setAlertMessage(`${error.message}`);
+          openNotificationWithIcon('error', 'Device Not Added', `${error.message}`);
         },
       },
     );
@@ -89,14 +91,12 @@ const useThing = () => {
       {
         onSuccess: () => {
           client.invalidateQueries('things');
-          setAlertType('success');
-          setAlertMessage('Adding device was successful');
+          openNotificationWithIcon('success', 'Device Added', 'Device was successfully deleted');
           setModelIsVisible(false);
         },
 
         onError: (error) => {
-          setAlertType('error');
-          setAlertMessage(`${error.message}`);
+          openNotificationWithIcon('error', 'Device Not Deleted', `${error.message}`);
           setModelIsVisible(false);
         },
       },
@@ -153,8 +153,11 @@ const useThing = () => {
       {
         onSuccess: (data) => {
           client.invalidateQueries('things');
-          setAlertType('success');
-          setAlertMessage(`${data.name} id: ${data.id} was successfully updated`);
+          openNotificationWithIcon(
+            'success',
+            'Device Updated',
+            `${data.name} was successfully updated`,
+          );
           const newThing: Thing = {
             ...selectedThing,
             name: data.name,
@@ -162,13 +165,11 @@ const useThing = () => {
             type: data.type,
             isAvailable: data.isAvailable,
           };
-          console.log(`this is the response ${data.type}`);
           setSelectedThing(newThing);
         },
 
         onError: (error) => {
-          setAlertType('error');
-          setAlertMessage(`${error.message}`);
+          openNotificationWithIcon('error', 'Device Not Deleted', `${error.message}`);
         },
       },
     );

@@ -1,4 +1,5 @@
 import { Form, Input, Switch, Select, FormInstance } from 'antd';
+import UploadAvatar from '../../Common/UploadAvatar';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -20,8 +21,14 @@ const AddDeviceForm = ({ form }: AddDeviceFormProps) => {
         rules={[
           {
             required: true,
+          },
+          {
             pattern: /^[A-Za-z0-9._-]/,
             message: 'Name is invalid. Use Alphanumeric values',
+          },
+          {
+            min: 5,
+            message: 'Name requires at least 5 characters.',
           },
         ]}
       >
@@ -33,6 +40,9 @@ const AddDeviceForm = ({ form }: AddDeviceFormProps) => {
         rules={[{ required: true, message: 'Please input a description!' }]}
       >
         <TextArea rows={4} />
+      </Form.Item>
+      <Form.Item name="upload" label="Upload" valuePropName="fileList">
+        <UploadAvatar />
       </Form.Item>
       <Form.Item
         name="type"

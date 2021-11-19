@@ -8,22 +8,14 @@ import DeviceInfoPanel from './DeviceInfoPanel';
 import ModelLauncher from '../Common/ModelLauncher';
 
 function Devices() {
-  const { alertType, alertMessage, modelIsVisible } = useContext(AdminContext);
+  const { modelIsVisible } = useContext(AdminContext);
 
   return (
     <>
       {modelIsVisible && <ModelLauncher />}
 
       <PageLayout
-        Title={
-          <Banner
-            data-testid="banner"
-            title="Devices"
-            alertMessage={alertMessage}
-            alertType={alertType}
-            showAddThing
-          />
-        }
+        Title={<Banner data-testid="banner" title="Devices" showAddThing />}
         Element={<MainContainer list={<DeviceList />} details={<DeviceInfoPanel />} />}
       />
     </>

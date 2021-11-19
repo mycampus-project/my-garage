@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "@ant-design/colors": "^6.0.0",
+    "@ant-design/icons": "^4.7.0",
     "@my-garage/common": "^1.0.0",
     "@testing-library/cypress": "^8.0.1",
     "@testing-library/jest-dom": "^5.11.4",

@@ -1,5 +1,3 @@
-import { useContext } from 'react';
-import { AdminContext } from '../../../contexts/AdminContext';
 import PageLayout from '../Common/PageLayout';
 import MainContainer from '../Common/MainContainer';
 import Banner from '../Common/Banner';
@@ -8,19 +6,9 @@ import UserInfoPanel from './UserInfoPanel';
 
 // Entry point to the users webpage.
 function Users() {
-  const { alertType, alertMessage } = useContext(AdminContext);
-
   return (
     <PageLayout
-      Title={
-        <Banner
-          data-testid="banner"
-          title="Users"
-          alertMessage={alertMessage}
-          alertType={alertType}
-          showAddThing={false}
-        />
-      }
+      Title={<Banner data-testid="banner" title="Users" showAddThing={false} />}
       Element={<MainContainer list={<UserList />} details={<UserInfoPanel />} />}
     />
   );

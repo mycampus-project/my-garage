@@ -1,15 +1,17 @@
 import { Modal, Form } from 'antd';
 import useThing from 'src/hooks/useThing';
 import { useLocalStorage } from '@my-garage/common';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import AddDeviceForm from '../Forms/AddDeviceForm';
 import { AdminContext } from '../../../../contexts/AdminContext';
+import openNotificationWithIcon from '../../Common/OpenNotificationWithIcon';
 
 const AddDeviceModal = () => {
   const { modelIsVisible, setModelIsVisible } = useContext(AdminContext);
   const [form] = Form.useForm();
   const [token] = useLocalStorage('auth_token');
-  const { onSubmit, isLoadingAddThing } = useThing().AddThing(token);
+  const { onSubmit } = useThing().AddThing(token);
+  const [isDisabled] = useState<boolean>(false);
 
   return (
     <Modal
@@ -17,11 +19,19 @@ const AddDeviceModal = () => {
       centered
       visible={modelIsVisible}
       onOk={() => {
-        const values = form.getFieldsValue();
-        onSubmit(values);
-        setModelIsVisible(false);
+        form
+          .validateFields()
+          .then((values) => {
+            onSubmit(values);
+          })
+          .then(() => {
+            setModelIsVisible(false);
+          })
+          .catch((info) => {
+            openNotificationWithIcon('error', 'Something went wrong', info);
+          });
       }}
-      okButtonProps={{ loading: isLoadingAddThing }}
+      okButtonProps={{ disabled: isDisabled }}
       onCancel={() => setModelIsVisible(false)}
       width={500}
     >

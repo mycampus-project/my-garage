@@ -21,7 +21,6 @@ const EditDeviceModal = () => {
           thingId: selectedThing.id,
           ...form.getFieldsValue(),
         };
-        console.log(device);
         onUpdate(device);
         setModelIsVisible(false);
       }}
