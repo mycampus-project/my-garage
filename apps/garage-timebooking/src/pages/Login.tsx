@@ -8,6 +8,7 @@ const FullHeightLayout = styled(Layout)`
   display: flex;
   flex-direction: row;
   height: 100vh;
+  padding: 32px;
   background-color: white;
   background-image: url('loginBackground.png');
   background-attachment: local;
