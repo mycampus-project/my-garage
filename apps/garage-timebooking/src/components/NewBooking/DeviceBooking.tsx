@@ -1,3 +1,4 @@
+import { format, getWeek, isSameDay, set, setDay, setWeek } from 'date-fns';
 import { Thing } from '@my-garage/common';
 import moment from 'moment';
 import { DatePicker, PageHeader, Space, Form, Typography } from 'antd';
@@ -45,29 +46,34 @@ const TimeTh = styled.th`
   background-color: inherit;
 `;
 
-const timeRanges = [
-  '9:00',
-  '9:30',
-  '10:00',
-  '10:30',
-  '11:00',
-  '11:30',
-  '12:00',
-  '12:30',
-  '13:00',
-  '13:30',
-  '14:00',
-  '14:30',
-  '15:00',
-  '15:30',
-  '16:00',
-  '16:30',
-  '17:00',
-  '17:30',
-  '18:00',
-  '18:30',
-  '19:00',
-];
+const createTimeRanges = (weekDays: Date[], startHour: number, endHour: number) => {
+  const diff = endHour - startHour;
+
+  const hoursCollection = new Array(diff).fill(null).flatMap((_, index) => [
+    {
+      hours: startHour + index,
+      minutes: 0,
+    },
+    {
+      hours: startHour + index,
+      minutes: 30,
+    },
+  ]);
+
+  return hoursCollection.map(({ hours, minutes }) =>
+    weekDays.map((weekday) => set(weekday, { hours, minutes })),
+  );
+};
+
+const createWeekdaysForWeek = (weekDate: Date) => {
+  const baseDate = set(weekDate, {
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+    milliseconds: 0,
+  });
+  return [1, 2, 3, 4, 5].map((weekday) => setDay(baseDate, weekday, { weekStartsOn: 0 }));
+};
 
 const SelectableTd = styled.td`
   @media (max-width: 992px) {
@@ -79,15 +85,42 @@ const SelectableTd = styled.td`
   }
 `;
 
+const getInitialWeekValue = () => {
+  const now = new Date();
+
+  if (now.getDay() > 5) {
+    return setWeek(now, getWeek(now) + 1);
+  }
+  return now;
+};
+
 interface Props {
   thing: Thing;
   onBackClick: () => void;
 }
 
 const DeviceBooking = ({ thing, onBackClick }: Props) => {
-  const [selectedWeek, setSelectedWeek] = useState<number>();
-  const [selectedYear, setSelectedYear] = useState<number>();
-  console.log(selectedWeek, selectedYear);
+  const [selectedWeek, setSelectedWeek] = useState<Date>(getInitialWeekValue());
+
+  const [start, setStart] = useState<Date>();
+  const [end, setEnd] = useState<Date>();
+
+  const weekdays = createWeekdaysForWeek(selectedWeek);
+  const weekTimeRanges = createTimeRanges(weekdays, 9, 18);
+
+  const onCellClick = (cellDate: Date) => {
+    if (start && end) {
+      setStart(cellDate);
+      setEnd(undefined);
+    } else if (start && isSameDay(start, cellDate)) {
+      setEnd(cellDate);
+    } else {
+      setStart(cellDate);
+    }
+  };
+
+  console.log({ start, end });
+
   return (
     <>
       <PageHeader
@@ -101,12 +134,12 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
           <Form layout="vertical">
             <Form.Item label="Select week">
               <DatePicker
-                defaultValue={moment()}
-                onChange={(value, dateString) => {
+                value={moment(selectedWeek)}
+                allowClear={false}
+                onChange={(value) => {
                   if (!value) return;
-                  console.log(dateString);
-                  setSelectedWeek(value.week());
-                  setSelectedYear(value.year());
+                  console.log(value.format());
+                  setSelectedWeek(value.toDate());
                 }}
                 picker="week"
               />
@@ -116,23 +149,19 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
         <Table>
           <thead>
             <tr>
-              <th>-</th>
-              <th>Monday</th>
-              <th>Tuesday</th>
-              <th>Wednesday</th>
-              <th>Thursday</th>
-              <th>Friday</th>
+              <th>Week {getWeek(selectedWeek)}</th>
+              {weekdays.map((weekday) => (
+                <th key={weekday.getDay()}>{format(weekday, 'eee d.MM.y')}</th>
+              ))}
             </tr>
           </thead>
           <tbody>
-            {timeRanges.map((item) => (
-              <tr>
-                <TimeTh>{item}</TimeTh>
-                <SelectableTd />
-                <SelectableTd />
-                <SelectableTd />
-                <SelectableTd />
-                <SelectableTd />
+            {weekTimeRanges?.map((weekdayOptions) => (
+              <tr key={format(weekdayOptions[0], 'HH:mm')}>
+                <TimeTh>{format(weekdayOptions[0], 'HH:mm')}</TimeTh>
+                {weekdayOptions.map((day) => (
+                  <SelectableTd key={day.getTime()} onClick={() => onCellClick(day)} />
+                ))}
               </tr>
             ))}
           </tbody>
