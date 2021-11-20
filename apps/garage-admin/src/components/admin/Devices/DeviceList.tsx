@@ -10,22 +10,22 @@ const DeviceList = () => {
   const { data, error, isLoading } = useThing().GetListOfThings(token);
   const [filteredData, setFilteredData] = useState<Thing[]>([]);
 
-  const sortedByNameAlphabetically = (dataArray: Thing[]) => {
-    function compareByName(a: Thing, b: Thing) {
-      if (a.name < b.name) {
+  const sortedArray = (dataArray: Thing[]) => {
+    function compareByType(a: Thing, b: Thing) {
+      if (a.type < b.type) {
         return -1;
       }
-      if (a.name > b.name) {
+      if (a.type > b.type) {
         return 1;
       }
       return 0;
     }
 
-    return dataArray.sort(compareByName);
+    return dataArray.sort(compareByType);
   };
 
   useEffect(() => {
-    const sortedData = data ? sortedByNameAlphabetically(data.data) : new Array<Thing>();
+    const sortedData = data ? sortedArray(data.data) : new Array<Thing>();
     const filteredArray = sortedData.filter((item: Thing) => item.removedBy === undefined);
     setFilteredData(filteredArray);
   }, [data]);

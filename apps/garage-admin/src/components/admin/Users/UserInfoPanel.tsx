@@ -17,17 +17,15 @@ const StyledCard = styled(Card)`
   }
 
   ::-webkit-scrollbar {
-    width: 5px;
+    width: 3px;
   }
 
   ::-webkit-scrollbar-track {
     box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.3);
-    border-radius: 0px;
   }
 
   ::-webkit-scrollbar-thumb {
-    border-radius: 0px;
-    box-shadow: inset 0 0 20px var(--ant-primary-6);
+    box-shadow: inset 0 0 5px var(--ant-primary-2);
   }
 `;
 

@@ -11,6 +11,7 @@ const StyledDescriptions = styled(Descriptions)`
   table {
     table-layout: fixed;
     width: 100%;
+    min-width: 870px;
 
     td {
       width: 40%;
@@ -35,14 +36,12 @@ const DeviceDescription = () => {
   const { selectedThing } = useContext(AdminContext);
 
   return (
-    <>
+    <div data-testid="details.table">
       <StyledDescriptions title="Device Details" bordered column={2}>
-        <Descriptions.Item className="testDescriptionItem" label="Name">
-          {selectedThing.name}
-        </Descriptions.Item>
+        <Descriptions.Item label="Name">{selectedThing.name}</Descriptions.Item>
 
         <Descriptions.Item label="ID">{selectedThing.id}</Descriptions.Item>
-        <Descriptions.Item label="Is Available">
+        <Descriptions.Item className="testIsAvailableItem" label="Is Available">
           {selectedThing.isAvailable ? 'Available' : 'Unavailable'}
         </Descriptions.Item>
         <Descriptions.Item label="Type">{selectedThing.type}</Descriptions.Item>
@@ -53,7 +52,7 @@ const DeviceDescription = () => {
         <Descriptions.Item label="Created By">{selectedThing.createdBy.fullName}</Descriptions.Item>
         <Descriptions.Item label="Description">{selectedThing.description}</Descriptions.Item>
       </StyledDescriptions>
-    </>
+    </div>
   );
 };
 

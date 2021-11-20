@@ -20,6 +20,7 @@ const EditDeviceModal = () => {
 
   return (
     <Modal
+      data-testid="edit.device.modal"
       title="Edit Device"
       centered
       visible={modelIsVisible}

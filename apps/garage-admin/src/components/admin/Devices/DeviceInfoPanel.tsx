@@ -17,17 +17,15 @@ const StyledCard = styled(Card)`
   }
 
   ::-webkit-scrollbar {
-    width: 5px;
+    width: 3px;
   }
 
   ::-webkit-scrollbar-track {
     box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.3);
-    border-radius: 0px;
   }
 
   ::-webkit-scrollbar-thumb {
-    border-radius: 0px;
-    box-shadow: inset 0 0 20px var(--ant-primary-6);
+    box-shadow: inset 0 0 5px var(--ant-primary-2);
   }
 `;
 
@@ -52,35 +50,35 @@ function DeviceInfoPanel() {
 
   if (selectedThing.name.length > 0) {
     return (
-      <>
-        <StyledCard title={selectedThing.name} extra={avatar}>
-          <ButtonContainer>
-            <DeviceDescription />
-            <Space align="start">
-              <Button
-                type="primary"
-                onClick={() => {
-                  setModelType('edit-device');
-                  setModelIsVisible(true);
-                }}
-              >
-                Edit
-              </Button>
-              <Button
-                type="primary"
-                onClick={() => {
-                  setModelType('delete-device');
-                  setModelIsVisible(true);
-                }}
-              >
-                Delete
-              </Button>
-            </Space>
-          </ButtonContainer>
+      <StyledCard title={selectedThing.name} extra={avatar}>
+        <ButtonContainer>
+          <DeviceDescription />
+          <Space align="start">
+            <Button
+              data-testid="edit.device.btn"
+              type="primary"
+              onClick={() => {
+                setModelType('edit-device');
+                setModelIsVisible(true);
+              }}
+            >
+              Edit
+            </Button>
+            <Button
+              data-testid="delete.device.btn"
+              type="primary"
+              onClick={() => {
+                setModelType('delete-device');
+                setModelIsVisible(true);
+              }}
+            >
+              Delete
+            </Button>
+          </Space>
+        </ButtonContainer>
 
-          <BookingsTabsCard things />
-        </StyledCard>
-      </>
+        <BookingsTabsCard things />
+      </StyledCard>
     );
   }
   return null;

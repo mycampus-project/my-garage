@@ -10,7 +10,13 @@ const EditDeviceForm = ({ form, showSubmit }: AddDeviceFormProps) => {
   const { selectedThing } = useContext(AdminContext);
 
   return (
-    <Form form={form} layout="vertical" name="userForm" onFieldsChange={showSubmit}>
+    <Form
+      data-testid="edit.form"
+      form={form}
+      layout="vertical"
+      name="userForm"
+      onFieldsChange={showSubmit}
+    >
       <Form.Item
         initialValue={selectedThing.name}
         name="name"
