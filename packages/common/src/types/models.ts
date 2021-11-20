@@ -18,6 +18,7 @@ export type Thing = {
   isAvailable: boolean;
   removedAt?: Date;
   removedBy?: { id: string; fullName: string };
+  image: Object;
 };
 
 export type Role = {

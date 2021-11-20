@@ -43,6 +43,10 @@ const thingSchema = new mongoose.Schema<ThingDocument>({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
+  image: {
+    type: Object,
+    required: false,
+  },
 });
 
 export default mongoose.model('Thing', thingSchema);

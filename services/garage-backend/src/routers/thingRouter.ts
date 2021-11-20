@@ -1,4 +1,5 @@
 import express from 'express';
+import multer from 'multer';
 
 import { requireAuth } from '../middlewares/auth';
 import {
@@ -12,7 +13,29 @@ import {
 const router = express.Router();
 router.use(requireAuth());
 
-router.get('/', findAllThings);
+const storage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, './uploads/');
+  },
+
+  filename(req: any, file: any, cb: any) {
+    cb(null, file.originalname);
+  },
+});
+const fileFilter = (req: any, file: any, cb: any) => {
+  if (
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg' ||
+    file.mimetype === 'image/png'
+  ) {
+    cb(null, true);
+  } else {
+    cb(new Error('Image uploaded is not of type jpg/jpeg or png'), false);
+  }
+};
+const upload = multer({ storage, fileFilter });
+
+router.get('/', upload.single('image'), findAllThings);
 router.get('/:thingId', findThingById);
 router.post('/', requireAuth('admin'), createThing);
 router.put('/:thingId', requireAuth('admin'), updateThing);

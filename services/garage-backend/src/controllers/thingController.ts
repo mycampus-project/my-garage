@@ -20,6 +20,7 @@ export const createThing = async (req: Request, res: Response, next: NextFunctio
       type,
       createdBy: req.user,
       isAvailable,
+      image: req.file,
     });
 
     await ThingService.createThing(thing);
