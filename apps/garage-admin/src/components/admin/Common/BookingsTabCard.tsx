@@ -1,9 +1,15 @@
 import { useState } from 'react';
 import { Card } from 'antd';
+import styled from 'styled-components';
 import { BookingsElements, TabList } from '../../../types/adminTypes';
 import { CurrentBooking, PreviousBooking } from '../../tests/testData';
 import UserBookingsList from '../Users/UserBookingsList';
-import DeviceBookingList from '../Devices/DeviceBookingList';
+import PaginationDeviceList from '../Devices/PaginationDeviceBookingsList';
+
+const StyledCard = styled(Card)`
+  width: 100%;
+  height: 500px;
+`;
 
 const tabListNoTitle: TabList[] = [
   {
@@ -22,8 +28,8 @@ const contentListUsers: BookingsElements = {
 };
 
 const contentListDevice: BookingsElements = {
-  current: <DeviceBookingList data={CurrentBooking} />,
-  previous: <DeviceBookingList data={PreviousBooking} />,
+  current: <PaginationDeviceList data={CurrentBooking} />,
+  previous: <PaginationDeviceList data={PreviousBooking} />,
 };
 
 interface BookingsTabsCardProps {
@@ -42,18 +48,15 @@ const BookingsTabsCard = ({ things }: BookingsTabsCardProps) => {
   };
 
   return (
-    <>
-      <Card
-        style={{ width: '100%' }}
-        tabList={tabListNoTitle}
-        activeTabKey={activeTabKey}
-        onTabChange={(key: string) => {
-          onTabChange(key);
-        }}
-      >
-        {things ? contentListDevice[activeTabKey] : contentListUsers[activeTabKey]}
-      </Card>
-    </>
+    <StyledCard
+      tabList={tabListNoTitle}
+      activeTabKey={activeTabKey}
+      onTabChange={(key: string) => {
+        onTabChange(key);
+      }}
+    >
+      {things ? contentListDevice[activeTabKey] : contentListUsers[activeTabKey]}
+    </StyledCard>
   );
 };
 

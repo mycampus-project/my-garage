@@ -9,7 +9,7 @@ interface ListItemProps {
 }
 
 interface StyledListItemProps {
-  isSelected: boolean;
+  $isSelected: boolean;
 }
 
 const listItemMeta = {
@@ -17,11 +17,9 @@ const listItemMeta = {
   cursor: 'pointer',
 };
 
-const StyledListItem = styled(({ isSelected, ...props }) => (
-  <List.Item {...props} />
-))<StyledListItemProps>`
+const StyledListItem = styled(List.Item)<StyledListItemProps>`
   padding: 0;
-  background-color: ${({ isSelected }) => (isSelected ? 'var(--ant-primary-1)' : 'transparent')};
+  background-color: ${({ $isSelected }) => ($isSelected ? 'var(--ant-primary-1)' : 'transparent')};
   position: relative;
 
   &::after {
@@ -30,10 +28,10 @@ const StyledListItem = styled(({ isSelected, ...props }) => (
     right: 0;
     width: 6px;
     height: 100%;
-    background-color: ${({ isSelected }) =>
-      isSelected ? 'var(--ant-primary-color)' : 'transparent'};
+    background-color: ${({ $isSelected }) =>
+      $isSelected ? 'var(--ant-primary-color)' : 'transparent'};
     transition: transform 100ms ease-out;
-    transform: scaleY(${({ isSelected }) => (isSelected ? 1 : 0)});
+    transform: scaleY(${({ $isSelected }) => ($isSelected ? 1 : 0)});
   }
 `;
 
@@ -48,7 +46,7 @@ const DeviceListItem = ({ item }: ListItemProps) => {
         setSelectedThing(item);
       }}
       data-testid="deviceList.item"
-      isSelected={isThisUserSelected}
+      $isSelected={isThisUserSelected}
       key={item.name}
     >
       <List.Item.Meta

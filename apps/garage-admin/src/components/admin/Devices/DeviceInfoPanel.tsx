@@ -10,9 +10,24 @@ const StyledCard = styled(Card)`
   width: 100%;
   height: 100%;
   margin: 0;
-
+  overflow: auto;
+  box-sizing: border-box;
   .ant-card-head-title {
     font-size: 28px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.3);
+    border-radius: 0px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 0px;
+    box-shadow: inset 0 0 20px var(--ant-primary-6);
   }
 `;
 
@@ -25,7 +40,7 @@ const ButtonContainer = styled.div`
 
 const avatar = (
   <Avatar
-    size={{ xs: 50, sm: 100, md: 100, lg: 100, xl: 100, xxl: 150 }}
+    size={{ xs: 50, sm: 100, md: 100, lg: 100, xl: 100, xxl: 110 }}
     src="https://randomuser.me/api/portraits/men/22.jpg"
   />
 );
