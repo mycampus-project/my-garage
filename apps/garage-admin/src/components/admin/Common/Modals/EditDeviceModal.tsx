@@ -5,7 +5,7 @@ import isValidateAndShowButton from 'src/utilities/ModalFunctions';
 import useThing from 'src/hooks/useThing';
 import EditDeviceForm from '../Forms/EditDeviceForm';
 import { AdminContext } from '../../../../contexts/AdminContext';
-import openNotificationWithIcon from '../../Common/OpenNotificationWithIcon';
+import openNotificationWithIcon from '../OpenNotificationWithIcon';
 
 const EditDeviceModal = () => {
   const { modelIsVisible, setModelIsVisible, selectedThing } = useContext(AdminContext);

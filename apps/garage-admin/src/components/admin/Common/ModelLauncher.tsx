@@ -1,9 +1,15 @@
 import { useContext } from 'react';
+import { Modal } from 'antd';
 import { AdminContext } from '../../../contexts/AdminContext';
-import AddDeviceModal from '../Devices/Modals/AddDeviceModal';
-import RestoreDeviceModal from '../Devices/Modals/RestoreDeviceModal';
-import EditDeviceModal from '../Devices/Modals/EditDeviceModal';
-import DeleteDeviceModal from '../Devices/Modals/DeleteDeviceModal';
+import AddDeviceModal from './Modals/AddDeviceModal';
+import RestoreDeviceModal from './Modals/RestoreDeviceModal';
+import EditDeviceModal from './Modals/EditDeviceModal';
+import DeleteDeviceModal from './Modals/DeleteDeviceModal';
+import DeleteUserModal from './Modals/DeleteUserModal';
+import RestoreUserModal from './Modals/RestoreUserModal';
+import ChangeRoleModal from './Modals/ChangeRoleModal';
+import DeleteBookingModal from './Modals/DeleteBookingModal';
+import EditBookingModal from './Modals/EditBookingModal';
 
 const ModelLauncher = () => {
   const { modelType } = useContext(AdminContext);
@@ -21,8 +27,23 @@ const ModelLauncher = () => {
     case 'delete-device': {
       return <DeleteDeviceModal />;
     }
+    case 'restore-user': {
+      return <RestoreUserModal />;
+    }
+    case 'delete-user': {
+      return <DeleteUserModal />;
+    }
+    case 'change-role': {
+      return <ChangeRoleModal />;
+    }
+    case 'delete-booking': {
+      return <DeleteBookingModal />;
+    }
+    case 'edit-booking': {
+      return <EditBookingModal />;
+    }
     default: {
-      return <AddDeviceModal />;
+      return <Modal />;
     }
   }
 };

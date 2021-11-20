@@ -5,7 +5,7 @@ import { useContext, useState } from 'react';
 import isValidateAndShowButton from 'src/utilities/ModalFunctions';
 import AddDeviceForm from '../Forms/AddDeviceForm';
 import { AdminContext } from '../../../../contexts/AdminContext';
-import openNotificationWithIcon from '../../Common/OpenNotificationWithIcon';
+import openNotificationWithIcon from '../OpenNotificationWithIcon';
 
 const AddDeviceModal = () => {
   const { modelIsVisible, setModelIsVisible } = useContext(AdminContext);

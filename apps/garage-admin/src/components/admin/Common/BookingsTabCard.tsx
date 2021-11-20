@@ -3,8 +3,8 @@ import { Card } from 'antd';
 import styled from 'styled-components';
 import { BookingsElements, TabList } from '../../../types/adminTypes';
 import { CurrentBooking, PreviousBooking } from '../../tests/testData';
-import UserBookingsList from '../Users/UserBookingsList';
 import PaginationDeviceList from '../Devices/PaginationDeviceBookingsList';
+import PaginationUserBookingsList from '../Users/PaginationUserBookingsList';
 
 const StyledCard = styled(Card)`
   width: 100%;
@@ -23,8 +23,8 @@ const tabListNoTitle: TabList[] = [
 ];
 
 const contentListUsers: BookingsElements = {
-  current: <UserBookingsList data={CurrentBooking} />,
-  previous: <UserBookingsList data={PreviousBooking} />,
+  current: <PaginationUserBookingsList data={CurrentBooking} />,
+  previous: <PaginationUserBookingsList data={PreviousBooking} />,
 };
 
 const contentListDevice: BookingsElements = {
