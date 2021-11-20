@@ -33,6 +33,9 @@ const Left = styled.div<{ hasSelectedItem: boolean }>`
 
 const Right = styled.div<{ hasSelectedItem: boolean }>`
   grid-column: 2;
+  max-width: 100%;
+  min-width: 0;
+  overflow: auto;
 `;
 
 const Content = styled.div<{ hasSelectedItem: boolean }>`
