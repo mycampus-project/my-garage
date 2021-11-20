@@ -6,5 +6,6 @@ module.exports = {
     '@typescript-eslint/indent': 'off',
     'react/jsx-props-no-spreading': 'off',
     'react/jsx-wrap-multilines': 'off',
+    'react/require-default-props': 0,
   },
 };
