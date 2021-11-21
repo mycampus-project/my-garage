@@ -38,7 +38,7 @@ const useThing = () => {
       ({ name, description, type, isAvailable }) =>
         apiClient
           .post(
-            '/things/',
+            '/things',
             {
               name,
               description,
