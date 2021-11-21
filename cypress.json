@@ -4,5 +4,6 @@
   "env": {
     "username": "",
     "password": ""
-  }
+  },
+  "experimentalSourceRewriting": true
 }
