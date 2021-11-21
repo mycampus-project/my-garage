@@ -1,9 +1,20 @@
-import { format, getWeek, isSameDay, set, setDay, setWeek } from 'date-fns';
+import {
+  addMinutes,
+  format,
+  getWeek,
+  isBefore,
+  isSameDay,
+  isSameMinute,
+  isWithinInterval,
+  set,
+  setDay,
+  setWeek,
+} from 'date-fns';
 import { Thing } from '@my-garage/common';
 import moment from 'moment';
 import { DatePicker, PageHeader, Space, Form, Typography } from 'antd';
-import { useState } from 'react';
-import styled from 'styled-components';
+import { useLayoutEffect, useMemo, useState } from 'react';
+import styled, { css } from 'styled-components';
 
 const Root = styled.div`
   padding: var(--padding-m);
@@ -11,16 +22,32 @@ const Root = styled.div`
 
 const CELL_WIDTH = 200;
 
-const Table = styled.table`
+const TableColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  scroll-snap-align: start;
+
+  & > div:not(:first-of-type) {
+    margin-top: -1px;
+  }
+`;
+const HeaderColumn = styled(TableColumn)`
+  position: sticky;
+  left: 0;
+`;
+const Table = styled.div`
   max-width: 100%;
   width: 100%;
   overflow-x: auto;
   min-width: 0;
   position: relative;
-  table-layout: fixed;
+  display: grid;
+  grid-template-columns: 100px repeat(5, 1fr);
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: 100px;
 
-  @media (max-width: 992px) {
-    display: block;
+  & > ${TableColumn}:not(:first-child) {
+    margin-left: -1px;
   }
 
   tbody tr {
@@ -31,25 +58,74 @@ const Table = styled.table`
       background-color: white;
     }
   }
+`;
 
-  th,
-  td {
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    padding: var(--padding-xs);
+const TableCell = styled.div`
+  text-align: center;
+  border: 1px solid #f0f0f0;
+  padding: var(--padding-xs);
+  background: white;
+`;
+
+const WeekdayHeaderCell = styled(TableCell)`
+  z-index: 100;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+`;
+
+const HourHeaderCell = styled(TableCell)<{ isHighlighted: boolean }>`
+  position: sticky;
+  left: 0;
+  z-index: 1;
+
+  ${({ isHighlighted }) => isHighlighted && 'background-color: var(--ant-primary-1)'};
+`;
+
+const TimeCell = styled(TableCell)<{ isSelected: boolean; isStart: boolean; isEnd: boolean }>`
+  flex: 1;
+
+  &:nth-child(2n + 1) {
+    background-color: #f8f8f8;
+  }
+
+  &:hover {
+    background-color: var(--ant-primary-1);
+  }
+  ${({ isStart, isEnd }) => {
+    if (isStart && isEnd) {
+      return 'border-radius: 10px';
+    }
+    if (isStart) {
+      return 'border-radius: 10px 10px 0 0';
+    }
+    if (isEnd) {
+      return 'border-radius: 0 0 10px 10px ';
+    }
+    return null;
+  }};
+
+  ${({ isSelected }) =>
+    isSelected &&
+    css`
+      &,
+      &:hover {
+        background-color: var(--ant-primary-color) !important;
+        color: white;
+        border-color: transparent;
+      }
+    `};
+
+  @media (max-width: 992px) {
+    min-width: ${CELL_WIDTH}px;
   }
 `;
 
-const TimeTh = styled.th`
-  position: sticky;
-  left: 0;
-  min-width: 100px;
-  background-color: inherit;
-`;
-
-const createTimeRanges = (weekDays: Date[], startHour: number, endHour: number) => {
+const getBookingIntervals = (startHour: number, endHour: number) => {
   const diff = endHour - startHour;
 
-  const hoursCollection = new Array(diff).fill(null).flatMap((_, index) => [
+  return new Array(diff).fill(null).flatMap((_, index) => [
     {
       hours: startHour + index,
       minutes: 0,
@@ -59,11 +135,12 @@ const createTimeRanges = (weekDays: Date[], startHour: number, endHour: number) 
       minutes: 30,
     },
   ]);
-
-  return hoursCollection.map(({ hours, minutes }) =>
-    weekDays.map((weekday) => set(weekday, { hours, minutes })),
-  );
 };
+
+const createTimeRanges = (weekDays: Date[], timesOfDay: { hours: number; minutes: number }[]) =>
+  weekDays.map((weekday) =>
+    timesOfDay.map(({ hours, minutes }) => set(weekday, { hours, minutes })),
+  );
 
 const createWeekdaysForWeek = (weekDate: Date) => {
   const baseDate = set(weekDate, {
@@ -75,16 +152,6 @@ const createWeekdaysForWeek = (weekDate: Date) => {
   return [1, 2, 3, 4, 5].map((weekday) => setDay(baseDate, weekday, { weekStartsOn: 0 }));
 };
 
-const SelectableTd = styled.td`
-  @media (max-width: 992px) {
-    min-width: ${CELL_WIDTH}px;
-  }
-
-  &:hover {
-    background-color: var(--ant-primary-1);
-  }
-`;
-
 const getInitialWeekValue = () => {
   const now = new Date();
 
@@ -93,6 +160,28 @@ const getInitialWeekValue = () => {
   }
   return now;
 };
+
+const sortDates = (dates: Date[]) =>
+  dates.sort((a, b) => {
+    if (isSameMinute(a, b)) {
+      return 0;
+    }
+    return isBefore(a, b) ? -1 : 1;
+  });
+
+const isBetween = (date: Date, interval: [Date, Date]) => {
+  const [start, end] = sortDates(interval);
+
+  return isWithinInterval(date, { start, end });
+};
+
+const formatInterval = (a: Date, b: Date) => {
+  const [start, end] = sortDates([a, b]);
+
+  return `${format(start, 'HH:mm')}-${format(addMinutes(end, 30), 'HH:mm')}`;
+};
+
+// const formatSelectedInterval = (start: Date | undefined, end: Date | undefined, hoveredHour: Date, )
 
 interface Props {
   thing: Thing;
@@ -104,22 +193,37 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
 
   const [start, setStart] = useState<Date>();
   const [end, setEnd] = useState<Date>();
+  const [hoveredHour, setHoveredHour] = useState<Date>();
 
-  const weekdays = createWeekdaysForWeek(selectedWeek);
-  const weekTimeRanges = createTimeRanges(weekdays, 9, 18);
+  const bookingIntervals = useMemo(() => getBookingIntervals(9, 18), []);
+  const weekdays = useMemo(() => createWeekdaysForWeek(selectedWeek), [selectedWeek]);
+  const weekTimeRanges = useMemo(
+    () => createTimeRanges(weekdays, bookingIntervals),
+    [weekdays, bookingIntervals],
+  );
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const cells = useMemo(() => new Map<Date, HTMLDivElement>(), [weekTimeRanges]);
 
   const onCellClick = (cellDate: Date) => {
     if (start && end) {
       setStart(cellDate);
       setEnd(undefined);
     } else if (start && isSameDay(start, cellDate)) {
-      setEnd(cellDate);
+      if (isBefore(cellDate, start)) {
+        setStart(cellDate);
+        setEnd(start);
+      } else {
+        setEnd(cellDate);
+      }
     } else {
       setStart(cellDate);
     }
   };
 
-  console.log({ start, end });
+  useLayoutEffect(() => {
+    console.log({ start, end });
+  }, [start, end]);
 
   return (
     <>
@@ -147,24 +251,61 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
           </Form>
         </Space>
         <Table>
-          <thead>
-            <tr>
-              <th>Week {getWeek(selectedWeek)}</th>
-              {weekdays.map((weekday) => (
-                <th key={weekday.getDay()}>{format(weekday, 'eee d.MM.y')}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {weekTimeRanges?.map((weekdayOptions) => (
-              <tr key={format(weekdayOptions[0], 'HH:mm')}>
-                <TimeTh>{format(weekdayOptions[0], 'HH:mm')}</TimeTh>
-                {weekdayOptions.map((day) => (
-                  <SelectableTd key={day.getTime()} onClick={() => onCellClick(day)} />
-                ))}
-              </tr>
-            ))}
-          </tbody>
+          <HeaderColumn>
+            <TableCell>Week {getWeek(selectedWeek)}</TableCell>
+            {bookingIntervals.map(({ hours, minutes }) => {
+              const dayForFormatting = set(new Date(), { hours, minutes });
+
+              return (
+                <HourHeaderCell
+                  isHighlighted={
+                    !!hoveredHour &&
+                    dayForFormatting.getHours() === hoveredHour.getHours() &&
+                    dayForFormatting.getMinutes() === hoveredHour.getMinutes()
+                  }
+                >
+                  {format(dayForFormatting, 'HH:mm')}
+                </HourHeaderCell>
+              );
+            })}
+          </HeaderColumn>
+          {weekTimeRanges?.map((weekdayOptions) => (
+            <TableColumn key={weekdayOptions[0].getDay()}>
+              <WeekdayHeaderCell>{format(weekdayOptions[0], 'eee d.MM.y')}</WeekdayHeaderCell>
+              {weekdayOptions.map((day) => {
+                const isSelected =
+                  start === day ||
+                  end === day ||
+                  (start &&
+                    !end &&
+                    hoveredHour &&
+                    isSameDay(start, day) &&
+                    isSameDay(hoveredHour, day) &&
+                    isBetween(day, [start, hoveredHour])) ||
+                  (!!start && !!end && isBetween(day, [start, end]));
+                return (
+                  <TimeCell
+                    key={day.getTime()}
+                    ref={(ref) => ref && cells.set(day, ref)}
+                    onClick={() => onCellClick(day)}
+                    isSelected={isSelected}
+                    isStart={start === day}
+                    isEnd={end === day}
+                    onMouseEnter={() => setHoveredHour(day)}
+                    onMouseLeave={() => setHoveredHour(undefined)}
+                  >
+                    {start &&
+                      hoveredHour &&
+                      (isSameDay(start, hoveredHour)
+                        ? sortDates([start, hoveredHour])[0]
+                        : start) === day &&
+                      (hoveredHour ?? end) &&
+                      formatInterval(start, end ?? hoveredHour!)}
+                  </TimeCell>
+                );
+              })}
+            </TableColumn>
+          ))}
         </Table>
       </Root>
     </>

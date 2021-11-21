@@ -46,11 +46,11 @@ const Content = styled.div<{ hasSelectedItem: boolean }>`
   background-color: white;
 
   display: grid;
-  grid-template-columns: 40% auto;
+  grid-template-columns: 30% auto;
 
   // Desktop XL and above
   @media (min-width: 1400px) {
-    grid-template-columns: 30% auto;
+    grid-template-columns: 20% auto;
   }
 
   // Small laptop and below
