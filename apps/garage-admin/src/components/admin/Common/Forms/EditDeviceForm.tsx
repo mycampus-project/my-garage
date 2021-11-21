@@ -94,6 +94,7 @@ const EditDeviceForm = ({ form, showSubmit }: AddDeviceFormProps) => {
         </Select>
       </Form.Item>
       <Form.Item
+        data-testid="isAvailable.toggle"
         valuePropName="checked"
         initialValue={selectedThing.isAvailable}
         name="isAvailable"

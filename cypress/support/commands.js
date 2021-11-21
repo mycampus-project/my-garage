@@ -1,17 +1,5 @@
 import '@testing-library/cypress/add-commands';
-
-// Access element whose parent is hidden
-Cypress.Commands.add(
-  'isVisible',
-  {
-    prevSubject: true,
-  },
-  (subject) => {
-    const isVisible = (elem) =>
-      !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length);
-    expect(isVisible(subject[0])).to.be.true;
-  },
-);
+import 'cypress-localstorage-commands';
 
 // ***********************************************
 // This example commands.js shows you how to
