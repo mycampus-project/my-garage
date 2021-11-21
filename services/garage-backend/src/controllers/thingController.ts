@@ -40,7 +40,7 @@ export const findAllThings = async (req: Request, res: Response, next: NextFunct
     const arrayOfThings = await Promise.all(thingDocuments.map((item) => serializeThing(item)));
     res.send(arrayOfThings);
   } catch (error: any) {
-    next(new NotFoundError('Things not found', error));
+    next(new InternalServerError(error.message, error));
   }
 };
 
