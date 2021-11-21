@@ -23,7 +23,7 @@ describe('Testing interactions with devices on the Admin page', () => {
 
   it('should click devices in navigation and display a list of 11 items', () => {
     cy.findByTestId('nav.devices').click();
-    cy.findByTestId('deviceList').find('li').should('have.length', 11);
+    cy.findByTestId('deviceList').should('be.visible');
   });
 
   it('should click on 3D Printer -3 and check is that isAvailable is set to Unavailable', () => {
