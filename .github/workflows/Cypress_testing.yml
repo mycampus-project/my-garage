@@ -2,8 +2,7 @@ name: Cypress End to End Testing
 on:
   pull_request:
     types: [opened, synchronize]
-  push:
-    branch: connecting-devices-to-backend
+
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
