@@ -10,7 +10,7 @@ describe('Testing interactions with devices on the Admin page', () => {
       throw new Error('Missing password value, set using CYPRESS_password=...');
     }
 
-    cy.visit('/');
+    cy.visit('http://localhost:8080');
     cy.findByRole('textbox', {
       name: /email/i,
     }).type(username, { log: false });
