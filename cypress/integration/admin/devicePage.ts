@@ -23,28 +23,28 @@ describe('Testing interactions with devices on the Admin page', () => {
 
   it('should click devices in navigation and display a list of 11 items', () => {
     cy.findByTestId('nav.devices').click();
-    cy.findByTestId('deviceList').should('be.visible');
+    cy.findByTestId('deviceList').contains('3D Printer - 3');
   });
 
-  it('should click on 3D Printer -3 and check is that isAvailable is set to Unavailable', () => {
-    cy.findByTestId('nav.devices').click();
+  // it('should click on 3D Printer -3 and check is that isAvailable is set to Unavailable', () => {
+  //   cy.findByTestId('nav.devices').click();
 
-    cy.findByTestId('deviceList').contains('3D Printer - 3').click();
+  //   cy.findByTestId('deviceList').contains('3D Printer - 3').click();
 
-    cy.findByTestId('details.table')
-      .children()
-      .find('.testIsAvailableItem')
-      .contains('Unavailable');
-  });
+  //   cy.findByTestId('details.table')
+  //     .children()
+  //     .find('.testIsAvailableItem')
+  //     .contains('Unavailable');
+  // });
 
-  it('should click on Edit button and show modal. Test to see if OK button is disabled', () => {
-    cy.findByTestId('edit.device.btn').should('be.visible').click();
-    const modalContent = cy
-      .findByTestId('edit.device.modal')
-      .children('.ant-modal-wrap')
-      .find('.ant-modal-content');
+  // it('should click on Edit button and show modal. Test to see if OK button is disabled', () => {
+  //   cy.findByTestId('edit.device.btn').should('be.visible').click();
+  //   const modalContent = cy
+  //     .findByTestId('edit.device.modal')
+  //     .children('.ant-modal-wrap')
+  //     .find('.ant-modal-content');
 
-    modalContent.children('.ant-modal-footer').contains('OK').should('be.disabled');
-    cy.findByTestId('edit.form').should('be.visible');
-  });
+  //   modalContent.children('.ant-modal-footer').contains('OK').should('be.disabled');
+  //   cy.findByTestId('edit.form').should('be.visible');
+  // });
 });
