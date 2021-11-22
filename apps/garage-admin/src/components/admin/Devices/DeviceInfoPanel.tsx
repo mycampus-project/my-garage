@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import 'antd/dist/antd.css';
 import { Card, Avatar, Space, Button } from 'antd';
 import styled from 'styled-components';
+import baseURL from 'src/utilities/api';
 import BookingsTabsCard from '../Common/BookingsTabCard';
 import { AdminContext } from '../../../contexts/AdminContext';
 import DeviceDescription from './DeviceDescription';
@@ -36,19 +37,17 @@ const ButtonContainer = styled.div`
   justify-content: space-between;
 `;
 
-const avatar = (
-  <Avatar
-    size={{ xs: 50, sm: 100, md: 100, lg: 100, xl: 100, xxl: 110 }}
-    src="https://randomuser.me/api/portraits/men/22.jpg"
-  />
-);
-
 // Selected user panel to display user information, and their current and previous bookings.
 // has buttons to toggle user role and delete user from list.
 function DeviceInfoPanel() {
   const { selectedThing, setModelIsVisible, setModelType } = useContext(AdminContext);
 
-  console.log('selected thing', selectedThing);
+  const avatar = (
+    <Avatar
+      size={{ xs: 50, sm: 100, md: 100, lg: 100, xl: 100, xxl: 110 }}
+      src={`${baseURL}/static/${selectedThing.imageUrl}`}
+    />
+  );
 
   if (selectedThing.name.length > 0) {
     return (
