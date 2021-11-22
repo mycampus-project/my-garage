@@ -118,9 +118,7 @@ export const ArrayOfThings: Thing[] = [
     createdAt: new Date(),
     createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
-    image: {
-      dataUrl: 'https://randomuser.me/api/portraits/men/17.jpg',
-    },
+    imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
   },
   {
     id: '2',
@@ -130,9 +128,7 @@ export const ArrayOfThings: Thing[] = [
     createdAt: new Date(),
     createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: false,
-    image: {
-      dataUrl: 'https://randomuser.me/api/portraits/men/17.jpg',
-    },
+    imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
   },
   {
     id: '3',
@@ -142,9 +138,7 @@ export const ArrayOfThings: Thing[] = [
     createdAt: new Date(),
     createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
-    image: {
-      dataUrl: 'https://randomuser.me/api/portraits/men/17.jpg',
-    },
+    imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
   },
   {
     id: '4',
@@ -154,9 +148,7 @@ export const ArrayOfThings: Thing[] = [
     createdAt: new Date(),
     createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
-    image: {
-      dataUrl: 'https://randomuser.me/api/portraits/men/17.jpg',
-    },
+    imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
   },
   {
     id: '5',
@@ -166,9 +158,7 @@ export const ArrayOfThings: Thing[] = [
     createdAt: new Date(),
     createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
-    image: {
-      dataUrl: 'https://randomuser.me/api/portraits/men/17.jpg',
-    },
+    imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
   },
   {
     id: '6',
@@ -178,9 +168,7 @@ export const ArrayOfThings: Thing[] = [
     createdAt: new Date(),
     createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
-    image: {
-      dataUrl: 'https://randomuser.me/api/portraits/men/17.jpg',
-    },
+    imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
   },
   {
     id: '7',
@@ -190,9 +178,7 @@ export const ArrayOfThings: Thing[] = [
     createdAt: new Date(),
     createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: false,
-    image: {
-      dataUrl: 'https://randomuser.me/api/portraits/men/17.jpg',
-    },
+    imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
   },
   {
     id: '8',
@@ -202,9 +188,7 @@ export const ArrayOfThings: Thing[] = [
     createdAt: new Date(),
     createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
-    image: {
-      dataUrl: 'https://randomuser.me/api/portraits/men/17.jpg',
-    },
+    imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
   },
   {
     id: '9',
@@ -214,9 +198,7 @@ export const ArrayOfThings: Thing[] = [
     createdAt: new Date(),
     createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
-    image: {
-      dataUrl: 'https://randomuser.me/api/portraits/men/17.jpg',
-    },
+    imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
   },
   {
     id: '10',
@@ -226,9 +208,7 @@ export const ArrayOfThings: Thing[] = [
     createdAt: new Date(),
     createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
-    image: {
-      dataUrl: 'https://randomuser.me/api/portraits/men/17.jpg',
-    },
+    imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
   },
 ];
 

@@ -13,10 +13,6 @@ import { serializeThing } from '../serializers/things';
 // POST /things
 export const createThing = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.file) {
-      next(new BadRequestError('file is required'));
-      return;
-    }
     const { name, description, type, isAvailable } = req.body;
     const thing = new Thing({
       name,
@@ -24,7 +20,7 @@ export const createThing = async (req: Request, res: Response, next: NextFunctio
       type,
       createdBy: req.user,
       isAvailable,
-      image: { dataUrl: req.file.path },
+      imageUrl: req.file?.filename,
     });
     await ThingService.createThing(thing);
     res.status(201).send(await serializeThing(thing));
@@ -66,6 +62,7 @@ export const updateThing = async (req: Request, res: Response, next: NextFunctio
       description: req.body.description,
       type: req.body.type,
       isAvailable: req.body.isAvailable,
+      imageUrl: req.file?.filename,
     };
     const { thingId } = req.params;
     const updatedThing = await ThingService.updateThing(thingId, update);

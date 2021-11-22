@@ -161,8 +161,8 @@ sketch
 #This is a mongo script to set user to admin while running locally in docker-compose
 changeAdmin.js
 
-# This is local cypress environmental files for local machine testing would contain sensitive information
-cypress.env.json
 #Upload to gitignore
 uploads/
 
+# This is local cypress environmental files for local machine testing would contain sensitive information
+cypress.env.json

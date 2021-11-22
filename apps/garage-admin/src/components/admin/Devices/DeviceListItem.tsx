@@ -38,7 +38,7 @@ const StyledListItem = styled(List.Item)<StyledListItemProps>`
 const DeviceListItem = ({ item }: ListItemProps) => {
   const { selectedThing, setSelectedThing } = useContext(AdminContext);
   const baseURL = process.env.REACT_APP_BACKEND_URL;
-  console.log(`${baseURL}${selectedThing.image.dataUrl}`);
+  console.log(`${baseURL}${selectedThing.imageUrl}`);
 
   const isThisUserSelected = selectedThing.name === item.name;
 
@@ -54,7 +54,7 @@ const DeviceListItem = ({ item }: ListItemProps) => {
       <List.Item.Meta
         data-testid="deviceList.item.meta"
         style={listItemMeta}
-        avatar={<Avatar size={48} src={`${baseURL}/${selectedThing.image.dataUrl}`} />}
+        avatar={<Avatar size={48} src={`${baseURL}/${selectedThing.imageUrl}`} />}
         title={item.name}
         description={item.type}
       />

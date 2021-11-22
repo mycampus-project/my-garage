@@ -32,9 +32,7 @@ const defaultContextState: AdminContextInterface = {
     createdAt: new Date(),
     createdBy: { id: '', fullName: '' },
     isAvailable: true,
-    image: {
-      dataUrl: 'https://randomuser.me/api/portraits/men/17.jpg',
-    },
+    imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
   },
   modelIsVisible: false,
   setModelType: () => {},

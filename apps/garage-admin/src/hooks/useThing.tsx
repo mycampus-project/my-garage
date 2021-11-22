@@ -67,9 +67,9 @@ const useThing = () => {
           openNotificationWithIcon(
             'success',
             'Device Added',
-            `${data.name} was successfully added ${data.image}`,
+            `${data.name} was successfully added.`,
           );
-          console.log('image successful', data.image);
+          console.log('image successful', data.imageUrl);
         },
 
         onError: (error) => {
