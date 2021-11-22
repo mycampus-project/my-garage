@@ -13,14 +13,14 @@ import {
 import { Thing } from '@my-garage/common';
 import moment from 'moment';
 import { DatePicker, PageHeader, Space, Form, Typography } from 'antd';
-import { useLayoutEffect, useMemo, useState } from 'react';
-import styled, { css } from 'styled-components';
+import { useMemo, useState } from 'react';
+import styled from 'styled-components';
+import { TableCell } from './common';
+import TimeCell from './TimeCell';
 
 const Root = styled.div`
   padding: var(--padding-m);
 `;
-
-const CELL_WIDTH = 200;
 
 const TableColumn = styled.div`
   display: flex;
@@ -60,13 +60,6 @@ const Table = styled.div`
   }
 `;
 
-const TableCell = styled.div`
-  text-align: center;
-  border: 1px solid #f0f0f0;
-  padding: var(--padding-xs);
-  background: white;
-`;
-
 const WeekdayHeaderCell = styled(TableCell)`
   z-index: 100;
   white-space: nowrap;
@@ -79,47 +72,7 @@ const HourHeaderCell = styled(TableCell)<{ isHighlighted: boolean }>`
   position: sticky;
   left: 0;
   z-index: 1;
-
   ${({ isHighlighted }) => isHighlighted && 'background-color: var(--ant-primary-1)'};
-`;
-
-const TimeCell = styled(TableCell)<{ isSelected: boolean; isStart: boolean; isEnd: boolean }>`
-  flex: 1;
-
-  &:nth-child(2n + 1) {
-    background-color: #f8f8f8;
-  }
-
-  &:hover {
-    background-color: var(--ant-primary-1);
-  }
-  ${({ isStart, isEnd }) => {
-    if (isStart && isEnd) {
-      return 'border-radius: 10px';
-    }
-    if (isStart) {
-      return 'border-radius: 10px 10px 0 0';
-    }
-    if (isEnd) {
-      return 'border-radius: 0 0 10px 10px ';
-    }
-    return null;
-  }};
-
-  ${({ isSelected }) =>
-    isSelected &&
-    css`
-      &,
-      &:hover {
-        background-color: var(--ant-primary-color) !important;
-        color: white;
-        border-color: transparent;
-      }
-    `};
-
-  @media (max-width: 992px) {
-    min-width: ${CELL_WIDTH}px;
-  }
 `;
 
 const getBookingIntervals = (startHour: number, endHour: number) => {
@@ -169,7 +122,7 @@ const sortDates = (dates: Date[]) =>
     return isBefore(a, b) ? -1 : 1;
   });
 
-const isBetween = (date: Date, interval: [Date, Date]) => {
+const isBetweenInclusive = (date: Date, interval: [Date, Date]) => {
   const [start, end] = sortDates(interval);
 
   return isWithinInterval(date, { start, end });
@@ -202,28 +155,53 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
     [weekdays, bookingIntervals],
   );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const cells = useMemo(() => new Map<Date, HTMLDivElement>(), [weekTimeRanges]);
-
   const onCellClick = (cellDate: Date) => {
+    if (!start && !end) {
+      setStart(cellDate);
+      return;
+    }
+
+    if (start && !end) {
+      if (isSameDay(start, cellDate)) {
+        const [first, last] = sortDates([start, cellDate]);
+        setStart(first);
+        setEnd(last);
+      } else {
+        setStart(cellDate);
+      }
+    }
+
     if (start && end) {
       setStart(cellDate);
       setEnd(undefined);
-    } else if (start && isSameDay(start, cellDate)) {
-      if (isBefore(cellDate, start)) {
-        setStart(cellDate);
-        setEnd(start);
-      } else {
-        setEnd(cellDate);
-      }
-    } else {
-      setStart(cellDate);
     }
   };
 
-  useLayoutEffect(() => {
-    console.log({ start, end });
-  }, [start, end]);
+  const getIsTableCellHighlighted = (cellDate: Date) => {
+    if (!start) return false;
+
+    if (start === cellDate) return true;
+
+    if (!(end ?? hoveredHour) || (hoveredHour && !end && !isSameDay(start, hoveredHour))) {
+      return false;
+    }
+
+    return isBetweenInclusive(cellDate, [start, end ?? hoveredHour!]);
+  };
+
+  const getTimeCellText = (cellDate: Date) => {
+    const endOfInterval = end ?? hoveredHour;
+    if (!start || !endOfInterval || !isSameDay(start, endOfInterval))
+      return start === cellDate ? format(cellDate, 'HH:mm') : undefined;
+
+    const [first, last] = sortDates([start, endOfInterval]);
+
+    if (cellDate === first) {
+      return formatInterval(first, last);
+    }
+
+    return undefined;
+  };
 
   return (
     <>
@@ -272,38 +250,18 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
           {weekTimeRanges?.map((weekdayOptions) => (
             <TableColumn key={weekdayOptions[0].getDay()}>
               <WeekdayHeaderCell>{format(weekdayOptions[0], 'eee d.MM.y')}</WeekdayHeaderCell>
-              {weekdayOptions.map((day) => {
-                const isSelected =
-                  start === day ||
-                  end === day ||
-                  (start &&
-                    !end &&
-                    hoveredHour &&
-                    isSameDay(start, day) &&
-                    isSameDay(hoveredHour, day) &&
-                    isBetween(day, [start, hoveredHour])) ||
-                  (!!start && !!end && isBetween(day, [start, end]));
-                return (
-                  <TimeCell
-                    key={day.getTime()}
-                    ref={(ref) => ref && cells.set(day, ref)}
-                    onClick={() => onCellClick(day)}
-                    isSelected={isSelected}
-                    isStart={start === day}
-                    isEnd={end === day}
-                    onMouseEnter={() => setHoveredHour(day)}
-                    onMouseLeave={() => setHoveredHour(undefined)}
-                  >
-                    {start &&
-                      hoveredHour &&
-                      (isSameDay(start, hoveredHour)
-                        ? sortDates([start, hoveredHour])[0]
-                        : start) === day &&
-                      (hoveredHour ?? end) &&
-                      formatInterval(start, end ?? hoveredHour!)}
-                  </TimeCell>
-                );
-              })}
+              {weekdayOptions.map((date) => (
+                <TimeCell
+                  key={date.getTime()}
+                  date={date}
+                  onClick={onCellClick}
+                  isHighlighted={getIsTableCellHighlighted(date)}
+                  onMouseEnter={setHoveredHour}
+                  onMouseLeave={() => setHoveredHour(undefined)}
+                >
+                  {getTimeCellText(date)}
+                </TimeCell>
+              ))}
             </TableColumn>
           ))}
         </Table>

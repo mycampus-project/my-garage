@@ -7,6 +7,7 @@ module.exports = {
     'react/jsx-props-no-spreading': 'off',
     'react/jsx-wrap-multilines': 'off',
     'prefer-destructuring': ['error', { object: true, array: false }],
+    'react/prop-types': 'off',
     'react/require-default-props': 0,
   },
 };
