@@ -43,8 +43,8 @@ const thingSchema = new mongoose.Schema<ThingDocument>({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
-  image: {
-    dataUrl: { type: String },
+  imageUrl: {
+    type: String,
     required: false,
   },
 });

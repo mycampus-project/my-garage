@@ -24,7 +24,7 @@ export const createThing = async (req: Request, res: Response, next: NextFunctio
       type,
       createdBy: req.user,
       isAvailable,
-      image: { dataUrl: req.file.path },
+      imageUrl: req.file.filename,
     });
     await ThingService.createThing(thing);
     res.status(201).send(await serializeThing(thing));
@@ -70,7 +70,7 @@ export const updateThing = async (req: Request, res: Response, next: NextFunctio
       description: req.body.description,
       type: req.body.type,
       isAvailable: req.body.isAvailable,
-      image: { dataUrl: req.file.path },
+      imageUrl: req.file.filename,
     };
     const { thingId } = req.params;
     const updatedThing = await ThingService.updateThing(thingId, update);
