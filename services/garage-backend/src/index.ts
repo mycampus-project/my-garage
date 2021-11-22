@@ -1,9 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import { json } from 'body-parser';
+// import { json } from 'body-parser';
 
 import mongo from './mongo';
-import apiContentType from './middlewares/apiContentType';
 import apiErrorHandler from './middlewares/apiErrorHandler';
 import authRouter from './routers/authRouter';
 import { authMiddleware, requireAuth } from './middlewares/auth';
@@ -11,13 +10,14 @@ import createRoles from './helpers/createRoles';
 import thingRouter from './routers/thingRouter';
 
 const app = express();
-app.use(json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(authMiddleware);
 
 const PORT = process.env.PORT ?? 3000;
 
 app.use(cors());
-app.use(apiContentType);
+// app.use(apiContentType);
 
 app.use('/things', thingRouter);
 

@@ -163,3 +163,6 @@ changeAdmin.js
 
 # This is local cypress environmental files for local machine testing would contain sensitive information
 cypress.env.json
+#Upload to gitignore
+uploads/
+
