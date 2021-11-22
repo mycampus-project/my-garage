@@ -35,10 +35,10 @@ const fileFilter = (req: any, file: any, cb: any) => {
 };
 const upload = multer({ storage, fileFilter });
 
-router.get('/', upload.single('image'), findAllThings);
+router.get('/', findAllThings);
 router.get('/:thingId', findThingById);
 router.post('/', requireAuth('admin'), createThing);
-router.put('/:thingId', requireAuth('admin'), updateThing);
+router.put('/:thingId', requireAuth('admin'), upload.single('image'), updateThing);
 router.delete('/:thingId', requireAuth('admin'), deleteThing);
 
 export default router;

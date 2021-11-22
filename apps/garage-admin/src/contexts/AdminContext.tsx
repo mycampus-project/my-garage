@@ -29,6 +29,7 @@ const defaultContextState: AdminContextInterface = {
     createdAt: new Date(),
     createdBy: { id: '', fullName: '' },
     isAvailable: true,
+    image: 'https://randomuser.me/api/portraits/men/17.jpg',
   },
   modelIsVisible: false,
   setModelType: () => {},

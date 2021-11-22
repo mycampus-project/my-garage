@@ -87,6 +87,9 @@ function Admin() {
               <Menu.Item data-testid="nav.dashboard" key="dashboards">
                 Dashboards
               </Menu.Item>
+              <Menu.Item data-testid="nav.dashboard" key="config">
+                Configuration
+              </Menu.Item>
             </Menu>
             <Spacer />
             <ButtonContainer>

@@ -2,6 +2,7 @@ import { Form, Input, Switch, Select } from 'antd';
 import { useContext } from 'react';
 import { AdminContext } from 'src/contexts/AdminContext';
 import { AddDeviceFormProps } from 'src/types/adminTypes';
+import UploadAvatar from '../UploadAvatar';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -57,18 +58,9 @@ const EditDeviceForm = ({ form, showSubmit }: AddDeviceFormProps) => {
       >
         <TextArea rows={4} />
       </Form.Item>
-      {/* <Form.Item
-      name="upload"
-      label="Upload"
-      valuePropName="fileList"
-      rules={[
-        {
-          required: true,
-        },
-      ]}
-    >
-      <UploadAvatar />
-    </Form.Item> */}
+      <Form.Item name="upload" label="Upload" valuePropName="fileList">
+        <UploadAvatar />
+      </Form.Item>
       <Form.Item
         initialValue={selectedThing.type}
         name="type"
