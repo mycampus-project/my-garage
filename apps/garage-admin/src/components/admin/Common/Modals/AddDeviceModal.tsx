@@ -35,7 +35,6 @@ const AddDeviceModal = () => {
         form
           .validateFields()
           .then((values) => {
-            console.log(newThing(values));
             onSubmit(newThing(values));
           })
           .then(() => {

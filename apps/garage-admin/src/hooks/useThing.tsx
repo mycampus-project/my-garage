@@ -69,7 +69,6 @@ const useThing = () => {
             'Device Added',
             `${data.name} was successfully added.`,
           );
-          console.log('image successful', data.imageUrl);
         },
 
         onError: (error) => {
