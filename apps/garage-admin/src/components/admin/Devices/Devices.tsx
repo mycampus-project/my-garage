@@ -3,23 +3,23 @@ import { AdminContext } from '../../../contexts/AdminContext';
 import PageLayout from '../Common/PageLayout';
 import MainContainer from '../Common/MainContainer';
 import Banner from '../Common/Banner';
-import DeviceList from './DeviceList';
 import DeviceInfoPanel from './DeviceInfoPanel';
+import ModelLauncher from '../Common/ModelLauncher';
+import DeviceList from './DeviceList';
 
 function Devices() {
-  const { alertType, alertMessage } = useContext(AdminContext);
+  const { modelIsVisible } = useContext(AdminContext);
 
-  const banner = (
-    <Banner
-      data-testid="banner"
-      title="Devices"
-      alertMessage={alertMessage}
-      alertType={alertType}
-    />
+  return (
+    <>
+      {modelIsVisible && <ModelLauncher />}
+
+      <PageLayout
+        Title={<Banner data-testid="banner" title="Devices" showAddThing />}
+        Element={<MainContainer list={<DeviceList />} details={<DeviceInfoPanel />} />}
+      />
+    </>
   );
-
-  const userMainContainer = <MainContainer list={<DeviceList />} details={<DeviceInfoPanel />} />;
-  return <PageLayout Title={banner} Element={userMainContainer} />;
 }
 
 export default Devices;

@@ -10,9 +10,22 @@ const StyledCard = styled(Card)`
   width: 100%;
   height: 100%;
   margin: 0;
-
+  overflow: auto;
+  box-sizing: border-box;
   .ant-card-head-title {
     font-size: 28px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.3);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    box-shadow: inset 0 0 5px var(--ant-primary-2);
   }
 `;
 
@@ -25,7 +38,7 @@ const ButtonContainer = styled.div`
 
 const avatar = (
   <Avatar
-    size={{ xs: 50, sm: 100, md: 100, lg: 100, xl: 100, xxl: 150 }}
+    size={{ xs: 50, sm: 100, md: 100, lg: 100, xl: 100, xxl: 110 }}
     src="https://randomuser.me/api/portraits/men/22.jpg"
   />
 );
@@ -33,37 +46,39 @@ const avatar = (
 // Selected user panel to display user information, and their current and previous bookings.
 // has buttons to toggle user role and delete user from list.
 function DeviceInfoPanel() {
-  const { selectedThing, setAlertMessage, setAlertType } = useContext(AdminContext);
-
-  const setAlertToggleRole = () => {
-    setAlertMessage('change availability successful');
-    setAlertType('success');
-  };
-
-  const setAlertFailedDelete = () => {
-    setAlertMessage('delete unsuccessful');
-    setAlertType('error');
-  };
+  const { selectedThing, setModelIsVisible, setModelType } = useContext(AdminContext);
 
   if (selectedThing.name.length > 0) {
     return (
-      <>
-        <StyledCard title={selectedThing.name} extra={avatar}>
-          <ButtonContainer>
-            <DeviceDescription />
-            <Space align="start">
-              <Button type="primary" onClick={setAlertToggleRole}>
-                Toggle Available
-              </Button>
-              <Button type="primary" onClick={setAlertFailedDelete}>
-                Delete
-              </Button>
-            </Space>
-          </ButtonContainer>
+      <StyledCard title={selectedThing.name} extra={avatar}>
+        <ButtonContainer>
+          <DeviceDescription />
+          <Space align="start">
+            <Button
+              data-testid="edit.device.btn"
+              type="primary"
+              onClick={() => {
+                setModelType('edit-device');
+                setModelIsVisible(true);
+              }}
+            >
+              Edit
+            </Button>
+            <Button
+              data-testid="delete.device.btn"
+              type="primary"
+              onClick={() => {
+                setModelType('delete-device');
+                setModelIsVisible(true);
+              }}
+            >
+              Delete
+            </Button>
+          </Space>
+        </ButtonContainer>
 
-          <BookingsTabsCard things />
-        </StyledCard>
-      </>
+        <BookingsTabsCard things />
+      </StyledCard>
     );
   }
   return null;

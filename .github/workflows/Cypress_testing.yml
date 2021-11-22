@@ -2,6 +2,7 @@ name: Cypress End to End Testing
 on:
   pull_request:
     types: [opened, synchronize]
+
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
@@ -28,6 +29,7 @@ jobs:
           echo $ADMIN_USER_RECORD >> ./services/garage-backend/fixtures/users.json
           mongoimport --db=my-garage --collection=roles --drop --file ./services/garage-backend/fixtures/roles.json
           mongoimport --db=my-garage --collection=users --drop --file ./services/garage-backend/fixtures/users.json
+          mongoimport --db=my-garage --collection=things --drop --file ./services/garage-backend/fixtures/things.json
 
       # Run cypress tests
       - name: Cypress run tests
