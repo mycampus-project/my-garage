@@ -20,7 +20,9 @@ const storage = multer.diskStorage({
   },
 
   filename(req: any, file: any, cb: any) {
-    cb(null, file.originalname);
+    const filename = file.originalname;
+    const fileExtension = filename.split('.')[1];
+    cb(null, `${Date.now()}.${fileExtension}`);
   },
 });
 const fileFilter = (req: any, file: any, cb: any) => {
@@ -41,6 +43,6 @@ router.get('/:thingId', findThingById);
 router.post('/', requireAuth('admin'), upload.single('image'), createThing);
 router.put('/:thingId', requireAuth('admin'), updateThing);
 router.delete('/:thingId', requireAuth('admin'), deleteThing);
-router.put('/:thingId//restore', requireAuth('admin'), restoreThing);
+router.put('/:thingId/restore', requireAuth('admin'), restoreThing);
 
 export default router;
