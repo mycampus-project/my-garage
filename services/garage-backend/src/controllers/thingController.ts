@@ -61,11 +61,16 @@ export const findThingById = async (req: Request, res: Response, next: NextFunct
 // PUT /things/:thingId
 export const updateThing = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    if (!req.file) {
+      next(new BadRequestError('file is required'));
+      return;
+    }
     const update = {
       name: req.body.name,
       description: req.body.description,
       type: req.body.type,
       isAvailable: req.body.isAvailable,
+      image: { dataUrl: req.file.path },
     };
     const { thingId } = req.params;
     const updatedThing = await ThingService.updateThing(thingId, update);

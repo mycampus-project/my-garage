@@ -48,7 +48,7 @@ const upload = multer({ storage, fileFilter });
 router.get('/', findAllThings);
 router.get('/:thingId', findThingById);
 router.post('/', requireAuth('admin'), upload.single('image'), createThing);
-router.put('/:thingId', requireAuth('admin'), updateThing);
+router.put('/:thingId', requireAuth('admin'), upload.single('image'), updateThing);
 router.delete('/:thingId', requireAuth('admin'), deleteThing);
 router.put('/:thingId/restore', requireAuth('admin'), restoreThing);
 
