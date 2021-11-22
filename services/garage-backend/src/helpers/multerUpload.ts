@@ -13,24 +13,27 @@ const storage = multer.diskStorage({
     });
   },
 
-  filename(req: any, file: any, cb: any) {
+  filename(req, file, cb) {
     const filename = file.originalname;
     const filenameParts = filename.split('.');
     const fileExtension = filenameParts[filenameParts.length - 1];
     cb(null, `${randomUUID()}.${fileExtension}`);
   },
 });
-const fileFilter = (req: any, file: any, cb: any) => {
-  if (
-    file.mimetype === 'image/jpg' ||
-    file.mimetype === 'image/jpeg' ||
-    file.mimetype === 'image/png'
-  ) {
-    cb(null, true);
-  } else {
-    cb(new Error('Image uploaded is not of type jpg/jpeg or png'), false);
-  }
-};
-const upload = multer({ storage, fileFilter });
+
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    if (
+      file.mimetype === 'image/jpg' ||
+      file.mimetype === 'image/jpeg' ||
+      file.mimetype === 'image/png'
+    ) {
+      cb(null, true);
+    } else {
+      cb(new Error('Image uploaded is not of type jpg/jpeg or png'));
+    }
+  },
+});
 
 export default upload;
