@@ -160,3 +160,7 @@ sketch
 
 #This is a mongo script to set user to admin while running locally in docker-compose
 changeAdmin.js
+
+#Upload to gitignore
+uploads/
+

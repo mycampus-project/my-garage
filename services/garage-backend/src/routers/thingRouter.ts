@@ -1,14 +1,15 @@
 import express from 'express';
 import multer from 'multer';
 
-import { requireAuth } from '../middlewares/auth';
 import {
   createThing,
   findThingById,
   updateThing,
   findAllThings,
   deleteThing,
+  restoreThing,
 } from '../controllers/thingController';
+import { requireAuth } from '../middlewares/auth';
 
 const router = express.Router();
 router.use(requireAuth());
@@ -35,10 +36,11 @@ const fileFilter = (req: any, file: any, cb: any) => {
 };
 const upload = multer({ storage, fileFilter });
 
-router.get('/', upload.single('image'), findAllThings);
+router.get('/', findAllThings);
 router.get('/:thingId', findThingById);
-router.post('/', requireAuth('admin'), createThing);
+router.post('/', requireAuth('admin'), upload.single('image'), createThing);
 router.put('/:thingId', requireAuth('admin'), updateThing);
 router.delete('/:thingId', requireAuth('admin'), deleteThing);
+router.put('/:thingId//restore', requireAuth('admin'), restoreThing);
 
 export default router;
