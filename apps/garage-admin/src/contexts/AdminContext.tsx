@@ -6,14 +6,17 @@ interface AdminContextInterface {
   selectedThing: Thing;
   modelIsVisible: boolean;
   modelType: string;
+  image: File | undefined;
   setModelType: (name: string) => void;
   setModelIsVisible: (name: boolean) => void;
   setSelectedUser: (name: User) => void;
   setSelectedThing: (name: Thing) => void;
+  setImage: (file: File) => void;
 }
 
 const defaultContextState: AdminContextInterface = {
   modelType: '',
+  image: undefined,
   selectedUser: {
     id: '',
     fullName: '',
@@ -29,12 +32,14 @@ const defaultContextState: AdminContextInterface = {
     createdAt: new Date(),
     createdBy: { id: '', fullName: '' },
     isAvailable: true,
+    imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
   },
   modelIsVisible: false,
   setModelType: () => {},
   setModelIsVisible: () => {},
   setSelectedUser: () => {},
   setSelectedThing: () => {},
+  setImage: () => {},
 };
 
 export const AdminContext = createContext<AdminContextInterface>(defaultContextState);
@@ -44,6 +49,7 @@ const AdminContextProvider: FC = ({ children }) => {
   const [selectedThing, setSelectedThing] = useState<Thing>(defaultContextState.selectedThing);
   const [modelIsVisible, setModelIsVisible] = useState<boolean>(defaultContextState.modelIsVisible);
   const [modelType, setModelType] = useState<string>(defaultContextState.modelType);
+  const [image, setImage] = useState<File | undefined>(defaultContextState.image);
 
   return (
     <AdminContext.Provider
@@ -56,6 +62,8 @@ const AdminContextProvider: FC = ({ children }) => {
         setSelectedUser,
         selectedThing,
         setSelectedThing,
+        image,
+        setImage,
       }}
     >
       {children}
