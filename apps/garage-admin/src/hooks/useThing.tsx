@@ -32,32 +32,44 @@ const useThing = () => {
     } = useMutation<
       Thing,
       AxiosError,
-      { token: string; name: string; description: string; type: string; isAvailable: boolean }
+      {
+        token: string;
+        name: string;
+        description: string;
+        type: string;
+        isAvailable: boolean;
+        image: File;
+      }
     >(
       ['addThing'],
-      ({ name, description, type, isAvailable }) =>
-        apiClient
-          .post(
-            '/things',
-            {
-              name,
-              description,
-              type,
-              isAvailable,
+      ({ name, description, type, isAvailable, image }) => {
+        const newFormData = new FormData();
+        newFormData.append('name', name);
+        newFormData.append('description', description);
+        newFormData.append('type', type);
+        newFormData.append('isAvailable', JSON.stringify(isAvailable));
+        if (image !== undefined) {
+          newFormData.append('image', image);
+        }
+
+        return apiClient
+          .post('/things', newFormData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${token}`,
             },
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            },
-          )
-          .then((response) => response.data),
+          })
+          .then((response) => response.data);
+      },
       {
         onSuccess: (data) => {
           client.invalidateQueries('things');
           openNotificationWithIcon(
             'success',
             'Device Added',
-            `${data.name} was successfully added`,
+            `${data.name} was successfully added ${data.image}`,
           );
+          console.log('image successful', data.image);
         },
 
         onError: (error) => {

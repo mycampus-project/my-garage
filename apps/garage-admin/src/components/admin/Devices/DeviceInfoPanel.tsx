@@ -48,6 +48,8 @@ const avatar = (
 function DeviceInfoPanel() {
   const { selectedThing, setModelIsVisible, setModelType } = useContext(AdminContext);
 
+  console.log('selected thing', selectedThing);
+
   if (selectedThing.name.length > 0) {
     return (
       <StyledCard title={selectedThing.name} extra={avatar}>

@@ -8,7 +8,7 @@ import { AdminContext } from '../../../../contexts/AdminContext';
 import openNotificationWithIcon from '../OpenNotificationWithIcon';
 
 const AddDeviceModal = () => {
-  const { modelIsVisible, setModelIsVisible } = useContext(AdminContext);
+  const { modelIsVisible, setModelIsVisible, image } = useContext(AdminContext);
   const [form] = Form.useForm();
   const [token] = useLocalStorage('auth_token');
   const { onSubmit } = useThing().AddThing(token);
@@ -16,6 +16,14 @@ const AddDeviceModal = () => {
 
   const toggleButton = () => {
     setIsDisabled(isValidateAndShowButton(form));
+  };
+
+  const newThing = (values: any) => {
+    const newObject = {
+      ...values,
+      image: image as File,
+    };
+    return newObject;
   };
 
   return (
@@ -27,7 +35,8 @@ const AddDeviceModal = () => {
         form
           .validateFields()
           .then((values) => {
-            onSubmit(values);
+            console.log(newThing(values));
+            onSubmit(newThing(values));
           })
           .then(() => {
             setModelIsVisible(false);
