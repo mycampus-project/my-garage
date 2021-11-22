@@ -20,10 +20,10 @@ export const createThing = async (req: Request, res: Response, next: NextFunctio
       type,
       createdBy: req.user,
       isAvailable,
+      imageUrl: req.file?.filename,
     });
-
     await ThingService.createThing(thing);
-    res.json(await serializeThing(thing));
+    res.status(201).send(await serializeThing(thing));
   } catch (error: any) {
     if (error.name === 'ValidationError') {
       next(new BadRequestError('Request Not Valid', error));
@@ -40,7 +40,7 @@ export const findAllThings = async (req: Request, res: Response, next: NextFunct
     const arrayOfThings = await Promise.all(thingDocuments.map((item) => serializeThing(item)));
     res.send(arrayOfThings);
   } catch (error: any) {
-    next(new NotFoundError('Things not found', error));
+    next(new InternalServerError(error.message, error));
   }
 };
 
@@ -62,6 +62,7 @@ export const updateThing = async (req: Request, res: Response, next: NextFunctio
       description: req.body.description,
       type: req.body.type,
       isAvailable: req.body.isAvailable,
+      imageUrl: req.file?.filename,
     };
     const { thingId } = req.params;
     const updatedThing = await ThingService.updateThing(thingId, update);
@@ -79,6 +80,7 @@ export const deleteThing = async (req: Request, res: Response, next: NextFunctio
       next(new UnauthorizedError('User not found'));
       return;
     }
+
     const { thingId } = req.params;
     const jsonThing = await ThingService.findThingById(thingId);
     if (jsonThing.removedBy != null && jsonThing.removedAt != null) {
@@ -87,6 +89,28 @@ export const deleteThing = async (req: Request, res: Response, next: NextFunctio
     }
     const deletedThing = await ThingService.deleteThing(thingId, req.user.id, new Date());
     res.json(await serializeThing(deletedThing));
+  } catch (error: any) {
+    next(new NotFoundError('Thing not found', error));
+  }
+};
+
+export const restoreThing = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (!req.user) {
+      next(new UnauthorizedError('User not found'));
+      return;
+    }
+
+    const { thingId } = req.params;
+    const jsonThing = await ThingService.findThingById(thingId);
+    if (jsonThing.removedBy === null && jsonThing.removedAt === null) {
+      res.send('Thing is not deleted');
+      return;
+    }
+    jsonThing.removedBy = undefined;
+    jsonThing.removedAt = undefined;
+    await jsonThing.save();
+    res.json(await serializeThing(jsonThing));
   } catch (error: any) {
     next(new NotFoundError('Thing not found', error));
   }

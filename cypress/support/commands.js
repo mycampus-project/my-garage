@@ -1,4 +1,5 @@
 import '@testing-library/cypress/add-commands';
+import 'cypress-localstorage-commands';
 
 // ***********************************************
 // This example commands.js shows you how to

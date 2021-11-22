@@ -14,12 +14,23 @@ const StyledListContainer = styled.div`
   width: 40%;
   overflow: auto;
   padding: 0;
+
+  ::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.3);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    box-shadow: inset 0 0 5px var(--ant-primary-2);
+  }
 `;
 
 const StyledDetailsContainer = styled.div`
   display: flex;
   flex-grow: 1;
-  overflow: auto;
 `;
 
 interface MainContainerProps {

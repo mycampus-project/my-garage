@@ -5,7 +5,7 @@ export interface ThingDocument
   extends Document<ObjectId>,
     Omit<Thing, 'createdBy' | 'removedBy' | 'id'> {
   createdBy: ObjectId;
-  removedBy: ObjectId;
+  removedBy?: ObjectId;
 }
 
 const thingSchema = new mongoose.Schema<ThingDocument>({
@@ -42,6 +42,10 @@ const thingSchema = new mongoose.Schema<ThingDocument>({
   removedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+  },
+  imageUrl: {
+    type: String,
+    required: false,
   },
 });
 
