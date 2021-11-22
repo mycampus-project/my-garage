@@ -1,5 +1,6 @@
 import express from 'express';
 import multer from 'multer';
+import * as fs from 'fs';
 
 import {
   createThing,
@@ -16,7 +17,13 @@ router.use(requireAuth());
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, './uploads/');
+    const dir = './uploads/';
+    fs.exists(dir, (exist) => {
+      if (!exist) {
+        return fs.mkdir(dir, (error) => cb(error, dir));
+      }
+      return cb(null, dir);
+    });
   },
 
   filename(req: any, file: any, cb: any) {
