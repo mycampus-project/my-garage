@@ -12,6 +12,14 @@ interface UserBookingItemProps {
 const StyledListItem = styled(List.Item)`
   @media screen and (max-width: 800px) {
     font-size: 12px;
+
+    .ant-list-item-action {
+      max-width: 100px;
+    }
+  }
+
+  .ant-list-item-meta-content > div {
+    color: rgba(0, 0, 0, 0.74);
   }
 `;
 

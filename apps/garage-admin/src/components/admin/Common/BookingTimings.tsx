@@ -10,7 +10,6 @@ const TimeContainer = styled.p`
   flex-wrap: wrap;
   flex-direction: row;
   align-content: center;
-  padding-top: 10px;
 
   @media screen and (max-width: 800px) {
     flex-direction: column;
@@ -19,6 +18,7 @@ const TimeContainer = styled.p`
   @media screen and (min-width: 1199px) {
     div {
       margin-left: 16px;
+      flex-wrap: nowrap;
     }
   }
 `;
