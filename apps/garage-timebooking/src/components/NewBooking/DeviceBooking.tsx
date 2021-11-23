@@ -3,6 +3,7 @@ import {
   format,
   getWeek,
   isBefore,
+  isEqual,
   isSameDay,
   isSameMinute,
   isWithinInterval,
@@ -131,10 +132,46 @@ const isBetweenInclusive = (date: Date, interval: [Date, Date]) => {
 const formatInterval = (a: Date, b: Date) => {
   const [start, end] = sortDates([a, b]);
 
-  return `${format(start, 'HH:mm')}-${format(addMinutes(end, 30), 'HH:mm')}`;
+  return `${format(start, 'HH:mm')}-${format(end, 'HH:mm')}`;
 };
 
 // const formatSelectedInterval = (start: Date | undefined, end: Date | undefined, hoveredHour: Date, )
+
+const isBeforeOrEqual = (date: Date, dateToCompare: Date) =>
+  isEqual(date, dateToCompare) || isBefore(date, dateToCompare);
+
+const doDateRangesOverlap = (range1: [Date, Date], range2: [Date, Date]) => {
+  const [x1, y1] = sortDates(range1);
+  const [x2, y2] = sortDates(range2);
+
+  return (
+    !isBeforeOrEqual(sortDates([x1, y1])[1], sortDates([x2, y2])[0]) &&
+    !isBeforeOrEqual(sortDates([x2, y2])[1], sortDates([x1, y1])[0])
+  );
+};
+
+const isValidInterval = ([a, b]: [Date, Date], existingBookings: Array<[Date, Date]>) => {
+  if (!isSameDay(a, b)) return false;
+
+  return !existingBookings.some(([startAt, endAt]) =>
+    doDateRangesOverlap([a, b], [startAt, endAt]),
+  );
+};
+
+const useBookingsForWeek = (week: Date): Array<{ startAt: Date; endAt: Date }> => [
+  {
+    endAt: set(setDay(week, 1), { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 }),
+    startAt: set(setDay(week, 1), { hours: 11, minutes: 0, seconds: 0, milliseconds: 0 }),
+  },
+];
+
+const calculateStartEnd = (a: Date, b: Date) => {
+  const [startAt, endCellStart] = sortDates([a, b]);
+
+  const endAt = addMinutes(endCellStart, 30);
+
+  return { startAt, endAt };
+};
 
 interface Props {
   thing: Thing;
@@ -144,9 +181,31 @@ interface Props {
 const DeviceBooking = ({ thing, onBackClick }: Props) => {
   const [selectedWeek, setSelectedWeek] = useState<Date>(getInitialWeekValue());
 
-  const [start, setStart] = useState<Date>();
-  const [end, setEnd] = useState<Date>();
-  const [hoveredHour, setHoveredHour] = useState<Date>();
+  const [hoveredCell, setHoveredCell] = useState<Date>();
+
+  const [selectedInterval, setSelectedInterval] = useState<{
+    startAt: Date | null;
+    endAt: Date | null;
+  }>({ startAt: null, endAt: null });
+  const bookingsForWeek = useBookingsForWeek(selectedWeek);
+
+  const highlightedInterval = useMemo((): { startAt: Date | null; endAt: Date | null } => {
+    if (!selectedInterval.startAt || !hoveredCell || selectedInterval.endAt || !bookingsForWeek)
+      return { startAt: null, endAt: null };
+
+    const { startAt, endAt } = calculateStartEnd(selectedInterval.startAt, hoveredCell);
+
+    if (
+      !isValidInterval(
+        [startAt, endAt],
+        bookingsForWeek.map(({ startAt: start, endAt: end }) => [start, end]),
+      )
+    ) {
+      return { startAt: null, endAt: null };
+    }
+
+    return { startAt, endAt };
+  }, [selectedInterval, hoveredCell, bookingsForWeek]);
 
   const bookingIntervals = useMemo(() => getBookingIntervals(9, 18), []);
   const weekdays = useMemo(() => createWeekdaysForWeek(selectedWeek), [selectedWeek]);
@@ -156,48 +215,60 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
   );
 
   const onCellClick = (cellDate: Date) => {
-    if (!start && !end) {
-      setStart(cellDate);
-      return;
-    }
+    if (
+      selectedInterval.startAt &&
+      !selectedInterval.endAt &&
+      isSameDay(selectedInterval.startAt, cellDate)
+    ) {
+      const { startAt, endAt } = calculateStartEnd(selectedInterval.startAt, cellDate);
 
-    if (start && !end) {
-      if (isSameDay(start, cellDate)) {
-        const [first, last] = sortDates([start, cellDate]);
-        setStart(first);
-        setEnd(last);
-      } else {
-        setStart(cellDate);
+      if (
+        isValidInterval(
+          [startAt, endAt],
+          bookingsForWeek.map(({ startAt: start, endAt: end }) => [start, end]),
+        )
+      ) {
+        setSelectedInterval({ startAt, endAt });
+        return;
       }
     }
 
-    if (start && end) {
-      setStart(cellDate);
-      setEnd(undefined);
-    }
+    setSelectedInterval({ startAt: cellDate, endAt: null });
+  };
+
+  const getIsTableCellSelected = (cellDate: Date) => {
+    const { startAt, endAt } = selectedInterval;
+    if (!startAt || !endAt) return false;
+
+    return isBetweenInclusive(cellDate, [startAt, endAt]) && !isEqual(cellDate, endAt);
   };
 
   const getIsTableCellHighlighted = (cellDate: Date) => {
-    if (!start) return false;
+    const { startAt, endAt } = highlightedInterval;
 
-    if (start === cellDate) return true;
+    if (!startAt || !endAt) return false;
 
-    if (!(end ?? hoveredHour) || (hoveredHour && !end && !isSameDay(start, hoveredHour))) {
-      return false;
-    }
-
-    return isBetweenInclusive(cellDate, [start, end ?? hoveredHour!]);
+    return isBetweenInclusive(cellDate, [startAt, endAt]) && !isEqual(cellDate, endAt);
   };
 
+  const getIsTableCellUnavailable = (cellDate: Date) =>
+    bookingsForWeek.some(
+      ({ startAt, endAt }) =>
+        isWithinInterval(cellDate, { start: startAt!, end: endAt! }) &&
+        !isSameMinute(cellDate, endAt),
+    );
+
   const getTimeCellText = (cellDate: Date) => {
-    const endOfInterval = end ?? hoveredHour;
-    if (!start || !endOfInterval || !isSameDay(start, endOfInterval))
-      return start === cellDate ? format(cellDate, 'HH:mm') : undefined;
+    const { startAt, endAt } = selectedInterval;
 
-    const [first, last] = sortDates([start, endOfInterval]);
+    if (startAt && endAt && isEqual(startAt, cellDate)) {
+      return formatInterval(startAt, endAt);
+    }
 
-    if (cellDate === first) {
-      return formatInterval(first, last);
+    const { startAt: startHighlighted, endAt: endHighlighted } = highlightedInterval;
+
+    if (startHighlighted && endHighlighted && isEqual(startHighlighted, cellDate)) {
+      return formatInterval(startHighlighted, endHighlighted);
     }
 
     return undefined;
@@ -220,7 +291,6 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
                 allowClear={false}
                 onChange={(value) => {
                   if (!value) return;
-                  console.log(value.format());
                   setSelectedWeek(value.toDate());
                 }}
                 picker="week"
@@ -237,9 +307,9 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
               return (
                 <HourHeaderCell
                   isHighlighted={
-                    !!hoveredHour &&
-                    dayForFormatting.getHours() === hoveredHour.getHours() &&
-                    dayForFormatting.getMinutes() === hoveredHour.getMinutes()
+                    !!hoveredCell &&
+                    dayForFormatting.getHours() === hoveredCell.getHours() &&
+                    dayForFormatting.getMinutes() === hoveredCell.getMinutes()
                   }
                 >
                   {format(dayForFormatting, 'HH:mm')}
@@ -255,9 +325,11 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
                   key={date.getTime()}
                   date={date}
                   onClick={onCellClick}
+                  isSelected={getIsTableCellSelected(date)}
                   isHighlighted={getIsTableCellHighlighted(date)}
-                  onMouseEnter={setHoveredHour}
-                  onMouseLeave={() => setHoveredHour(undefined)}
+                  isUnavailable={getIsTableCellUnavailable(date)}
+                  onMouseEnter={setHoveredCell}
+                  onMouseLeave={() => setHoveredCell(undefined)}
                 >
                   {getTimeCellText(date)}
                 </TimeCell>
