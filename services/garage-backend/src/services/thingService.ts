@@ -18,7 +18,7 @@ function findThingById(thingId: string): Promise<ThingDocument> {
 }
 
 function findAllThings(): Promise<ThingDocument[]> {
-  return Thing.find().sort({ name: 1, descripton: -1 }).exec();
+  return Thing.find().exec();
 }
 
 function updateThing(thingId: string, update: Partial<ThingDocument>): Promise<ThingDocument> {
