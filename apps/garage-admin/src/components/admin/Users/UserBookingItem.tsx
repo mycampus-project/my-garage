@@ -1,6 +1,7 @@
 import { List, Avatar, Button } from 'antd';
 import { useContext } from 'react';
 import { AdminContext } from 'src/contexts/AdminContext';
+import styled from 'styled-components';
 import { BookingData } from '../../../types/adminTypes';
 import BookingTimings from '../Common/BookingTimings';
 
@@ -8,13 +9,20 @@ interface UserBookingItemProps {
   item: BookingData;
 }
 
+const StyledListItem = styled(List.Item)`
+  @media screen and (max-width: 800px) {
+    font-size: 12px;
+  }
+`;
+
 const UserBookingItem = ({ item }: UserBookingItemProps) => {
   const { setModelIsVisible, setModelType } = useContext(AdminContext);
 
   return (
-    <List.Item
+    <StyledListItem
       actions={[
         <Button
+          type="link"
           onClick={() => {
             setModelType('edit-booking');
             setModelIsVisible(true);
@@ -23,6 +31,7 @@ const UserBookingItem = ({ item }: UserBookingItemProps) => {
           Edit
         </Button>,
         <Button
+          type="link"
           onClick={() => {
             setModelType('delete-booking');
             setModelIsVisible(true);
@@ -35,10 +44,9 @@ const UserBookingItem = ({ item }: UserBookingItemProps) => {
       <List.Item.Meta
         avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
         title={item.thing.name}
-        description={new Date(item.date).toDateString()}
+        description={<BookingTimings item={item} />}
       />
-      <BookingTimings item={item} />
-    </List.Item>
+    </StyledListItem>
   );
 };
 
