@@ -6,14 +6,14 @@ import { AdminContext } from '../../../contexts/AdminContext';
 const StyledDescriptions = styled(Descriptions)`
   margin-bottom: 32px;
   margin-top: 8px;
-  width: 70%;
+  width: 100%;
 
   table {
     table-layout: fixed;
     width: 100%;
 
     td {
-      width: 70%;
+      width: 50%;
       overflow: hidden;
     }
   }
@@ -25,6 +25,10 @@ const StyledDescriptions = styled(Descriptions)`
   .ant-descriptions-item-label > span {
     font-weight: 600;
   }
+
+  .ant-descriptions-item-content > span {
+    font-size: 14px;
+  }
 `;
 
 const UserDescription = () => {
@@ -32,7 +36,12 @@ const UserDescription = () => {
 
   return (
     <>
-      <StyledDescriptions title="User Details" bordered column={1}>
+      <StyledDescriptions
+        title="User Details"
+        bordered
+        size="small"
+        column={{ xxl: 2, xl: 2, lg: 1, md: 1, sm: 1, xs: 1 }}
+      >
         <Descriptions.Item className="testDescriptionItem" label="Full Name">
           {selectedUser.fullName}
         </Descriptions.Item>

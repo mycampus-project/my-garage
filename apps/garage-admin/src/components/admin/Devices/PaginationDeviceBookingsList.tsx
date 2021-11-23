@@ -18,7 +18,6 @@ const StyledDiv = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 400px;
 `;
 
 const PaginationDeviceList = ({ data }: DataProps) => {
@@ -26,26 +25,10 @@ const PaginationDeviceList = ({ data }: DataProps) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [minIndex, setMinIndex] = useState<number>(0);
   const [maxIndex, setMaxIndex] = useState<number>(0);
-  // const [totalPages, setTotalPages] = useState<number>(0);
   const pageSize: number = 5;
-
-  // const sortedByNameAlphabetically = (dataArray: Thing[]) => {
-  //   function compareByName(a: Thing, b: Thing) {
-  //     if (a.name < b.name) {
-  //       return -1;
-  //     }
-  //     if (a.name > b.name) {
-  //       return 1;
-  //     }
-  //     return 0;
-  //   }
-
-  //   return dataArray.sort(compareByName);
-  // };
 
   useEffect(() => {
     setFilteredData(data);
-    // setTotalPages(filteredArray.length / pageSize);
     setMinIndex(0);
     setMaxIndex(pageSize);
     setCurrentPage(1);

@@ -7,8 +7,9 @@ import PaginationDeviceList from '../Devices/PaginationDeviceBookingsList';
 import PaginationUserBookingsList from '../Users/PaginationUserBookingsList';
 
 const StyledCard = styled(Card)`
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  height: 500px;
 `;
 
 const tabListNoTitle: TabList[] = [

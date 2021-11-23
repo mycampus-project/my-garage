@@ -19,7 +19,6 @@ const GlobalStyles = createGlobalStyle`
     --padding-m: 16px;
     --padding-l: 24px;
     --padding-xl: 32px;
-    min-width: 1599px;
   }
 `;
 
