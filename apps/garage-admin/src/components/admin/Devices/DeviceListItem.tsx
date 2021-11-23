@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { List, Avatar } from 'antd';
 import { Thing } from '@my-garage/common';
 import styled from 'styled-components';
+import baseURL from 'src/utilities/api';
 import { AdminContext } from '../../../contexts/AdminContext';
 
 interface ListItemProps {
@@ -52,7 +53,7 @@ const DeviceListItem = ({ item }: ListItemProps) => {
       <List.Item.Meta
         data-testid="deviceList.item.meta"
         style={listItemMeta}
-        avatar={<Avatar size={48} src="https://randomuser.me/api/portraits/men/22.jpg" />}
+        avatar={<Avatar size={48} src={`${baseURL}/static/${item.imageUrl}`} />}
         title={item.name}
         description={item.type}
       />

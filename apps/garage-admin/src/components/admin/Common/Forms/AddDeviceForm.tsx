@@ -1,11 +1,19 @@
 import { Form, Input, Switch, Select } from 'antd';
 import { AddDeviceFormProps } from 'src/types/adminTypes';
+import UploadAvatar from '../UploadAvatar';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
 const AddDeviceForm = ({ form, showSubmit }: AddDeviceFormProps) => (
-  <Form form={form} layout="vertical" name="userForm" onFieldsChange={showSubmit}>
+  <Form
+    form={form}
+    layout="vertical"
+    name="userForm"
+    onFieldsChange={() => {
+      showSubmit();
+    }}
+  >
     <Form.Item
       name="name"
       label="Device Name"
@@ -44,18 +52,9 @@ const AddDeviceForm = ({ form, showSubmit }: AddDeviceFormProps) => (
     >
       <TextArea rows={4} />
     </Form.Item>
-    {/* <Form.Item
-      name="upload"
-      label="Upload"
-      valuePropName="fileList"
-      rules={[
-        {
-          required: true,
-        },
-      ]}
-    >
+    <Form.Item name="image" label="Upload" valuePropName="fileList">
       <UploadAvatar />
-    </Form.Item> */}
+    </Form.Item>
     <Form.Item
       name="type"
       label="Type"

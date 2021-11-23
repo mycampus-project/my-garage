@@ -57,18 +57,9 @@ const EditDeviceForm = ({ form, showSubmit }: AddDeviceFormProps) => {
       >
         <TextArea rows={4} />
       </Form.Item>
-      {/* <Form.Item
-      name="upload"
-      label="Upload"
-      valuePropName="fileList"
-      rules={[
-        {
-          required: true,
-        },
-      ]}
-    >
-      <UploadAvatar />
-    </Form.Item> */}
+      {/* <Form.Item name="upload" label="Upload" valuePropName="fileList">
+        <UploadAvatar />
+      </Form.Item> */}
       <Form.Item
         initialValue={selectedThing.type}
         name="type"
