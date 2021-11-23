@@ -6,15 +6,14 @@ import { AdminContext } from '../../../contexts/AdminContext';
 const StyledDescriptions = styled(Descriptions)`
   margin-bottom: 32px;
   margin-top: 8px;
-  width: 85%;
+  width: 100%;
 
   table {
     table-layout: fixed;
     width: 100%;
-    min-width: 870px;
 
     td {
-      width: 40%;
+      width: 50%;
       overflow: hidden;
     }
   }
@@ -37,7 +36,12 @@ const DeviceDescription = () => {
 
   return (
     <div data-testid="details.table">
-      <StyledDescriptions title="Device Details" bordered column={2}>
+      <StyledDescriptions
+        title="Device Details"
+        bordered
+        size="small"
+        column={{ xxl: 2, xl: 2, lg: 1, md: 1, sm: 1, xs: 1 }}
+      >
         <Descriptions.Item label="Name">{selectedThing.name}</Descriptions.Item>
 
         <Descriptions.Item label="ID">{selectedThing.id}</Descriptions.Item>

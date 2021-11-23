@@ -5,14 +5,22 @@ interface BookingTimingsProps {
   item: BookingData;
 }
 
-const TimeContainer = styled.div`
+const TimeContainer = styled.p`
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   flex-direction: row;
-  min-width: 40%;
   align-content: center;
   padding-top: 10px;
-  justify-content: space-around;
+
+  @media screen and (max-width: 800px) {
+    flex-direction: column;
+  }
+
+  @media screen and (min-width: 1199px) {
+    div {
+      margin-left: 16px;
+    }
+  }
 `;
 
 const StyledSpan = styled.span`
@@ -21,12 +29,15 @@ const StyledSpan = styled.span`
 // Start and end times display component.
 const BookingTimings = ({ item }: BookingTimingsProps) => (
   <TimeContainer>
-    <p>
+    <div>
+      <StyledSpan>Date:</StyledSpan> {new Date(item.date).toLocaleDateString()}
+    </div>
+    <div>
       <StyledSpan>Start Time:</StyledSpan> {new Date(item.date).toLocaleTimeString()}
-    </p>
-    <p>
-      <StyledSpan>End Time:</StyledSpan> {new Date(item.date).toLocaleTimeString()}{' '}
-    </p>
+    </div>
+    <div>
+      <StyledSpan>End Time:</StyledSpan> {new Date(item.date).toLocaleTimeString()}
+    </div>
   </TimeContainer>
 );
 
