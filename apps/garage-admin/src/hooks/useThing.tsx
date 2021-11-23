@@ -205,7 +205,7 @@ const useThing = () => {
       mutate: onRestore,
       data: respRestoreThingData,
       isLoading: isLoadingRestoreThing,
-      error: deleteRestoreError,
+      error: restoreError,
     } = useMutation<Thing, AxiosError, string>(
       ['restoreThing'],
       (thingId: string) =>
@@ -236,7 +236,7 @@ const useThing = () => {
       onRestore,
       respRestoreThingData,
       isLoadingRestoreThing,
-      deleteRestoreError,
+      restoreError,
     };
   }
 
