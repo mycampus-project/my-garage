@@ -50,7 +50,19 @@ const UserBookingItem = ({ item }: UserBookingItemProps) => {
       ]}
     >
       <List.Item.Meta
-        avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
+        avatar={
+          <Avatar
+            src="https://joeschmoe.io/api/v1/random"
+            size={{
+              xs: 50,
+              sm: 50,
+              md: 50,
+              lg: 60,
+              xl: 60,
+              xxl: 60,
+            }}
+          />
+        }
         title={item.thing.name}
         description={<BookingTimings item={item} />}
       />

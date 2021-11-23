@@ -1,9 +1,10 @@
 import { useContext } from 'react';
 import { List, Avatar, Button } from 'antd';
-import { Thing } from '@my-garage/common';
+import { Thing, useLocalStorage } from '@my-garage/common';
 import styled from 'styled-components';
+import baseURL from 'src/utilities/api';
+import useThing from 'src/hooks/useThing';
 import { AdminContext } from '../../../contexts/AdminContext';
-import openNotificationWithIcon from '../Common/OpenNotificationWithIcon';
 
 interface ListItemProps {
   item: Thing;
@@ -44,6 +45,8 @@ const StyledListItem = styled(({ isSelected, ...props }) => (
 
 const RestoreDeviceListItem = ({ item, showRestoreButtons }: ListItemProps) => {
   const { setModelIsVisible } = useContext(AdminContext);
+  const [token] = useLocalStorage('auth_token');
+  const { onRestore } = useThing().RestoreThing(token);
 
   return (
     <StyledListItem
@@ -53,11 +56,10 @@ const RestoreDeviceListItem = ({ item, showRestoreButtons }: ListItemProps) => {
         showRestoreButtons && [
           <Button
             onClick={() => {
-              openNotificationWithIcon('info', 'Device Restored', 'test');
+              onRestore(item.id);
               setModelIsVisible(false);
             }}
           >
-            {' '}
             Restore
           </Button>,
         ]
@@ -66,7 +68,19 @@ const RestoreDeviceListItem = ({ item, showRestoreButtons }: ListItemProps) => {
       <List.Item.Meta
         data-testid="deviceList.item.meta"
         style={listItemMeta}
-        avatar={<Avatar size={48} src="https://randomuser.me/api/portraits/men/22.jpg" />}
+        avatar={
+          <Avatar
+            size={{
+              xs: 50,
+              sm: 50,
+              md: 50,
+              lg: 60,
+              xl: 60,
+              xxl: 60,
+            }}
+            src={`${baseURL}/static/${item.imageUrl}`}
+          />
+        }
         title={item.name}
         description={item.type}
       />

@@ -102,13 +102,14 @@ const useThing = () => {
             `${data.name} was successfully deleted`,
           );
           const newThing: Thing = {
-            ...selectedThing,
-            name: data.name,
-            description: data.description,
-            type: data.type,
-            isAvailable: data.isAvailable,
-            removedAt: data.removedAt,
-            removedBy: data.removedBy,
+            id: '',
+            name: '',
+            description: '',
+            type: '',
+            createdAt: new Date(),
+            createdBy: { id: '', fullName: '' },
+            isAvailable: true,
+            imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
           };
           setSelectedThing(newThing);
           setModelIsVisible(false);
@@ -144,24 +145,29 @@ const useThing = () => {
         description: string;
         type: string;
         isAvailable: boolean;
+        image: File;
       }
     >(
       ['updateThing'],
-      ({ thingId, name, description, type, isAvailable }) =>
-        apiClient
-          .put(
-            `/things/${thingId}`,
-            {
-              name,
-              description,
-              type,
-              isAvailable,
+      ({ thingId, name, description, type, isAvailable, image }) => {
+        const newFormData = new FormData();
+        newFormData.append('name', name);
+        newFormData.append('description', description);
+        newFormData.append('type', type);
+        newFormData.append('isAvailable', JSON.stringify(isAvailable));
+        if (image !== undefined) {
+          newFormData.append('image', image);
+        }
+
+        return apiClient
+          .put(`/things/${thingId}`, newFormData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${token}`,
             },
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            },
-          )
-          .then((response) => response.data),
+          })
+          .then((response) => response.data);
+      },
       {
         onSuccess: (data) => {
           client.invalidateQueries('things');
@@ -176,6 +182,7 @@ const useThing = () => {
             description: data.description,
             type: data.type,
             isAvailable: data.isAvailable,
+            imageUrl: data.imageUrl,
           };
           setSelectedThing(newThing);
         },
@@ -185,10 +192,55 @@ const useThing = () => {
         },
       },
     );
-    return { onUpdate, isLoadingUpdateThing, updateThingError, respUpdateThingData };
+    return {
+      onUpdate,
+      respUpdateThingData,
+      isLoadingUpdateThing,
+      updateThingError,
+    };
   }
 
-  return { GetListOfThings, AddThing, DeleteThing, UpdateThing };
+  function RestoreThing(token: string) {
+    const {
+      mutate: onRestore,
+      data: respRestoreThingData,
+      isLoading: isLoadingRestoreThing,
+      error: deleteRestoreError,
+    } = useMutation<Thing, AxiosError, string>(
+      ['restoreThing'],
+      (thingId: string) =>
+        apiClient
+          .put(`/things/${thingId}/restore`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then((response) => response.data),
+      {
+        onSuccess: (data) => {
+          client.invalidateQueries('things');
+          openNotificationWithIcon(
+            'success',
+            'Device Restored',
+            `${data.name} was successfully restored`,
+          );
+
+          setModelIsVisible(false);
+        },
+
+        onError: (error) => {
+          openNotificationWithIcon('error', 'Device Not Restored', `${error.message}`);
+          setModelIsVisible(false);
+        },
+      },
+    );
+    return {
+      onRestore,
+      respRestoreThingData,
+      isLoadingRestoreThing,
+      deleteRestoreError,
+    };
+  }
+
+  return { GetListOfThings, AddThing, DeleteThing, UpdateThing, RestoreThing };
 };
 
 export default useThing;
