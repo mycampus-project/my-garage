@@ -169,3 +169,4 @@ cypress.env.json
 
 #Upload to gitignore
 uploads/*
+
