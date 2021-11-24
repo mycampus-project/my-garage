@@ -65,7 +65,7 @@ function findUserById(userId: string): Promise<UserDocument> {
 }
 
 function findAllUser() {
-  return User.find().sort({ fullName: 1, email: -1 }).exec();
+  return User.find().exec();
 }
 
 function updateUser(userId: string, update: Partial<UserDocument>): Promise<UserDocument> {
@@ -85,7 +85,7 @@ function deleteUser(userId: string, removedBy: ObjectId, removedAt: Date): Promi
     .exec()
     .then((user) => {
       if (!user) {
-        throw new Error(`Thing ${userId} not found`);
+        throw new Error(`User ${userId} not found`);
       }
       return user;
     });
