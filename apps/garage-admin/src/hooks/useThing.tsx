@@ -210,9 +210,13 @@ const useThing = () => {
       ['restoreThing'],
       (thingId: string) =>
         apiClient
-          .put(`/things/${thingId}/restore`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
+          .put(
+            `/things/${thingId}/restore`,
+            {},
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          )
           .then((response) => response.data),
       {
         onSuccess: (data) => {
