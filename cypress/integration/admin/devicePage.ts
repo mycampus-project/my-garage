@@ -57,12 +57,12 @@ describe('Testing interactions with devices on the Admin page', () => {
       .children('.ant-modal-wrap')
       .find('.ant-modal-content');
 
-    modalContent.children('.ant-modal-footer').contains('OK').should('be.disabled');
+    modalContent.children('.ant-modal-footer').contains('OK').should('not.be.disabled');
     cy.findByTestId('edit.form').should('be.visible');
   });
 
   it('should toggle isAvailable and update device when OK is clicked.', () => {
-    cy.findByTestId('edit.form').children().find('button').click();
+    cy.findByTestId('isAvailable.toggle').children().find('button').click();
 
     cy.findByTestId('edit.device.modal')
       .children('.ant-modal-wrap')
