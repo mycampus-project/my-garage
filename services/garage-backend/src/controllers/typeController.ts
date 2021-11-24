@@ -13,10 +13,11 @@ import { serializeType } from '../serializers/types';
 // POST /types
 export const createType = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const typeDocument = await Type.findOne({ name: req.body.name });
     const { name } = req.body;
-    if (typeDocument?.name === name) {
-      res.send('Type already exists');
+    const typeDocument = await Type.findOne({ name: req.body.name });
+    if (typeDocument) {
+      next(new BadRequestError('Type already exists in Database'));
+      return;
     }
     const type = new Type({
       name,
@@ -57,10 +58,11 @@ export const findTypeById = async (req: Request, res: Response, next: NextFuncti
 // PUT /type/:typeId
 export const updateType = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const typeDocument = await Type.findOne({ name: req.body.name });
     const { name } = req.body;
-    if (typeDocument?.name === name) {
-      res.send('Type already exists');
+    const typeDocument = await Type.findOne({ name: req.body.name });
+    if (typeDocument) {
+      next(new BadRequestError('Type already exists in Database'));
+      return;
     }
     const update = {
       name,
