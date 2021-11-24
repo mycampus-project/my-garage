@@ -19,6 +19,7 @@ const TimeContainer = styled.p`
   @media screen and (min-width: 1199px) {
     div {
       margin-left: 16px;
+      flex-wrap: nowrap;
     }
   }
 `;

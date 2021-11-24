@@ -10,6 +10,7 @@ const isValidateAndShowButton = (form: FormInstance) => {
   const isErrors = form.getFieldsError().some((field) => field.errors.length > 0);
   const valueObj = form.getFieldsValue();
   const isUndefined = checkForUndefined(valueObj);
+
   if (isErrors || isUndefined) {
     return true;
   }

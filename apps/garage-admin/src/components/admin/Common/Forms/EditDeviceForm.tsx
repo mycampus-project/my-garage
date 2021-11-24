@@ -1,22 +1,20 @@
-import { Form, Input, Switch, Select } from 'antd';
+import { Form, Input, Switch, Select, FormInstance } from 'antd';
 import { useContext } from 'react';
 import { AdminContext } from 'src/contexts/AdminContext';
-import { AddDeviceFormProps } from 'src/types/adminTypes';
+import UploadAvatar from '../UploadAvatar';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
-const EditDeviceForm = ({ form, showSubmit }: AddDeviceFormProps) => {
+interface EditDeviceFormProps {
+  form: FormInstance;
+}
+
+const EditDeviceForm = ({ form }: EditDeviceFormProps) => {
   const { selectedThing } = useContext(AdminContext);
 
   return (
-    <Form
-      data-testid="edit.form"
-      form={form}
-      layout="vertical"
-      name="userForm"
-      onFieldsChange={showSubmit}
-    >
+    <Form data-testid="edit.form" form={form} layout="vertical" name="userForm">
       <Form.Item
         initialValue={selectedThing.name}
         name="name"
@@ -57,9 +55,9 @@ const EditDeviceForm = ({ form, showSubmit }: AddDeviceFormProps) => {
       >
         <TextArea rows={4} />
       </Form.Item>
-      {/* <Form.Item name="upload" label="Upload" valuePropName="fileList">
+      <Form.Item name="image" label="Upload" valuePropName="fileList">
         <UploadAvatar />
-      </Form.Item> */}
+      </Form.Item>
       <Form.Item
         initialValue={selectedThing.type}
         name="type"
