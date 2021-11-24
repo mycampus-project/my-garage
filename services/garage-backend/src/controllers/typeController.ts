@@ -13,7 +13,11 @@ import { serializeType } from '../serializers/types';
 // POST /types
 export const createType = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const typeDocument = await Type.findOne({ name: req.body.name });
     const { name } = req.body;
+    if (typeDocument?.name === name) {
+      res.send('Type already exists');
+    }
     const type = new Type({
       name,
       createdBy: req.user,
@@ -53,8 +57,13 @@ export const findTypeById = async (req: Request, res: Response, next: NextFuncti
 // PUT /type/:typeId
 export const updateType = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const typeDocument = await Type.findOne({ name: req.body.name });
+    const { name } = req.body;
+    if (typeDocument?.name === name) {
+      res.send('Type already exists');
+    }
     const update = {
-      name: req.body.name,
+      name,
     };
     const { typeId } = req.params;
     const updatedType = await TypeService.updateType(typeId, update);
