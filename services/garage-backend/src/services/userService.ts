@@ -1,5 +1,7 @@
+import { ObjectId } from 'mongoose';
+
 import Role from '../models/Role';
-import User from '../models/User';
+import User, { UserDocument } from '../models/User';
 
 /**
  * Function for updating/creating user.
@@ -49,4 +51,49 @@ export const upsertUser = async (
   await user?.save();
 
   return user;
+};
+
+function findUserById(userId: string): Promise<UserDocument> {
+  return User.findById(userId)
+    .exec()
+    .then((user) => {
+      if (!user) {
+        throw new Error(`User ${userId} not found`);
+      }
+      return user;
+    });
+}
+
+function findAllUser() {
+  return User.find().exec();
+}
+
+function updateUser(userId: string, update: Partial<UserDocument>): Promise<UserDocument> {
+  return User.findByIdAndUpdate(userId, update, { new: true })
+    .exec()
+    .then((user) => {
+      if (!user) {
+        throw new Error(`User ${userId} not found`);
+      }
+      return user;
+    });
+}
+
+function deleteUser(userId: string, removedBy: ObjectId, removedAt: Date): Promise<UserDocument> {
+  const update: Partial<UserDocument> = { removedAt, removedBy };
+  return User.findByIdAndUpdate(userId, update, { new: true })
+    .exec()
+    .then((user) => {
+      if (!user) {
+        throw new Error(`User ${userId} not found`);
+      }
+      return user;
+    });
+}
+
+export default {
+  findUserById,
+  findAllUser,
+  updateUser,
+  deleteUser,
 };

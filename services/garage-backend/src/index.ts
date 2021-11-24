@@ -7,6 +7,7 @@ import authRouter from './routers/authRouter';
 import { authMiddleware, requireAuth } from './middlewares/auth';
 import createRoles from './helpers/createRoles';
 import thingRouter from './routers/thingRouter';
+import userRouter from './routers/userRouter';
 
 const app = express();
 app.use(express.json());
@@ -19,6 +20,7 @@ const PORT = process.env.PORT ?? 3000;
 app.use(cors());
 
 app.use('/things', thingRouter);
+app.use('/users', userRouter);
 
 app.get('/', (req, res) => {
   res.send('Express + TypeScript Server');
@@ -40,3 +42,4 @@ mongo.once('open', async () => {
 });
 
 app.use(apiErrorHandler);
+export default app;

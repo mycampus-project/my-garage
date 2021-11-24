@@ -2,7 +2,7 @@ import mongoose, { Document, ObjectId } from 'mongoose';
 import { User } from '@my-garage/common';
 
 export interface UserDocument extends Document<ObjectId>, Omit<User, 'removedBy' | 'role' | 'id'> {
-  removedBy: ObjectId;
+  removedBy?: ObjectId;
   role: ObjectId;
   token: string;
   tokenIv: string;
