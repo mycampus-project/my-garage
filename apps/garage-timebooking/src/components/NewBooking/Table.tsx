@@ -5,58 +5,44 @@ import { useEffect, useState } from 'react';
 import { TableCell } from './common';
 import TimeCell from './TimeCell';
 
-const TableColumn = styled.div`
-  display: flex;
-  flex-direction: column;
+const WeekdayHeaderCell = styled.th`
+  z-index: 100;
   scroll-snap-align: start;
-
-  & > div:not(:first-of-type) {
-    margin-top: -1px;
-  }
-`;
-const HeaderColumn = styled(TableColumn)`
-  position: sticky;
-  left: 0;
 `;
 
-const Root = styled.div`
+const Root = styled.table`
   max-width: 100%;
   width: 100%;
   overflow-x: auto;
   min-width: 0;
-  position: relative;
-  display: grid;
-  grid-template-columns: 100px repeat(5, 1fr);
-  scroll-snap-type: x mandatory;
-  scroll-padding-left: 100px;
+  border-collapse: collapse;
 
-  & > ${TableColumn}:not(:first-child) {
-    margin-left: -1px;
+  @media (max-width: 992px) {
+    display: block;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline-start: 51px;
   }
 
   tbody tr {
-    &:nth-child(2n + 1) {
+    &:nth-child(2n + 1) ${TableCell} {
       background-color: #f7f7f7;
     }
-    &:nth-child(2n) {
+    &:nth-child(2n) ${TableCell} {
       background-color: white;
     }
   }
+
+  & ${WeekdayHeaderCell}, & ${TableCell} {
+    border: 1px solid #f0f0f0;
+  }
 `;
 
-const WeekdayHeaderCell = styled(TableCell)`
-  z-index: 100;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
-`;
-
-const HourHeaderCell = styled(TableCell)<{ isHighlighted: boolean }>`
+const HourHeaderCell = styled(TableCell).attrs(() => ({ as: 'th' }))<{ isHighlighted: boolean }>`
   position: sticky;
   left: 0;
   z-index: 1;
-  ${({ isHighlighted }) => isHighlighted && 'background-color: var(--ant-primary-1)'};
+  min-width: max-content;
+  ${({ isHighlighted }) => isHighlighted && 'background-color: var(--ant-primary-1) !important'};
 `;
 
 interface Props {
@@ -86,39 +72,51 @@ const Table = ({
 
   return (
     <Root>
-      <HeaderColumn>
+      <thead>
         <TableCell>Week {getWeek(dateCells[0][0])}</TableCell>
-        {dateCells[0].map((date) => (
-          <HourHeaderCell
-            isHighlighted={
-              !!hoveredCell &&
-              date.getHours() === hoveredCell.getHours() &&
-              date.getMinutes() === hoveredCell.getMinutes()
-            }
-          >
-            {format(date, 'HH:mm')}
-          </HourHeaderCell>
+        {dateCells.map(([first]) => (
+          <WeekdayHeaderCell>{format(first, 'eee d.MM.y')}</WeekdayHeaderCell>
         ))}
-      </HeaderColumn>
-      {dateCells.map((weekdayOptions) => (
-        <TableColumn key={weekdayOptions[0].getDay()}>
-          <WeekdayHeaderCell>{format(weekdayOptions[0], 'eee d.MM.y')}</WeekdayHeaderCell>
-          {weekdayOptions.map((date) => (
-            <TimeCell
-              key={date.getTime()}
-              date={date}
-              onClick={onCellClick}
-              isSelected={getIsTableCellSelected(date)}
-              isHighlighted={getIsTableCellHighlighted(date)}
-              isUnavailable={getIsTableCellUnavailable(date)}
-              onMouseEnter={setHoveredCell}
-              onMouseLeave={() => setHoveredCell(null)}
-            >
-              {getTimeCellText(date)}
-            </TimeCell>
-          ))}
-        </TableColumn>
-      ))}
+      </thead>
+      <tbody>
+        {(() => {
+          const rotatedMatrix: Date[][] = new Array(dateCells[0].length).fill(null).map(() => []);
+
+          dateCells.forEach((column, index) =>
+            column.forEach((date, columnIndex) => {
+              rotatedMatrix[columnIndex][index] = date;
+            }),
+          );
+
+          return rotatedMatrix.map((row) => (
+            <tr>
+              <HourHeaderCell
+                isHighlighted={
+                  !!hoveredCell &&
+                  row[0].getHours() === hoveredCell.getHours() &&
+                  row[0].getMinutes() === hoveredCell.getMinutes()
+                }
+              >
+                {format(row[0], 'HH:mm')}
+              </HourHeaderCell>
+              {row.map((date) => (
+                <TimeCell
+                  key={date.getTime()}
+                  date={date}
+                  onClick={onCellClick}
+                  isSelected={getIsTableCellSelected(date)}
+                  isHighlighted={getIsTableCellHighlighted(date)}
+                  isUnavailable={getIsTableCellUnavailable(date)}
+                  onMouseEnter={setHoveredCell}
+                  onMouseLeave={() => setHoveredCell(null)}
+                >
+                  {getTimeCellText(date)}
+                </TimeCell>
+              ))}
+            </tr>
+          ));
+        })()}
+      </tbody>
     </Root>
   );
 };

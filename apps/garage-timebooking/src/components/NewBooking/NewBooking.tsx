@@ -12,12 +12,15 @@ const Root = styled.div`
   flex-direction: column;
   min-height: 100%;
 
-  @media (min-width: 576px) {
+  @media screen and (max-width: 576px) {
     height: 100vh;
   }
 `;
 
 const CenteredLayout = styled.div`
+  @media screen and (max-width: 992px) {
+    padding: var(--padding-m);
+  }
   display: flex;
   flex-direction: column;
   padding: var(--padding-xl);

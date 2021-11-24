@@ -9,7 +9,7 @@ const getBookingStartTimes = (startHour: number, endHour: number, timeUnit: numb
   return new Array(diff).fill(null).flatMap((_, index) =>
     new Array(slotsInHour).fill(null).map((_2, index2) => ({
       hours: startHour + index,
-      minutes: timeUnit * (index2 + 1),
+      minutes: timeUnit * index2,
     })),
   );
 };

@@ -8,12 +8,8 @@ const TimeTableCell = styled(TableCell)<{
 }>`
   flex: 1;
 
-  &:nth-child(2n + 1) {
-    background-color: #f8f8f8;
-  }
-
   &:hover {
-    background-color: var(--ant-primary-1);
+    background-color: var(--ant-primary-1) !important;
   }
 
   ${({ isHighlighted }) =>
@@ -23,7 +19,7 @@ const TimeTableCell = styled(TableCell)<{
       &:hover {
         background-color: var(--ant-primary-2) !important;
         color: black;
-        border-color: transparent;
+        border-color: transparent !important;
       }
     `};
 
@@ -34,16 +30,17 @@ const TimeTableCell = styled(TableCell)<{
       &:hover {
         background-color: var(--ant-primary-color) !important;
         color: white;
-        border-color: transparent;
+        border-color: transparent !important;
       }
     `};
 
   ${({ isUnavalilable }) =>
     isUnavalilable &&
     css`
-      & {
+      &,
+      &:hover {
         background-color: #c8c8c8 !important;
-        border-color: transparent;
+        border-color: transparent !important;
         cursor: not-allowed;
       }
     `};
