@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongoose';
+
 import Role from '../models/Role';
 import User, { UserDocument } from '../models/User';
 
@@ -77,8 +79,21 @@ function updateUser(userId: string, update: Partial<UserDocument>): Promise<User
     });
 }
 
+function deleteUser(userId: string, removedBy: ObjectId, removedAt: Date): Promise<UserDocument> {
+  const update: Partial<UserDocument> = { removedAt, removedBy };
+  return User.findByIdAndUpdate(userId, update, { new: true })
+    .exec()
+    .then((user) => {
+      if (!user) {
+        throw new Error(`Thing ${userId} not found`);
+      }
+      return user;
+    });
+}
+
 export default {
   findUserById,
   findAllUser,
   updateUser,
+  deleteUser,
 };
