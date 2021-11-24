@@ -10,7 +10,7 @@ async function createThing() {
     name: 'Hp Probook',
     description: 'Lapotop computer',
     type: 'compute',
-    isAvailable: 'true',
+    isAvailable: true,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
   });
   return await ThingService.createThing(thing);

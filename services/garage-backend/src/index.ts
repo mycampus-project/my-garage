@@ -42,3 +42,4 @@ mongo.once('open', async () => {
 });
 
 app.use(apiErrorHandler);
+export default app;
