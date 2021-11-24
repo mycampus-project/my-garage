@@ -21,7 +21,7 @@ const TimeTableCell = styled(TableCell)<{
     css`
       &,
       &:hover {
-        background-color: var(--ant-primary-4) !important;
+        background-color: var(--ant-primary-2) !important;
         color: black;
         border-color: transparent;
       }

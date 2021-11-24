@@ -1,110 +1,15 @@
-import {
-  addMinutes,
-  format,
-  getWeek,
-  isEqual,
-  isSameDay,
-  isSameMinute,
-  isWithinInterval,
-  set,
-  setDay,
-  setWeek,
-} from 'date-fns';
-import { Thing } from '@my-garage/common';
+import { getWeek, set, setDay, setWeek } from 'date-fns';
+import { Thing, START_HOUR, END_HOUR, BOOKING_UNIT } from '@my-garage/common';
 import moment from 'moment';
 import { DatePicker, PageHeader, Space, Form, Typography } from 'antd';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
-import { TableCell } from './common';
-import TimeCell from './TimeCell';
-import { isValidRange, sortDates, Interval, isBetweenInclusive } from './utils';
 
-const BOOKING_UNIT = 30;
+import BookingTable from './BookingTable';
 
 const Root = styled.div`
   padding: var(--padding-m);
 `;
-
-const TableColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-  scroll-snap-align: start;
-
-  & > div:not(:first-of-type) {
-    margin-top: -1px;
-  }
-`;
-const HeaderColumn = styled(TableColumn)`
-  position: sticky;
-  left: 0;
-`;
-const Table = styled.div`
-  max-width: 100%;
-  width: 100%;
-  overflow-x: auto;
-  min-width: 0;
-  position: relative;
-  display: grid;
-  grid-template-columns: 100px repeat(5, 1fr);
-  scroll-snap-type: x mandatory;
-  scroll-padding-left: 100px;
-
-  & > ${TableColumn}:not(:first-child) {
-    margin-left: -1px;
-  }
-
-  tbody tr {
-    &:nth-child(2n + 1) {
-      background-color: #f7f7f7;
-    }
-    &:nth-child(2n) {
-      background-color: white;
-    }
-  }
-`;
-
-const WeekdayHeaderCell = styled(TableCell)`
-  z-index: 100;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
-`;
-
-const HourHeaderCell = styled(TableCell)<{ isHighlighted: boolean }>`
-  position: sticky;
-  left: 0;
-  z-index: 1;
-  ${({ isHighlighted }) => isHighlighted && 'background-color: var(--ant-primary-1)'};
-`;
-
-const getBookingIntervals = (startHour: number, endHour: number, timeUnit: number) => {
-  const diff = endHour - startHour;
-
-  const slotsInHour = 60 / timeUnit;
-
-  return new Array(diff).fill(null).flatMap((_, index) =>
-    new Array(slotsInHour).fill(null).map((_2, index2) => ({
-      hours: startHour + index,
-      minutes: timeUnit * (index2 + 1),
-    })),
-  );
-};
-
-const createTimeRanges = (weekDays: Date[], timesOfDay: { hours: number; minutes: number }[]) =>
-  weekDays.map((weekday) =>
-    timesOfDay.map(({ hours, minutes }) => set(weekday, { hours, minutes })),
-  );
-
-const createWeekdaysForWeek = (weekDate: Date) => {
-  const baseDate = set(weekDate, {
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-    milliseconds: 0,
-  });
-  return [1, 2, 3, 4, 5].map((weekday) => setDay(baseDate, weekday, { weekStartsOn: 0 }));
-};
 
 const getInitialWeekValue = () => {
   const now = new Date();
@@ -115,23 +20,12 @@ const getInitialWeekValue = () => {
   return now;
 };
 
-const formatInterval = ({ startAt, endAt }: Interval) =>
-  `${format(startAt, 'HH:mm')}-${format(endAt, 'HH:mm')}`;
-
 const useBookingsForWeek = (week: Date): Array<{ startAt: Date; endAt: Date }> => [
   {
     endAt: set(setDay(week, 1), { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 }),
     startAt: set(setDay(week, 1), { hours: 11, minutes: 0, seconds: 0, milliseconds: 0 }),
   },
 ];
-
-const calculateStartEnd = (a: Date, b: Date, timeUnitMinutes: number) => {
-  const [startAt, endCellStart] = sortDates([a, b]);
-
-  const endAt = addMinutes(endCellStart, timeUnitMinutes);
-
-  return { startAt, endAt };
-};
 
 interface Props {
   thing: Thing;
@@ -140,98 +34,7 @@ interface Props {
 
 const DeviceBooking = ({ thing, onBackClick }: Props) => {
   const [selectedWeek, setSelectedWeek] = useState<Date>(getInitialWeekValue());
-  const [hoveredCell, setHoveredCell] = useState<Date>();
   const bookingsForWeek = useBookingsForWeek(selectedWeek);
-
-  const [selectedInterval, setSelectedInterval] = useState<{
-    startAt: Date | null;
-    endAt: Date | null;
-  }>({ startAt: null, endAt: null });
-
-  const highlightedInterval = useMemo(() => {
-    if (!selectedInterval.startAt || !hoveredCell || selectedInterval.endAt || !bookingsForWeek)
-      return { startAt: null, endAt: null };
-
-    const { startAt, endAt } = calculateStartEnd(
-      selectedInterval.startAt,
-      hoveredCell,
-      BOOKING_UNIT,
-    );
-
-    if (!isValidRange([startAt, endAt], bookingsForWeek)) {
-      return { startAt: null, endAt: null };
-    }
-
-    return { startAt, endAt };
-  }, [selectedInterval, hoveredCell, bookingsForWeek]);
-
-  const bookingIntervals = useMemo(() => getBookingIntervals(9, 18, BOOKING_UNIT), []);
-  const weekdays = useMemo(() => createWeekdaysForWeek(selectedWeek), [selectedWeek]);
-  const weekTimeRanges = useMemo(
-    () => createTimeRanges(weekdays, bookingIntervals),
-    [weekdays, bookingIntervals],
-  );
-
-  const onCellClick = (cellDate: Date) => {
-    if (
-      selectedInterval.startAt &&
-      !selectedInterval.endAt &&
-      isSameDay(selectedInterval.startAt, cellDate)
-    ) {
-      const { startAt, endAt } = calculateStartEnd(
-        selectedInterval.startAt,
-        cellDate,
-        BOOKING_UNIT,
-      );
-
-      if (isValidRange([startAt, endAt], bookingsForWeek)) {
-        setSelectedInterval({ startAt, endAt });
-        return;
-      }
-    }
-
-    setSelectedInterval({ startAt: cellDate, endAt: null });
-  };
-
-  const getIsTableCellSelected = (cellDate: Date) => {
-    const { startAt, endAt } = selectedInterval;
-    if (!startAt || !endAt) return false;
-
-    return isBetweenInclusive(cellDate, [startAt, endAt]) && !isEqual(cellDate, endAt);
-  };
-
-  const getIsTableCellHighlighted = (cellDate: Date) => {
-    const { startAt, endAt } = highlightedInterval;
-
-    if (!startAt || !endAt) return false;
-
-    return isBetweenInclusive(cellDate, [startAt, endAt]) && !isEqual(cellDate, endAt);
-  };
-
-  const getIsTableCellUnavailable = (cellDate: Date) =>
-    bookingsForWeek.some(
-      ({ startAt, endAt }) =>
-        isWithinInterval(cellDate, { start: startAt!, end: endAt! }) &&
-        !isSameMinute(cellDate, endAt),
-    );
-
-  const getTimeCellText = (cellDate: Date) => {
-    if (
-      selectedInterval.startAt &&
-      selectedInterval.endAt &&
-      isEqual(selectedInterval.startAt, cellDate)
-    ) {
-      return formatInterval(selectedInterval as Interval);
-    }
-
-    const { startAt: startHighlighted, endAt: endHighlighted } = highlightedInterval;
-
-    if (startHighlighted && endHighlighted && isEqual(startHighlighted, cellDate)) {
-      return formatInterval(highlightedInterval);
-    }
-
-    return undefined;
-  };
 
   return (
     <>
@@ -257,45 +60,13 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
             </Form.Item>
           </Form>
         </Space>
-        <Table>
-          <HeaderColumn>
-            <TableCell>Week {getWeek(selectedWeek)}</TableCell>
-            {bookingIntervals.map(({ hours, minutes }) => {
-              const dayForFormatting = set(new Date(), { hours, minutes });
-
-              return (
-                <HourHeaderCell
-                  isHighlighted={
-                    !!hoveredCell &&
-                    dayForFormatting.getHours() === hoveredCell.getHours() &&
-                    dayForFormatting.getMinutes() === hoveredCell.getMinutes()
-                  }
-                >
-                  {format(dayForFormatting, 'HH:mm')}
-                </HourHeaderCell>
-              );
-            })}
-          </HeaderColumn>
-          {weekTimeRanges?.map((weekdayOptions) => (
-            <TableColumn key={weekdayOptions[0].getDay()}>
-              <WeekdayHeaderCell>{format(weekdayOptions[0], 'eee d.MM.y')}</WeekdayHeaderCell>
-              {weekdayOptions.map((date) => (
-                <TimeCell
-                  key={date.getTime()}
-                  date={date}
-                  onClick={onCellClick}
-                  isSelected={getIsTableCellSelected(date)}
-                  isHighlighted={getIsTableCellHighlighted(date)}
-                  isUnavailable={getIsTableCellUnavailable(date)}
-                  onMouseEnter={setHoveredCell}
-                  onMouseLeave={() => setHoveredCell(undefined)}
-                >
-                  {getTimeCellText(date)}
-                </TimeCell>
-              ))}
-            </TableColumn>
-          ))}
-        </Table>
+        <BookingTable
+          selectedWeek={selectedWeek}
+          occupiedIntervals={bookingsForWeek}
+          startHour={START_HOUR}
+          endHour={END_HOUR}
+          timeUnit={BOOKING_UNIT}
+        />
       </Root>
     </>
   );
