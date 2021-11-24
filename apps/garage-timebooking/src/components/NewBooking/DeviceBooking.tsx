@@ -2,7 +2,6 @@ import {
   addMinutes,
   format,
   getWeek,
-  isBefore,
   isEqual,
   isSameDay,
   isSameMinute,
@@ -18,6 +17,9 @@ import { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { TableCell } from './common';
 import TimeCell from './TimeCell';
+import { isValidRange, sortDates, Interval, isBetweenInclusive } from './utils';
+
+const BOOKING_UNIT = 30;
 
 const Root = styled.div`
   padding: var(--padding-m);
@@ -76,19 +78,17 @@ const HourHeaderCell = styled(TableCell)<{ isHighlighted: boolean }>`
   ${({ isHighlighted }) => isHighlighted && 'background-color: var(--ant-primary-1)'};
 `;
 
-const getBookingIntervals = (startHour: number, endHour: number) => {
+const getBookingIntervals = (startHour: number, endHour: number, timeUnit: number) => {
   const diff = endHour - startHour;
 
-  return new Array(diff).fill(null).flatMap((_, index) => [
-    {
+  const slotsInHour = 60 / timeUnit;
+
+  return new Array(diff).fill(null).flatMap((_, index) =>
+    new Array(slotsInHour).fill(null).map((_2, index2) => ({
       hours: startHour + index,
-      minutes: 0,
-    },
-    {
-      hours: startHour + index,
-      minutes: 30,
-    },
-  ]);
+      minutes: timeUnit * (index2 + 1),
+    })),
+  );
 };
 
 const createTimeRanges = (weekDays: Date[], timesOfDay: { hours: number; minutes: number }[]) =>
@@ -115,48 +115,8 @@ const getInitialWeekValue = () => {
   return now;
 };
 
-const sortDates = (dates: Date[]) =>
-  dates.sort((a, b) => {
-    if (isSameMinute(a, b)) {
-      return 0;
-    }
-    return isBefore(a, b) ? -1 : 1;
-  });
-
-const isBetweenInclusive = (date: Date, interval: [Date, Date]) => {
-  const [start, end] = sortDates(interval);
-
-  return isWithinInterval(date, { start, end });
-};
-
-const formatInterval = (a: Date, b: Date) => {
-  const [start, end] = sortDates([a, b]);
-
-  return `${format(start, 'HH:mm')}-${format(end, 'HH:mm')}`;
-};
-
-// const formatSelectedInterval = (start: Date | undefined, end: Date | undefined, hoveredHour: Date, )
-
-const isBeforeOrEqual = (date: Date, dateToCompare: Date) =>
-  isEqual(date, dateToCompare) || isBefore(date, dateToCompare);
-
-const doDateRangesOverlap = (range1: [Date, Date], range2: [Date, Date]) => {
-  const [x1, y1] = sortDates(range1);
-  const [x2, y2] = sortDates(range2);
-
-  return (
-    !isBeforeOrEqual(sortDates([x1, y1])[1], sortDates([x2, y2])[0]) &&
-    !isBeforeOrEqual(sortDates([x2, y2])[1], sortDates([x1, y1])[0])
-  );
-};
-
-const isValidInterval = ([a, b]: [Date, Date], existingBookings: Array<[Date, Date]>) => {
-  if (!isSameDay(a, b)) return false;
-
-  return !existingBookings.some(([startAt, endAt]) =>
-    doDateRangesOverlap([a, b], [startAt, endAt]),
-  );
-};
+const formatInterval = ({ startAt, endAt }: Interval) =>
+  `${format(startAt, 'HH:mm')}-${format(endAt, 'HH:mm')}`;
 
 const useBookingsForWeek = (week: Date): Array<{ startAt: Date; endAt: Date }> => [
   {
@@ -165,10 +125,10 @@ const useBookingsForWeek = (week: Date): Array<{ startAt: Date; endAt: Date }> =
   },
 ];
 
-const calculateStartEnd = (a: Date, b: Date) => {
+const calculateStartEnd = (a: Date, b: Date, timeUnitMinutes: number) => {
   const [startAt, endCellStart] = sortDates([a, b]);
 
-  const endAt = addMinutes(endCellStart, 30);
+  const endAt = addMinutes(endCellStart, timeUnitMinutes);
 
   return { startAt, endAt };
 };
@@ -180,34 +140,32 @@ interface Props {
 
 const DeviceBooking = ({ thing, onBackClick }: Props) => {
   const [selectedWeek, setSelectedWeek] = useState<Date>(getInitialWeekValue());
-
   const [hoveredCell, setHoveredCell] = useState<Date>();
+  const bookingsForWeek = useBookingsForWeek(selectedWeek);
 
   const [selectedInterval, setSelectedInterval] = useState<{
     startAt: Date | null;
     endAt: Date | null;
   }>({ startAt: null, endAt: null });
-  const bookingsForWeek = useBookingsForWeek(selectedWeek);
 
-  const highlightedInterval = useMemo((): { startAt: Date | null; endAt: Date | null } => {
+  const highlightedInterval = useMemo(() => {
     if (!selectedInterval.startAt || !hoveredCell || selectedInterval.endAt || !bookingsForWeek)
       return { startAt: null, endAt: null };
 
-    const { startAt, endAt } = calculateStartEnd(selectedInterval.startAt, hoveredCell);
+    const { startAt, endAt } = calculateStartEnd(
+      selectedInterval.startAt,
+      hoveredCell,
+      BOOKING_UNIT,
+    );
 
-    if (
-      !isValidInterval(
-        [startAt, endAt],
-        bookingsForWeek.map(({ startAt: start, endAt: end }) => [start, end]),
-      )
-    ) {
+    if (!isValidRange([startAt, endAt], bookingsForWeek)) {
       return { startAt: null, endAt: null };
     }
 
     return { startAt, endAt };
   }, [selectedInterval, hoveredCell, bookingsForWeek]);
 
-  const bookingIntervals = useMemo(() => getBookingIntervals(9, 18), []);
+  const bookingIntervals = useMemo(() => getBookingIntervals(9, 18, BOOKING_UNIT), []);
   const weekdays = useMemo(() => createWeekdaysForWeek(selectedWeek), [selectedWeek]);
   const weekTimeRanges = useMemo(
     () => createTimeRanges(weekdays, bookingIntervals),
@@ -220,14 +178,13 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
       !selectedInterval.endAt &&
       isSameDay(selectedInterval.startAt, cellDate)
     ) {
-      const { startAt, endAt } = calculateStartEnd(selectedInterval.startAt, cellDate);
+      const { startAt, endAt } = calculateStartEnd(
+        selectedInterval.startAt,
+        cellDate,
+        BOOKING_UNIT,
+      );
 
-      if (
-        isValidInterval(
-          [startAt, endAt],
-          bookingsForWeek.map(({ startAt: start, endAt: end }) => [start, end]),
-        )
-      ) {
+      if (isValidRange([startAt, endAt], bookingsForWeek)) {
         setSelectedInterval({ startAt, endAt });
         return;
       }
@@ -259,16 +216,18 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
     );
 
   const getTimeCellText = (cellDate: Date) => {
-    const { startAt, endAt } = selectedInterval;
-
-    if (startAt && endAt && isEqual(startAt, cellDate)) {
-      return formatInterval(startAt, endAt);
+    if (
+      selectedInterval.startAt &&
+      selectedInterval.endAt &&
+      isEqual(selectedInterval.startAt, cellDate)
+    ) {
+      return formatInterval(selectedInterval as Interval);
     }
 
     const { startAt: startHighlighted, endAt: endHighlighted } = highlightedInterval;
 
     if (startHighlighted && endHighlighted && isEqual(startHighlighted, cellDate)) {
-      return formatInterval(startHighlighted, endHighlighted);
+      return formatInterval(highlightedInterval);
     }
 
     return undefined;
