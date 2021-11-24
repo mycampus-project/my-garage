@@ -39,7 +39,7 @@ const StyledListItem = styled(List.Item)<StyledListItemProps>`
 const DeviceListItem = ({ item }: ListItemProps) => {
   const { selectedThing, setSelectedThing } = useContext(AdminContext);
 
-  const isThisUserSelected = selectedThing.name === item.name;
+  const isThisUserSelected = selectedThing.id === item.id;
 
   return (
     <StyledListItem
@@ -53,7 +53,12 @@ const DeviceListItem = ({ item }: ListItemProps) => {
       <List.Item.Meta
         data-testid="deviceList.item.meta"
         style={listItemMeta}
-        avatar={<Avatar size={48} src={`${baseURL}/static/${item.imageUrl}`} />}
+        avatar={
+          <Avatar
+            size={{ xs: 50, sm: 50, md: 50, lg: 60, xl: 60, xxl: 60 }}
+            src={`${baseURL}/static/${item.imageUrl}`}
+          />
+        }
         title={item.name}
         description={item.type}
       />
