@@ -21,6 +21,14 @@ export type Thing = {
   imageUrl: string;
 };
 
+export type Type = {
+  id: string;
+  name: string;
+  createdAt: Date;
+  createdBy: { id: string; fullName: string };
+  removedAt?: Date;
+  removedBy?: { id: string; fullName: string };
+};
 export type Role = {
   name: string;
   createdAt: Date;
