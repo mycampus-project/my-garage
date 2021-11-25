@@ -3,6 +3,8 @@ import {
   addMinutes,
   differenceInMinutes,
   format,
+  formatDuration,
+  intervalToDuration,
   isBefore,
   isEqual,
   isSameDay,
@@ -22,6 +24,7 @@ import {
   isAfterOrEqual,
 } from './utils';
 import Table from './Table';
+import ErrorTooltip from './ErrorTooltip';
 
 type NullableInterval = {
   startAt: Date | null;
@@ -68,18 +71,21 @@ const useHighlightedInterval = (
   occupiedIntervals: Interval[],
   timeUnit: number,
   maxIntervalLengthMinutes: number,
-) => {
+): {
+  error: string | null;
+  highlightedInterval: NullableInterval;
+} => {
   if (!selectedInterval.startAt || !hoveredCell || selectedInterval.endAt || !occupiedIntervals)
-    return { startAt: null, endAt: null };
+    return { error: null, highlightedInterval: { startAt: null, endAt: null } };
 
   const { startAt, endAt } = calculateStartEnd(selectedInterval.startAt, hoveredCell, timeUnit);
 
   if (isValidRange([startAt, endAt], occupiedIntervals, maxIntervalLengthMinutes)) {
-    return { startAt, endAt };
+    return { error: null, highlightedInterval: { startAt, endAt } };
   }
 
   if (!isSameDay(selectedInterval.startAt, hoveredCell)) {
-    return { startAt: null, endAt: null };
+    return { error: null, highlightedInterval: { startAt: null, endAt: null } };
   }
 
   // Calculate longest uninterrupted interval
@@ -95,20 +101,30 @@ const useHighlightedInterval = (
       selectedInterval.startAt,
       (maxIntervalLengthMinutes - timeUnit) * direction,
     );
-    return calculateStartEnd(selectedInterval.startAt, maxAllowedEndTime, timeUnit);
+
+    return {
+      error: `Interval longer than ${formatDuration(
+        intervalToDuration({ start: 0, end: maxIntervalLengthMinutes * 60 * 1000 }),
+      )}`,
+      highlightedInterval: calculateStartEnd(selectedInterval.startAt, maxAllowedEndTime, timeUnit),
+    };
   }
 
   const end = findClosestIntervalEnd(selectedInterval.startAt, occupiedIntervals, direction);
 
   if (end) {
-    return calculateStartEnd(
-      selectedInterval.startAt,
-      direction === 1 ? subMinutes(end, timeUnit) : end,
-      timeUnit,
-    );
+    return {
+      error: 'Interval overlaps with existing bookings',
+
+      highlightedInterval: calculateStartEnd(
+        selectedInterval.startAt,
+        direction === 1 ? subMinutes(end, timeUnit) : end,
+        timeUnit,
+      ),
+    };
   }
 
-  return { startAt: null, endAt: null };
+  return { error: null, highlightedInterval: { startAt, endAt } };
 };
 
 interface Props {
@@ -136,7 +152,7 @@ const BookingTable = ({
     endAt: null,
   });
 
-  const highlightedInterval = useHighlightedInterval(
+  const { highlightedInterval, error } = useHighlightedInterval(
     hoveredCell,
     selectedInterval,
     occupiedIntervals,
@@ -195,30 +211,33 @@ const BookingTable = ({
     const { startAt: startHighlighted, endAt: endHighlighted } = highlightedInterval;
 
     if (startHighlighted && endHighlighted && isEqual(startHighlighted, cellDate)) {
-      return formatInterval(highlightedInterval);
+      return formatInterval(highlightedInterval as Interval);
     }
 
     return null;
   };
 
   return (
-    <Table
-      dateCells={weekDateCells}
-      onCellClick={onCellClick}
-      onHoveredCellChange={setHoveredCell}
-      getIsTableCellSelected={getIsTableCellSelected}
-      getIsTableCellHighlighted={getIsTableCellHighlighted}
-      getIsTableCellUnavailable={getIsTableCellUnavailable}
-      getIsTableCellInvalid={(cellDate) =>
-        getIsTableCellHighlighted(cellDate) &&
-        !!hoveredCell &&
-        !isWithinInterval(hoveredCell, {
-          start: highlightedInterval.startAt!,
-          end: subMinutes(highlightedInterval.endAt!, timeUnit),
-        })
-      }
-      getTimeCellText={getTimeCellText}
-    />
+    <>
+      <Table
+        dateCells={weekDateCells}
+        onCellClick={onCellClick}
+        onHoveredCellChange={setHoveredCell}
+        getIsTableCellSelected={getIsTableCellSelected}
+        getIsTableCellHighlighted={getIsTableCellHighlighted}
+        getIsTableCellUnavailable={getIsTableCellUnavailable}
+        getIsTableCellInvalid={(cellDate) =>
+          getIsTableCellHighlighted(cellDate) &&
+          !!hoveredCell &&
+          !isWithinInterval(hoveredCell, {
+            start: highlightedInterval.startAt!,
+            end: subMinutes(highlightedInterval.endAt!, timeUnit),
+          })
+        }
+        getTimeCellText={getTimeCellText}
+      />
+      {error && <ErrorTooltip error={error} />}
+    </>
   );
 };
 
