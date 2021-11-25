@@ -22,8 +22,16 @@ const getInitialWeekValue = () => {
 
 const useBookingsForWeek = (week: Date): Array<{ startAt: Date; endAt: Date }> => [
   {
-    endAt: set(setDay(week, 1), { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 }),
     startAt: set(setDay(week, 1), { hours: 11, minutes: 0, seconds: 0, milliseconds: 0 }),
+    endAt: set(setDay(week, 1), { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 }),
+  },
+  {
+    startAt: set(setDay(week, 1), { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 }),
+    endAt: set(setDay(week, 1), { hours: 14, minutes: 0, seconds: 0, milliseconds: 0 }),
+  },
+  {
+    startAt: set(setDay(week, 2), { hours: 13, minutes: 0, seconds: 0, milliseconds: 0 }),
+    endAt: set(setDay(week, 2), { hours: 16, minutes: 0, seconds: 0, milliseconds: 0 }),
   },
 ];
 
@@ -66,6 +74,7 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
           startHour={START_HOUR}
           endHour={END_HOUR}
           timeUnit={BOOKING_UNIT}
+          maxBookingLengthMinutes={300}
         />
       </Root>
     </>
