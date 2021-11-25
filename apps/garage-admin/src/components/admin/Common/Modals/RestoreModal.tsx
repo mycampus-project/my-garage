@@ -3,7 +3,19 @@ import { useContext } from 'react';
 import { AdminContext } from '../../../../contexts/AdminContext';
 import RestoreDeviceList from '../../Devices/RestoreDeviceList';
 
-const RestoreDeviceModal = () => {
+interface RestoreModalProps {
+  isDevice?: boolean;
+  isBooking?: boolean;
+  isUser?: boolean;
+}
+
+const defaultProps = {
+  isDevice: false,
+  isBooking: false,
+  isUser: false,
+};
+
+const RestoreModal = ({ isDevice, isUser, isBooking }: RestoreModalProps) => {
   const { modelIsVisible, setModelIsVisible } = useContext(AdminContext);
 
   return (
@@ -18,9 +30,13 @@ const RestoreDeviceModal = () => {
       width={500}
       footer={[]}
     >
-      <RestoreDeviceList />
+      {isDevice && <RestoreDeviceList />}
+      {isUser && <RestoreDeviceList />}
+      {isBooking && <RestoreDeviceList />}
     </Modal>
   );
 };
 
-export default RestoreDeviceModal;
+RestoreModal.defaultProps = defaultProps;
+
+export default RestoreModal;

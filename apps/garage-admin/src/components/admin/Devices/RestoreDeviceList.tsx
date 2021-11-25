@@ -1,6 +1,6 @@
 import 'antd/dist/antd.css';
 import useThing from 'src/hooks/useThing';
-import { useLocalStorage, Thing } from '@my-garage/common';
+import { Thing } from '@my-garage/common';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { List } from 'antd';
@@ -12,8 +12,7 @@ const StyledListContainer = styled.div`
 `;
 
 const RestoreDeviceList = () => {
-  const [token] = useLocalStorage('auth_token');
-  const { data, error, isLoading } = useThing().GetListOfThings(token);
+  const { data, error, isLoading } = useThing().GetListOfThings();
   const [filteredData, setFilteredData] = useState<Thing[]>([]);
 
   const sortedByNameAlphabetically = (dataArray: Thing[]) => {
