@@ -8,5 +8,6 @@ module.exports = {
     'react/jsx-wrap-multilines': 'off',
     'react/prop-types': 'off',
     'react/require-default-props': 0,
+    'react/jsx-curly-newline': 0,
   },
 };
