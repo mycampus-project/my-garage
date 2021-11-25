@@ -5,6 +5,7 @@ const TimeTableCell = styled(TableCell)<{
   isHighlighted: boolean;
   isUnavalilable: boolean;
   isSelected: boolean;
+  isInvalid: boolean;
 }>`
   flex: 1;
 
@@ -22,6 +23,17 @@ const TimeTableCell = styled(TableCell)<{
         border-color: transparent !important;
       }
     `};
+
+  ${({ isInvalid }) =>
+    isInvalid &&
+    css`
+      &,
+      &:hover {
+        background-color: var(--ant-error-color-hover) !important;
+        color: black;
+        border-color: transparent !important;
+      }
+    `}
 
   ${({ isSelected }) =>
     isSelected &&
@@ -55,6 +67,7 @@ interface Props {
   isHighlighted: boolean;
   isUnavailable: boolean;
   isSelected: boolean;
+  isInvalid: boolean;
   onMouseEnter: (date: Date) => void;
   onMouseLeave: (date: Date) => void;
   onClick: (date: Date) => void;
@@ -65,6 +78,7 @@ const TimeCell: React.FC<Props> = ({
   isHighlighted,
   isUnavailable,
   isSelected,
+  isInvalid,
   onClick,
   onMouseEnter,
   onMouseLeave,
@@ -74,6 +88,7 @@ const TimeCell: React.FC<Props> = ({
     onClick={() => !isUnavailable && onClick(date)}
     isHighlighted={isHighlighted}
     isUnavalilable={isUnavailable}
+    isInvalid={isInvalid}
     isSelected={isSelected}
     onMouseEnter={() => onMouseEnter(date)}
     onMouseLeave={() => onMouseLeave(date)}

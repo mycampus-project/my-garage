@@ -1,8 +1,26 @@
-import { useMemo, useState } from 'react';
-import { addMinutes, format, isEqual, isSameDay, isSameMinute, isWithinInterval } from 'date-fns';
+import { useState } from 'react';
+import {
+  addMinutes,
+  differenceInMinutes,
+  format,
+  isBefore,
+  isEqual,
+  isSameDay,
+  isSameMinute,
+  isWithinInterval,
+  subMinutes,
+} from 'date-fns';
 
 import useWeekDateCells from './useWeekDateCells';
-import { isValidRange, sortDates, Interval, isBetweenInclusive } from './utils';
+import {
+  isValidRange,
+  sortDates,
+  Interval,
+  isBetweenInclusive,
+  dateSortComparator,
+  isBeforeOrEqual,
+  isAfterOrEqual,
+} from './utils';
 import Table from './Table';
 
 type NullableInterval = {
@@ -21,24 +39,77 @@ const calculateStartEnd = (a: Date, b: Date, timeUnitMinutes: number) => {
 const formatInterval = ({ startAt, endAt }: Interval) =>
   `${format(startAt, 'HH:mm')}-${format(endAt, 'HH:mm')}`;
 
+const findClosestIntervalEnd = (
+  fromDate: Date,
+  occupiedIntervals: Interval[],
+  direction: 1 | -1,
+) => {
+  if (direction === 1) {
+    const intervalStartTimes = occupiedIntervals
+      .map(({ startAt }) => startAt)
+      .filter((date) => isSameDay(fromDate, date))
+      .sort(dateSortComparator);
+
+    return intervalStartTimes.find((date) => isAfterOrEqual(date, fromDate));
+  }
+
+  const intervalEndTimes = occupiedIntervals
+    .map(({ endAt }) => endAt)
+    .filter((date) => isSameDay(fromDate, date))
+    .sort(dateSortComparator)
+    .reverse();
+
+  return intervalEndTimes.find((date) => isBeforeOrEqual(date, fromDate));
+};
+
 const useHighlightedInterval = (
   hoveredCell: Date | null,
   selectedInterval: NullableInterval,
   occupiedIntervals: Interval[],
   timeUnit: number,
-) =>
-  useMemo(() => {
-    if (!selectedInterval.startAt || !hoveredCell || selectedInterval.endAt || !occupiedIntervals)
-      return { startAt: null, endAt: null };
+  maxIntervalLengthMinutes: number,
+) => {
+  if (!selectedInterval.startAt || !hoveredCell || selectedInterval.endAt || !occupiedIntervals)
+    return { startAt: null, endAt: null };
 
-    const { startAt, endAt } = calculateStartEnd(selectedInterval.startAt, hoveredCell, timeUnit);
+  const { startAt, endAt } = calculateStartEnd(selectedInterval.startAt, hoveredCell, timeUnit);
 
-    if (!isValidRange([startAt, endAt], occupiedIntervals)) {
-      return { startAt: null, endAt: null };
-    }
-
+  if (isValidRange([startAt, endAt], occupiedIntervals, maxIntervalLengthMinutes)) {
     return { startAt, endAt };
-  }, [selectedInterval, hoveredCell, occupiedIntervals, timeUnit]);
+  }
+
+  if (!isSameDay(selectedInterval.startAt, hoveredCell)) {
+    return { startAt: null, endAt: null };
+  }
+
+  // Calculate longest uninterrupted interval
+  const direction = isBefore(selectedInterval.startAt, hoveredCell) ? 1 : -1;
+
+  const hoveredIntervalDuration = Math.abs(differenceInMinutes(startAt, endAt));
+
+  if (
+    isValidRange([startAt, endAt], occupiedIntervals) &&
+    hoveredIntervalDuration > maxIntervalLengthMinutes
+  ) {
+    const maxAllowedEndTime = addMinutes(
+      selectedInterval.startAt,
+      (maxIntervalLengthMinutes - timeUnit) * direction,
+    );
+    return calculateStartEnd(selectedInterval.startAt, maxAllowedEndTime, timeUnit);
+  }
+
+  const end = findClosestIntervalEnd(selectedInterval.startAt, occupiedIntervals, direction);
+
+  if (end) {
+    return calculateStartEnd(
+      selectedInterval.startAt,
+      direction === 1 ? subMinutes(end, timeUnit) : end,
+      timeUnit,
+    );
+  }
+
+  return { startAt: null, endAt: null };
+};
 
 interface Props {
   selectedWeek: Date;
@@ -46,9 +117,17 @@ interface Props {
   startHour: number;
   endHour: number;
   timeUnit: 10 | 15 | 30 | 60;
+  maxBookingLengthMinutes: number;
 }
 
-const BookingTable = ({ selectedWeek, occupiedIntervals, startHour, endHour, timeUnit }: Props) => {
+const BookingTable = ({
+  selectedWeek,
+  occupiedIntervals,
+  startHour,
+  endHour,
+  timeUnit,
+  maxBookingLengthMinutes,
+}: Props) => {
   const [hoveredCell, setHoveredCell] = useState<Date | null>(null);
   const weekDateCells = useWeekDateCells(selectedWeek, startHour, endHour, timeUnit);
 
@@ -62,6 +141,7 @@ const BookingTable = ({ selectedWeek, occupiedIntervals, startHour, endHour, tim
     selectedInterval,
     occupiedIntervals,
     timeUnit,
+    maxBookingLengthMinutes,
   );
 
   const onCellClick = (cellDate: Date) => {
@@ -72,7 +152,7 @@ const BookingTable = ({ selectedWeek, occupiedIntervals, startHour, endHour, tim
     ) {
       const { startAt, endAt } = calculateStartEnd(selectedInterval.startAt, cellDate, timeUnit);
 
-      if (isValidRange([startAt, endAt], occupiedIntervals)) {
+      if (isValidRange([startAt, endAt], occupiedIntervals, maxBookingLengthMinutes)) {
         setSelectedInterval({ startAt, endAt });
         return;
       }
@@ -129,6 +209,14 @@ const BookingTable = ({ selectedWeek, occupiedIntervals, startHour, endHour, tim
       getIsTableCellSelected={getIsTableCellSelected}
       getIsTableCellHighlighted={getIsTableCellHighlighted}
       getIsTableCellUnavailable={getIsTableCellUnavailable}
+      getIsTableCellInvalid={(cellDate) =>
+        getIsTableCellHighlighted(cellDate) &&
+        !!hoveredCell &&
+        !isWithinInterval(hoveredCell, {
+          start: highlightedInterval.startAt!,
+          end: subMinutes(highlightedInterval.endAt!, timeUnit),
+        })
+      }
       getTimeCellText={getTimeCellText}
     />
   );
