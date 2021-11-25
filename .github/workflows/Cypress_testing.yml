@@ -28,6 +28,7 @@ jobs:
         run: |
           echo $ADMIN_USER_RECORD >> ./services/garage-backend/fixtures/users.json
           mongoimport --db=my-garage --collection=roles --drop --file ./services/garage-backend/fixtures/roles.json
+          mongoimport --db=my-garage --collection=types --drop --file ./services/garage-backend/fixtures/types.json
           mongoimport --db=my-garage --collection=users --drop --file ./services/garage-backend/fixtures/users.json
           mongoimport --db=my-garage --collection=things --drop --file ./services/garage-backend/fixtures/things.json
 
