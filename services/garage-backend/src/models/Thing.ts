@@ -12,7 +12,7 @@ export interface ThingDocument
 const thingSchema = new mongoose.Schema<ThingDocument>({
   name: {
     type: String,
-    index: { unique: true },
+    unique: true,
     required: true,
   },
   description: {

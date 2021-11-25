@@ -11,7 +11,7 @@ export interface TypeDocument
 const typeSchema = new mongoose.Schema<TypeDocument>({
   name: {
     type: String,
-    index: { unique: true },
+    unique: true,
     required: true,
   },
   createdAt: {
