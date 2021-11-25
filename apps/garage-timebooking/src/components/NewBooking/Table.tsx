@@ -75,10 +75,14 @@ const Table = ({
   return (
     <Root>
       <thead>
-        <TableCell as="th">Week {getWeek(dateCells[0][0])}</TableCell>
-        {dateCells.map(([first]) => (
-          <WeekdayHeaderCell>{format(first, 'eee d.MM.y')}</WeekdayHeaderCell>
-        ))}
+        <tr>
+          <TableCell as="th">Week {getWeek(dateCells[0][0])}</TableCell>
+          {dateCells.map(([first]) => (
+            <WeekdayHeaderCell key={first.getTime()}>
+              {format(first, 'eee d.MM.y')}
+            </WeekdayHeaderCell>
+          ))}
+        </tr>
       </thead>
       <tbody>
         {(() => {
@@ -91,7 +95,7 @@ const Table = ({
           );
 
           return rotatedMatrix.map((row) => (
-            <tr>
+            <tr key={`${row[0].getHours()}-${row[0].getMinutes()}`}>
               <HourHeaderCell
                 isHighlighted={
                   !!hoveredCell &&
