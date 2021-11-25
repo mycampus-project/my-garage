@@ -79,6 +79,10 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
           <Form layout="vertical">
             <Form.Item label="Select week">
               <DatePicker
+                disabledDate={(current) =>
+                  // Can not select days before today and today
+                  current && current < moment().startOf('day')
+                }
                 value={moment(selectedWeek)}
                 allowClear={false}
                 onChange={(value) => {
