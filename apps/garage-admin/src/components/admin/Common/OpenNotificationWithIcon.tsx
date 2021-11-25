@@ -8,6 +8,7 @@ const openNotificationWithIcon = (
   notification[type]({
     message: title,
     description: message,
+    placement: 'topLeft',
   });
 };
 

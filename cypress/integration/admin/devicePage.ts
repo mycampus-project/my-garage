@@ -36,7 +36,7 @@ describe('Testing interactions with devices on the Admin page', () => {
   it('should click devices in navigation and display a list of 11 items', () => {
     cy.findByTestId('nav.devices').click();
     localStorage.getItem('token');
-    cy.findByTestId('deviceList').children().find('li').should('have.length', 11);
+    cy.findByTestId('deviceList').children().find('li').should('have.length.at.least', 11);
   });
 
   it('should click on 3D Printer -3 and check is that isAvailable is set to Unavailable', () => {
@@ -52,24 +52,14 @@ describe('Testing interactions with devices on the Admin page', () => {
 
   it('should click on Edit button and show modal. Test to see if OK button is disabled and form is displayed', () => {
     cy.findByTestId('edit.device.btn').should('be.visible').click();
-    const modalContent = cy
-      .findByTestId('edit.device.modal')
-      .children('.ant-modal-wrap')
-      .find('.ant-modal-content');
-
-    modalContent.children('.ant-modal-footer').contains('OK').should('not.be.disabled');
-    cy.findByTestId('edit.form').should('be.visible');
+    cy.findByTestId('device.form').should('be.visible');
+    cy.findByTestId('device.form').find('button').contains('Submit').should('not.be.disabled');
   });
 
   it('should toggle isAvailable and update device when OK is clicked.', () => {
     cy.findByTestId('isAvailable.toggle').children().find('button').click();
 
-    cy.findByTestId('edit.device.modal')
-      .children('.ant-modal-wrap')
-      .find('.ant-modal-content')
-      .children('.ant-modal-footer')
-      .contains('OK')
-      .click();
+    cy.findByTestId('device.form').find('button').contains('Submit').click();
 
     cy.findByTestId('details.table')
       .children()

@@ -3,11 +3,11 @@ import { useContext } from 'react';
 import { AdminContext } from 'src/contexts/AdminContext';
 import { AddDeviceFormProps } from 'src/types/adminTypes';
 
-const EditBookingForm = ({ form, showSubmit }: AddDeviceFormProps) => {
+const BookingForm = ({ form }: AddDeviceFormProps) => {
   const { selectedThing } = useContext(AdminContext);
 
   return (
-    <Form form={form} layout="vertical" name="userForm" onFieldsChange={showSubmit}>
+    <Form form={form} layout="vertical" name="userForm">
       <Form.Item
         initialValue={selectedThing.name}
         name="name"
@@ -32,4 +32,4 @@ const EditBookingForm = ({ form, showSubmit }: AddDeviceFormProps) => {
   );
 };
 
-export default EditBookingForm;
+export default BookingForm;

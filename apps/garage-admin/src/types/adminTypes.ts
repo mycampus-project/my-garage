@@ -27,5 +27,5 @@ export type ValidationValueTypes = {
 
 export type AddDeviceFormProps = {
   form: FormInstance;
-  showSubmit: () => void;
+  showEdit?: boolean;
 };

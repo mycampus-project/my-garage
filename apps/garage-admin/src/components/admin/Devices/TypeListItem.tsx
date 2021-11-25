@@ -1,4 +1,4 @@
-import { List, Button } from 'antd';
+import { List, Button, Spin } from 'antd';
 import { Type } from '@my-garage/common';
 import useType from 'src/hooks/useType';
 
@@ -16,8 +16,8 @@ const listItemMeta = {
 };
 
 const TypeListItem = ({ item, showRestoreButtons }: ListItemProps) => {
-  const { onDelete } = useType().DeleteType();
-  const { onRestore } = useType().RestoreType();
+  const { onDelete, isLoadingDeleteType } = useType().DeleteType();
+  const { onRestore, isLoadingRestoreType } = useType().RestoreType();
 
   const restoreButton = (
     <Button
@@ -40,12 +40,14 @@ const TypeListItem = ({ item, showRestoreButtons }: ListItemProps) => {
   );
 
   return (
-    <List.Item
-      data-testid="typeList.item"
-      actions={showRestoreButtons ? [restoreButton] : [deleteButton]}
-    >
-      <List.Item.Meta data-testid="typeList.item.meta" style={listItemMeta} title={item.name} />
-    </List.Item>
+    <Spin spinning={isLoadingDeleteType || isLoadingRestoreType}>
+      <List.Item
+        data-testid="typeList.item"
+        actions={showRestoreButtons ? [restoreButton] : [deleteButton]}
+      >
+        <List.Item.Meta data-testid="typeList.item.meta" style={listItemMeta} title={item.name} />
+      </List.Item>
+    </Spin>
   );
 };
 
