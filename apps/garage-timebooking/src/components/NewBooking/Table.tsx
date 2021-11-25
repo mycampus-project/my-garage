@@ -52,6 +52,7 @@ interface Props {
   getIsTableCellSelected: (cellDate: Date) => boolean;
   getIsTableCellHighlighted: (cellDate: Date) => boolean;
   getIsTableCellUnavailable: (cellDate: Date) => boolean;
+  getIsTableCellInvalid: (cellDate: Date) => boolean;
   getTimeCellText: (cellDate: Date) => string | null;
 }
 
@@ -61,6 +62,7 @@ const Table = ({
   getIsTableCellSelected,
   getIsTableCellHighlighted,
   getIsTableCellUnavailable,
+  getIsTableCellInvalid,
   getTimeCellText,
   onCellClick,
 }: Props) => {
@@ -73,7 +75,7 @@ const Table = ({
   return (
     <Root>
       <thead>
-        <TableCell>Week {getWeek(dateCells[0][0])}</TableCell>
+        <TableCell as="th">Week {getWeek(dateCells[0][0])}</TableCell>
         {dateCells.map(([first]) => (
           <WeekdayHeaderCell>{format(first, 'eee d.MM.y')}</WeekdayHeaderCell>
         ))}
@@ -107,6 +109,7 @@ const Table = ({
                   isSelected={getIsTableCellSelected(date)}
                   isHighlighted={getIsTableCellHighlighted(date)}
                   isUnavailable={getIsTableCellUnavailable(date)}
+                  isInvalid={getIsTableCellInvalid(date)}
                   onMouseEnter={setHoveredCell}
                   onMouseLeave={() => setHoveredCell(null)}
                 >
