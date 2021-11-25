@@ -1,5 +1,5 @@
 import { Type } from '@my-garage/common';
-import { Button, Modal } from 'antd';
+import { Button, Modal, Spin } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import useType from 'src/hooks/useType';
 import styled from 'styled-components';
@@ -15,7 +15,7 @@ const ManageTypesModal = () => {
   const { modelIsVisible, setModelIsVisible } = useContext(AdminContext);
   const [toggleRestoreTypes, setToggleRestoreTypes] = useState<boolean>(false);
 
-  const { data, error } = useType().GetListOfTypes();
+  const { data, error, isLoading } = useType().GetListOfTypes();
   const [filteredData, setFilteredData] = useState<Type[]>([]);
 
   const sortedArray = (dataArray: Type[]) => {
@@ -46,7 +46,7 @@ const ManageTypesModal = () => {
 
   return (
     <Modal
-      title="Manage Types"
+      title={toggleRestoreTypes ? 'Deleted Types' : 'Current Types'}
       centered
       visible={modelIsVisible}
       onCancel={() => setModelIsVisible(false)}
@@ -58,12 +58,14 @@ const ManageTypesModal = () => {
             setToggleRestoreTypes(!toggleRestoreTypes);
           }}
         >
-          {toggleRestoreTypes ? 'Current Types' : 'Restore Types'}
+          {toggleRestoreTypes ? 'Current Types' : 'Deleted Types'}
         </StyledButton>,
       ]}
     >
-      <TypeList data={filteredData} showRestore={toggleRestoreTypes} />
-      {!toggleRestoreTypes && <AddTypeForm />}
+      <Spin spinning={isLoading}>
+        <TypeList data={filteredData} showRestore={toggleRestoreTypes} />
+        {!toggleRestoreTypes && <AddTypeForm />}
+      </Spin>
     </Modal>
   );
 };
