@@ -9,5 +9,6 @@ module.exports = {
     'prefer-destructuring': ['error', { object: true, array: false }],
     'react/prop-types': 'off',
     'react/require-default-props': 0,
+    'react/jsx-curly-newline': 0,
   },
 };
