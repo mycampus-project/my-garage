@@ -51,7 +51,7 @@ const RestoreDeviceListItem = ({ item, showRestoreButtons }: ListItemProps) => {
   return (
     <StyledListItem
       data-testid="deviceList.item"
-      key={item.name}
+      key={item.id}
       actions={
         showRestoreButtons && [
           <Button

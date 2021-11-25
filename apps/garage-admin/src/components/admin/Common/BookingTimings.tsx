@@ -5,7 +5,7 @@ interface BookingTimingsProps {
   item: BookingData;
 }
 
-const TimeContainer = styled.p`
+const TimeContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;

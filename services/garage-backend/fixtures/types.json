@@ -1,0 +1,5 @@
+{"_id":{"$oid":"619f7f8ec1632412f7e3d832"},"name":"Room","createdBy":{"$oid":"619f7e9dc1632412f7e3d785"},"createdAt":{"$date":"2021-11-25T12:20:30.716Z"},"__v":0}
+{"_id":{"$oid":"619f7f98c1632412f7e3d83b"},"name":"Printer","createdBy":{"$oid":"619f7e9dc1632412f7e3d785"},"createdAt":{"$date":"2021-11-25T12:20:40.395Z"},"__v":0}
+{"_id":{"$oid":"619f7faac1632412f7e3d845"},"name":"AR Equipment","createdBy":{"$oid":"619f7e9dc1632412f7e3d785"},"createdAt":{"$date":"2021-11-25T12:20:58.483Z"},"__v":0}
+{"_id":{"$oid":"619f7fb8c1632412f7e3d850"},"name":"Computer","createdBy":{"$oid":"619f7e9dc1632412f7e3d785"},"createdAt":{"$date":"2021-11-25T12:21:12.259Z"},"__v":0}
+{"_id":{"$oid":"619f7fccc1632412f7e3d85c"},"name":"Peripheral","createdBy":{"$oid":"619f7e9dc1632412f7e3d785"},"createdAt":{"$date":"2021-11-25T12:21:32.542Z"},"__v":0}

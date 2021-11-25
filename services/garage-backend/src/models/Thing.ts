@@ -3,9 +3,10 @@ import { Thing } from '@my-garage/common';
 
 export interface ThingDocument
   extends Document<ObjectId>,
-    Omit<Thing, 'createdBy' | 'removedBy' | 'id'> {
+    Omit<Thing, 'createdBy' | 'removedBy' | 'id' | 'type'> {
   createdBy: ObjectId;
   removedBy?: ObjectId;
+  type: ObjectId;
 }
 
 const thingSchema = new mongoose.Schema<ThingDocument>({
@@ -18,7 +19,8 @@ const thingSchema = new mongoose.Schema<ThingDocument>({
     required: true,
   },
   type: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Type',
     required: true,
   },
   createdAt: {

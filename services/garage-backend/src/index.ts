@@ -8,6 +8,7 @@ import { authMiddleware, requireAuth } from './middlewares/auth';
 import createRoles from './helpers/createRoles';
 import thingRouter from './routers/thingRouter';
 import userRouter from './routers/userRouter';
+import typeRouter from './routers/typeRouter';
 
 const app = express();
 app.use(express.json());
@@ -21,6 +22,7 @@ app.use(cors());
 
 app.use('/things', thingRouter);
 app.use('/users', userRouter);
+app.use('/types', typeRouter);
 
 app.get('/', (req, res) => {
   res.send('Express + TypeScript Server');

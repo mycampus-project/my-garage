@@ -10,6 +10,7 @@ import RestoreUserModal from './Modals/RestoreUserModal';
 import ChangeRoleModal from './Modals/ChangeRoleModal';
 import DeleteBookingModal from './Modals/DeleteBookingModal';
 import EditBookingModal from './Modals/EditBookingModal';
+import ManageTypesModal from './Modals/ManageTypesModal';
 
 const ModelLauncher = () => {
   const { modelType } = useContext(AdminContext);
@@ -41,6 +42,9 @@ const ModelLauncher = () => {
     }
     case 'edit-booking': {
       return <EditBookingModal />;
+    }
+    case 'manage-type': {
+      return <ManageTypesModal />;
     }
     default: {
       return <Modal />;
