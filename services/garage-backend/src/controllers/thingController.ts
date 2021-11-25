@@ -17,6 +17,7 @@ export const createThing = async (req: Request, res: Response, next: NextFunctio
     const thingDocument = await Thing.findOne({ name: req.body.name });
     if (thingDocument) {
       next(new BadRequestError('Thing with same name exists in the Database'));
+      return;
     }
     const typeDocument = await Type.findOne({ name: req.body.type });
     if (!typeDocument) {
@@ -71,6 +72,7 @@ export const updateThing = async (req: Request, res: Response, next: NextFunctio
     const thingDocument = await Thing.findOne({ name: req.body.name });
     if (thingDocument) {
       next(new BadRequestError('Thing with same name exists in the Database'));
+      return;
     }
     const typeDocument = await Type.findOne({ name: req.body.type });
     if (!typeDocument) {
