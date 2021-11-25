@@ -1,7 +1,7 @@
 import { getWeek, set, setDay, setWeek } from 'date-fns';
 import { Thing, START_HOUR, END_HOUR, BOOKING_UNIT } from '@my-garage/common';
 import moment from 'moment';
-import { DatePicker, PageHeader, Space, Form, Typography } from 'antd';
+import { DatePicker, PageHeader, Space, Form, Typography, Image } from 'antd';
 import { useState } from 'react';
 import styled from 'styled-components';
 
@@ -9,6 +9,19 @@ import BookingTable from './BookingTable';
 
 const Root = styled.div`
   padding: var(--padding-m);
+  position: relative;
+`;
+
+const HeaderRow = styled.div`
+  display: flex;
+`;
+
+const ImageContainer = styled.div`
+  padding: var(--padding-m);
+`;
+
+const StyledPageHeader = styled(PageHeader)`
+  flex: 1;
 `;
 
 const getInitialWeekValue = () => {
@@ -46,12 +59,21 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
 
   return (
     <>
-      <PageHeader
-        title={thing.name}
-        footer={<Typography.Paragraph type="secondary">{thing.description}</Typography.Paragraph>}
-        ghost
-        onBack={onBackClick}
-      />
+      <HeaderRow>
+        <StyledPageHeader
+          title={thing.name}
+          footer={<Typography.Paragraph type="secondary">{thing.description}</Typography.Paragraph>}
+          ghost
+          onBack={onBackClick}
+        />
+        <ImageContainer>
+          <Image
+            wrapperClassName="image"
+            width={200}
+            src={`${process.env.REACT_APP_BACKEND_URL}/static/${thing.imageUrl}`}
+          />
+        </ImageContainer>
+      </HeaderRow>
       <Root>
         <Space direction="vertical">
           <Form layout="vertical">

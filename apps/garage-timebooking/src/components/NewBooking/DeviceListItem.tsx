@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Thing } from '@my-garage/common';
-import { List, Typography } from 'antd';
+import { Avatar, List, Typography } from 'antd';
 
 const StyledListItem = styled(List.Item)<{ $isSelected: boolean }>`
   cursor: pointer;
@@ -25,6 +25,10 @@ const StyledListItem = styled(List.Item)<{ $isSelected: boolean }>`
   }
 `;
 
+const StyledDescription = styled(Typography.Paragraph)`
+  white-space: pre-wrap;
+`;
+
 interface Props {
   isSelected: boolean;
   onClick: (item: Thing) => void;
@@ -35,18 +39,24 @@ const DeviceListItem = ({ isSelected, item, onClick }: Props) => (
   <StyledListItem $isSelected={isSelected} tabIndex={0} onClick={() => onClick(item)}>
     <List.Item.Meta
       title={item.name}
+      avatar={
+        <Avatar
+          size={{ xs: 50, sm: 50, md: 50, lg: 60, xl: 60, xxl: 60 }}
+          src={`${process.env.REACT_APP_BACKEND_URL}/static/${item.imageUrl}`}
+        />
+      }
       description={
-        <Typography.Paragraph
+        <StyledDescription
           type="secondary"
           style={{
             marginBottom: 0,
           }}
           ellipsis={{
-            rows: 2,
+            rows: 3,
           }}
         >
           {item.description}
-        </Typography.Paragraph>
+        </StyledDescription>
       }
     />
   </StyledListItem>

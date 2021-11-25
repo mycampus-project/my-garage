@@ -8,6 +8,7 @@ interface AuthContextValue {
   isLoading: boolean;
   error: AxiosError | null;
   setAuthToken: (token: string) => void;
+  token: string | null;
 }
 
 const defaultValue: AuthContextValue = {
@@ -15,6 +16,7 @@ const defaultValue: AuthContextValue = {
   isLoading: false,
   error: null,
   setAuthToken: () => {},
+  token: null,
 };
 
 const AuthContext = createContext(defaultValue);
@@ -38,8 +40,8 @@ const AuthContextProvider: React.FC = ({ children }) => {
   return (
     <AuthContext.Provider
       value={useMemo(
-        () => ({ user: data?.data ?? null, isLoading, error, setAuthToken }),
-        [data, isLoading, error, setAuthToken],
+        () => ({ user: data?.data ?? null, isLoading, error, setAuthToken, token }),
+        [data, isLoading, error, setAuthToken, token],
       )}
     >
       {children}

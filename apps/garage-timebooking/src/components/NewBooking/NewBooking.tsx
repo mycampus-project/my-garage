@@ -1,11 +1,11 @@
 import { Thing } from '@my-garage/common';
-import { PageHeader } from 'antd';
+import { PageHeader, Spin } from 'antd';
 import { groupBy } from 'lodash';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import DeviceBooking from './DeviceBooking';
 import DeviceListSection from './DeviceListSection';
-import { thingsArray } from './testData';
+import useDevices from './useDevices';
 
 const Root = styled.div`
   display: flex;
@@ -28,6 +28,7 @@ const CenteredLayout = styled.div`
 const Left = styled.div<{ hasSelectedItem: boolean }>`
   overflow: auto;
   padding-top: 0;
+  position: relative;
 `;
 
 const Right = styled.div<{ hasSelectedItem: boolean }>`
@@ -64,11 +65,18 @@ const Content = styled.div<{ hasSelectedItem: boolean }>`
   }
 `;
 
-const useItems = () => Object.entries(groupBy(thingsArray, (thing) => thing.type));
+const StyledSpinner = styled(Spin)`
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translate(-50%, 0);
+`;
 
 function NewBooking() {
   const [selectedItem, setSelectedItem] = useState<Thing | null>(null);
-  const items = useItems();
+  const { data, isLoading } = useDevices();
+
+  const groupedItems = data && Object.entries(groupBy(data, (thing) => thing.type));
 
   return (
     <Root>
@@ -76,7 +84,8 @@ function NewBooking() {
       <CenteredLayout>
         <Content hasSelectedItem={!!selectedItem}>
           <Left hasSelectedItem={!!selectedItem}>
-            {items.map(([type, itemsOfType]) => (
+            {isLoading && <StyledSpinner size="large" />}
+            {groupedItems?.map(([type, itemsOfType]) => (
               <DeviceListSection
                 key={type}
                 items={itemsOfType}
