@@ -3,11 +3,30 @@ import { useContext } from 'react';
 import { AdminContext } from 'src/contexts/AdminContext';
 import styled from 'styled-components';
 import { BookingData } from '../../../types/adminTypes';
-import BookingTimings from '../Common/BookingTimings';
 
 interface UserBookingItemProps {
   item: BookingData;
 }
+
+const DescriptionContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  padding-top: 10px;
+  justify-content: space-between;
+  max-width: 600px;
+
+  @media screen and (max-width: 800px) {
+    flex-direction: column;
+  }
+
+  @media screen and (min-width: 1199px) {
+    div {
+      margin-left: 16px;
+      flex-wrap: nowrap;
+    }
+  }
+`;
 
 const StyledListItem = styled(List.Item)`
   @media screen and (max-width: 800px) {
@@ -15,12 +34,24 @@ const StyledListItem = styled(List.Item)`
 
     .ant-list-item-action {
       max-width: 100px;
+      justify-content: start;
+    }
+
+    .ant-list-item-action-split {
+    }
+
+    li:first-child {
+      margin: 8px;
     }
   }
 
   .ant-list-item-meta-content > div {
     color: rgba(0, 0, 0, 0.74);
   }
+`;
+
+const StyledSpan = styled.span`
+  font-weight: 700;
 `;
 
 const UserBookingItem = ({ item }: UserBookingItemProps) => {
@@ -64,7 +95,19 @@ const UserBookingItem = ({ item }: UserBookingItemProps) => {
           />
         }
         title={item.thing.name}
-        description={<BookingTimings item={item} />}
+        description={
+          <DescriptionContainer>
+            <p>
+              <StyledSpan>Date:</StyledSpan> {new Date(item.date).toLocaleDateString()}
+            </p>
+            <p>
+              <StyledSpan>Start Time:</StyledSpan> {new Date(item.date).toLocaleTimeString()}
+            </p>
+            <p>
+              <StyledSpan>End Time:</StyledSpan> {new Date(item.date).toLocaleTimeString()}
+            </p>
+          </DescriptionContainer>
+        }
       />
     </StyledListItem>
   );

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { AxiosError, AxiosResponse } from 'axios';
-import { apiClient, Thing } from '@my-garage/common';
+import { apiClient, Thing, useLocalStorage } from '@my-garage/common';
 import { useContext } from 'react';
 import { AdminContext } from '../contexts/AdminContext';
 import openNotificationWithIcon from '../components/admin/Common/OpenNotificationWithIcon';
@@ -8,8 +8,9 @@ import openNotificationWithIcon from '../components/admin/Common/OpenNotificatio
 const useThing = () => {
   const client = useQueryClient();
   const { setModelIsVisible, setSelectedThing, selectedThing } = useContext(AdminContext);
+  const [token] = useLocalStorage('auth_token');
 
-  function GetListOfThings(token: string) {
+  function GetListOfThings() {
     const { data, error, isLoading } = useQuery<AxiosResponse<Thing[]> | null, AxiosError>(
       ['things'],
       () => {
@@ -23,7 +24,7 @@ const useThing = () => {
     return { data, error, isLoading };
   }
 
-  function AddThing(token: string) {
+  function AddThing() {
     const {
       mutate: onSubmit,
       data: responseThingData,
@@ -69,6 +70,7 @@ const useThing = () => {
             'Device Added',
             `${data.name} was successfully added.`,
           );
+          setModelIsVisible(false);
         },
 
         onError: (error) => {
@@ -79,7 +81,7 @@ const useThing = () => {
     return { onSubmit, responseThingData, isLoadingAddThing, addThingError };
   }
 
-  function DeleteThing(token: string) {
+  function DeleteThing() {
     const {
       mutate: onDelete,
       data: respDeleteThingData,
@@ -129,7 +131,7 @@ const useThing = () => {
     };
   }
 
-  function UpdateThing(token: string) {
+  function UpdateThing() {
     const {
       mutate: onUpdate,
       data: respUpdateThingData,
@@ -185,6 +187,7 @@ const useThing = () => {
             imageUrl: data.imageUrl,
           };
           setSelectedThing(newThing);
+          setModelIsVisible(false);
         },
 
         onError: (error) => {
@@ -200,7 +203,7 @@ const useThing = () => {
     };
   }
 
-  function RestoreThing(token: string) {
+  function RestoreThing() {
     const {
       mutate: onRestore,
       data: respRestoreThingData,
@@ -226,13 +229,10 @@ const useThing = () => {
             'Device Restored',
             `${data.name} was successfully restored`,
           );
-
-          setModelIsVisible(false);
         },
 
         onError: (error) => {
           openNotificationWithIcon('error', 'Device Not Restored', `${error.message}`);
-          setModelIsVisible(false);
         },
       },
     );

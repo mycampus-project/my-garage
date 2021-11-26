@@ -1,27 +1,17 @@
 import mongoose, { Document, ObjectId } from 'mongoose';
-import { Thing } from '@my-garage/common';
+import { Type } from '@my-garage/common';
 
-export interface ThingDocument
+export interface TypeDocument
   extends Document<ObjectId>,
-    Omit<Thing, 'createdBy' | 'removedBy' | 'id' | 'type'> {
+    Omit<Type, 'createdBy' | 'removedBy' | 'id'> {
   createdBy: ObjectId;
   removedBy?: ObjectId;
-  type: ObjectId;
 }
 
-const thingSchema = new mongoose.Schema<ThingDocument>({
+const typeSchema = new mongoose.Schema<TypeDocument>({
   name: {
     type: String,
     unique: true,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  type: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Type',
     required: true,
   },
   createdAt: {
@@ -34,10 +24,6 @@ const thingSchema = new mongoose.Schema<ThingDocument>({
     ref: 'User',
     required: true,
   },
-  isAvailable: {
-    type: Boolean,
-    required: true,
-  },
   removedAt: {
     type: Date,
     required: false,
@@ -46,10 +32,6 @@ const thingSchema = new mongoose.Schema<ThingDocument>({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
-  imageUrl: {
-    type: String,
-    required: false,
-  },
 });
 
-export default mongoose.model('Thing', thingSchema);
+export default mongoose.model('Type', typeSchema);

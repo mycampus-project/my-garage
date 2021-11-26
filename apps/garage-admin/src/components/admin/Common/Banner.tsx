@@ -24,6 +24,16 @@ function Banner({ title, showAddThing, showRestoreUser }: BannerProps) {
       key={1}
       type="primary"
       onClick={() => {
+        setModelType('manage-type');
+        setModelIsVisible(true);
+      }}
+    >
+      Add Type
+    </Button>,
+    <Button
+      key={2}
+      type="primary"
+      onClick={() => {
         setModelType('add-device');
         setModelIsVisible(true);
       }}
@@ -31,7 +41,7 @@ function Banner({ title, showAddThing, showRestoreUser }: BannerProps) {
       Add Device
     </Button>,
     <Button
-      key={2}
+      key={3}
       type="primary"
       onClick={() => {
         setModelType('restore-device');
@@ -45,7 +55,7 @@ function Banner({ title, showAddThing, showRestoreUser }: BannerProps) {
 
   const showRestoreUsers = [
     <Button
-      key={2}
+      key={1}
       type="primary"
       onClick={() => {
         setModelType('restore-user');

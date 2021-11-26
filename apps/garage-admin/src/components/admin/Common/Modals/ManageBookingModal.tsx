@@ -1,19 +1,14 @@
 import { Modal, Form } from 'antd';
 import { useContext, useState } from 'react';
-import isValidateAndShowButton from 'src/utilities/ModalFunctions';
 import { AdminContext } from '../../../../contexts/AdminContext';
-import EditBookingForm from '../Forms/EditBookingForm';
+import EditBookingForm from '../Forms/BookingForm';
 import openNotificationWithIcon from '../OpenNotificationWithIcon';
 
-const EditBookingModal = () => {
+const ManageBookingModal = () => {
   const { modelIsVisible, setModelIsVisible } = useContext(AdminContext);
   const [form] = Form.useForm();
 
-  const [isDisabled, setIsDisabled] = useState<boolean>(true);
-
-  const toggleButton = () => {
-    setIsDisabled(isValidateAndShowButton(form));
-  };
+  const [isDisabled] = useState<boolean>(true);
 
   return (
     <Modal
@@ -28,9 +23,9 @@ const EditBookingModal = () => {
       onCancel={() => setModelIsVisible(false)}
       width={500}
     >
-      <EditBookingForm form={form} showSubmit={toggleButton} />
+      <EditBookingForm form={form} />
     </Modal>
   );
 };
 
-export default EditBookingModal;
+export default ManageBookingModal;

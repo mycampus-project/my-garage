@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import { List, Avatar, Button } from 'antd';
-import { Thing, useLocalStorage } from '@my-garage/common';
+import { List, Avatar, Button, Spin } from 'antd';
+import { Thing } from '@my-garage/common';
 import styled from 'styled-components';
 import baseURL from 'src/utilities/api';
 import useThing from 'src/hooks/useThing';
@@ -45,46 +45,47 @@ const StyledListItem = styled(({ isSelected, ...props }) => (
 
 const RestoreDeviceListItem = ({ item, showRestoreButtons }: ListItemProps) => {
   const { setModelIsVisible } = useContext(AdminContext);
-  const [token] = useLocalStorage('auth_token');
-  const { onRestore } = useThing().RestoreThing(token);
+  const { onRestore, isLoadingRestoreThing } = useThing().RestoreThing();
 
   return (
-    <StyledListItem
-      data-testid="deviceList.item"
-      key={item.name}
-      actions={
-        showRestoreButtons && [
-          <Button
-            onClick={() => {
-              onRestore(item.id);
-              setModelIsVisible(false);
-            }}
-          >
-            Restore
-          </Button>,
-        ]
-      }
-    >
-      <List.Item.Meta
-        data-testid="deviceList.item.meta"
-        style={listItemMeta}
-        avatar={
-          <Avatar
-            size={{
-              xs: 50,
-              sm: 50,
-              md: 50,
-              lg: 60,
-              xl: 60,
-              xxl: 60,
-            }}
-            src={`${baseURL}/static/${item.imageUrl}`}
-          />
+    <Spin spinning={isLoadingRestoreThing}>
+      <StyledListItem
+        data-testid="deviceList.item"
+        key={item.id}
+        actions={
+          showRestoreButtons && [
+            <Button
+              onClick={() => {
+                onRestore(item.id);
+                setModelIsVisible(false);
+              }}
+            >
+              Restore
+            </Button>,
+          ]
         }
-        title={item.name}
-        description={item.type}
-      />
-    </StyledListItem>
+      >
+        <List.Item.Meta
+          data-testid="deviceList.item.meta"
+          style={listItemMeta}
+          avatar={
+            <Avatar
+              size={{
+                xs: 50,
+                sm: 50,
+                md: 50,
+                lg: 60,
+                xl: 60,
+                xxl: 60,
+              }}
+              src={`${baseURL}/static/${item.imageUrl}`}
+            />
+          }
+          title={item.name}
+          description={item.type}
+        />
+      </StyledListItem>
+    </Spin>
   );
 };
 
