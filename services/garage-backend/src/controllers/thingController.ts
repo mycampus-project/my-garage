@@ -14,11 +14,17 @@ import { serializeThing } from '../serializers/things';
 // POST /things
 export const createThing = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const thingDocument = await Thing.findOne({ name: req.body.name });
+    if (thingDocument) {
+      next(new BadRequestError('Thing with same name exists in the Database'));
+      return;
+    }
     const typeDocument = await Type.findOne({ name: req.body.type });
     if (!typeDocument) {
       next(new BadRequestError('Type is not found in database'));
       return;
     }
+
     const { name, description, isAvailable } = req.body;
     const thing = new Thing({
       name,
@@ -63,6 +69,11 @@ export const findThingById = async (req: Request, res: Response, next: NextFunct
 // PUT /things/:thingId
 export const updateThing = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const thingDocument = await Thing.findOne({ name: req.body.name });
+    if (thingDocument && thingDocument.id !== req.params.thingId) {
+      next(new BadRequestError('Thing with same name exists in the Database'));
+      return;
+    }
     const typeDocument = await Type.findOne({ name: req.body.type });
     if (!typeDocument) {
       next(new BadRequestError('Type is not found in database'));
