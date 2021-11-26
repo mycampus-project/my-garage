@@ -70,7 +70,7 @@ export const findThingById = async (req: Request, res: Response, next: NextFunct
 export const updateThing = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const thingDocument = await Thing.findOne({ name: req.body.name });
-    if (thingDocument) {
+    if (thingDocument && thingDocument.id !== req.params.thingId) {
       next(new BadRequestError('Thing with same name exists in the Database'));
       return;
     }
