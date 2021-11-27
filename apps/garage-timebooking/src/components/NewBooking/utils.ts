@@ -3,7 +3,6 @@ import {
   isAfter,
   isBefore,
   isEqual,
-  isSameDay,
   isSameMinute,
   isWithinInterval,
 } from 'date-fns';
@@ -64,10 +63,7 @@ export const isValidRange = (
   existingBookings: Array<Interval>,
   maxRangeDurationMin?: number,
 ) => {
-  if (
-    !isSameDay(...range) ||
-    (maxRangeDurationMin && Math.abs(differenceInMinutes(...range)) > maxRangeDurationMin)
-  ) {
+  if (maxRangeDurationMin && Math.abs(differenceInMinutes(...range)) > maxRangeDurationMin) {
     return false;
   }
 

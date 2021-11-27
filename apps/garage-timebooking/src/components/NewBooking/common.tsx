@@ -4,7 +4,7 @@ export const CELL_WIDTH = 200;
 
 export const TableCell = styled.td`
   text-align: center;
-  padding: var(--padding-xs);
+  line-height: 1.1;
   background: white;
-  min-height: 32px;
+  height: 19px;
 `;

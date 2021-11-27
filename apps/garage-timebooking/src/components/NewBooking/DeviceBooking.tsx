@@ -100,7 +100,7 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
           startHour={START_HOUR}
           endHour={END_HOUR}
           timeUnit={BOOKING_UNIT}
-          maxBookingLengthMinutes={300}
+          maxBookingLengthMinutes={2880}
         />
       </Root>
     </>
