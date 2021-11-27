@@ -24,17 +24,6 @@ const TimeTableCell = styled(TableCell)<{
       }
     `};
 
-  ${({ isInvalid }) =>
-    isInvalid &&
-    css`
-      &,
-      &:hover {
-        background-color: var(--ant-error-color-hover) !important;
-        color: black;
-        border-color: transparent !important;
-      }
-    `}
-
   ${({ isSelected }) =>
     isSelected &&
     css`
@@ -56,6 +45,17 @@ const TimeTableCell = styled(TableCell)<{
         cursor: not-allowed;
       }
     `};
+
+  ${({ isInvalid }) =>
+    isInvalid &&
+    css`
+      &,
+      &:hover {
+        background-color: var(--ant-error-color-hover) !important;
+        color: black;
+        border-color: transparent !important;
+      }
+    `}
 
   @media (max-width: 992px) {
     min-width: ${CELL_WIDTH}px;
