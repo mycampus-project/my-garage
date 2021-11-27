@@ -24,11 +24,26 @@ const Root = styled.table`
   }
 
   tbody tr {
-    &:nth-child(2n + 1) ${TableCell} {
-      background-color: #f7f7f7;
-    }
-    &:nth-child(2n) ${TableCell} {
+    ${TableCell} {
       background-color: white;
+    }
+
+    &:nth-child(2n + 1) {
+      ${TableCell} {
+        border-bottom-width: 0;
+      }
+    }
+    &:nth-child(2n) {
+      ${TableCell} {
+        border-top-width: 0;
+      }
+    }
+
+    &:nth-child(4n + 1),
+    &:nth-child(4n + 2) {
+      ${TableCell} {
+        background-color: #f7f7f7;
+      }
     }
   }
 
