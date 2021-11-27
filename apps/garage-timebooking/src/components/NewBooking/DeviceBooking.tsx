@@ -1,11 +1,12 @@
-import { getWeek, set, setDay, setWeek } from 'date-fns';
+import { format, getWeek, set, setDay, setWeek } from 'date-fns';
 import { Thing, START_HOUR, END_HOUR, BOOKING_UNIT } from '@my-garage/common';
 import moment from 'moment';
-import { DatePicker, PageHeader, Space, Form, Typography, Image } from 'antd';
+import { DatePicker, PageHeader, Space, Form, Typography, Image, Button } from 'antd';
 import { useState } from 'react';
 import styled from 'styled-components';
 
 import BookingTable from './BookingTable';
+import { Interval } from './utils';
 
 const Root = styled.div`
   padding: var(--padding-m);
@@ -57,6 +58,8 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
   const [selectedWeek, setSelectedWeek] = useState<Date>(getInitialWeekValue());
   const bookingsForWeek = useBookingsForWeek(selectedWeek);
 
+  const [selectedInterval, setSelectedInterval] = useState<Interval | null>(null);
+
   return (
     <>
       <HeaderRow>
@@ -92,6 +95,42 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
                 picker="week"
               />
             </Form.Item>
+            <Form.Item
+              label="Selected time"
+              style={{
+                pointerEvents: 'none',
+              }}
+            >
+              <Space>
+                <DatePicker.RangePicker
+                  format={(value) => format(value.toDate(), 'eee dd.MM HH:mm')}
+                  value={
+                    selectedInterval && [
+                      moment(selectedInterval.start),
+                      moment(selectedInterval.end),
+                    ]
+                  }
+                  allowClear={false}
+                  showTime={{
+                    minuteStep: BOOKING_UNIT,
+                    showSecond: false,
+                  }}
+                />
+                <Button
+                  style={{
+                    pointerEvents: 'all',
+                  }}
+                  onClick={() => setSelectedInterval(null)}
+                >
+                  Clear
+                </Button>
+              </Space>
+            </Form.Item>
+            <Form.Item>
+              <Button size="large" type="primary" disabled={!selectedInterval}>
+                Book
+              </Button>
+            </Form.Item>
           </Form>
         </Space>
         <BookingTable
@@ -103,6 +142,8 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
           startHour={START_HOUR}
           endHour={END_HOUR}
           timeUnit={BOOKING_UNIT}
+          onIntervalSelect={setSelectedInterval}
+          selectedInterval={selectedInterval}
           maxBookingLengthMinutes={2880}
         />
       </Root>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   addMinutes,
   differenceInMinutes,
@@ -7,7 +7,6 @@ import {
   intervalToDuration,
   isBefore,
   isEqual,
-  isSameDay,
   isSameMinute,
   isWithinInterval,
   subMinutes,
@@ -24,6 +23,7 @@ import {
   isAfterOrEqual,
   isInFuture,
   getEarliestStart,
+  formatInterval,
 } from './utils';
 import Table from './Table';
 import ErrorTooltip from './ErrorTooltip';
@@ -39,14 +39,6 @@ const calculateStartEnd = (a: Date, b: Date, timeUnitMinutes: number) => {
   const end = addMinutes(endCellStart, timeUnitMinutes);
 
   return { start, end };
-};
-
-const formatInterval = ({ start, end }: Interval) => {
-  if (isSameDay(start, end)) {
-    return `${format(start, 'HH:mm')}-${format(end, 'HH:mm')}`;
-  }
-
-  return `${format(start, 'eee HH:mm')}-${format(end, 'eee HH:mm')}`;
 };
 
 const findClosestIntervalEnd = (
@@ -160,6 +152,8 @@ interface Props {
   endHour: number;
   timeUnit: 10 | 15 | 30 | 60;
   maxBookingLengthMinutes: number;
+  onIntervalSelect: (interval: Interval) => void;
+  selectedInterval: Interval | null;
 }
 
 const BookingTable = ({
@@ -169,6 +163,8 @@ const BookingTable = ({
   endHour,
   timeUnit,
   maxBookingLengthMinutes,
+  onIntervalSelect,
+  selectedInterval: value,
 }: Props) => {
   const [hoveredCell, setHoveredCell] = useState<Date | null>(null);
   const weekDateCells = useWeekDateCells(selectedWeek, startHour, endHour, timeUnit);
@@ -177,6 +173,24 @@ const BookingTable = ({
     start: null,
     end: null,
   });
+
+  useEffect(() => {
+    if (!value) {
+      setSelectedInterval({ start: null, end: null });
+    } else {
+      setSelectedInterval(value);
+    }
+  }, [value]);
+
+  useEffect(() => {
+    if (selectedInterval.start && selectedInterval.end) {
+      onIntervalSelect(selectedInterval as Interval);
+    }
+  }, [selectedInterval, onIntervalSelect]);
+
+  useEffect(() => {
+    setSelectedInterval({ start: null, end: null });
+  }, [selectedWeek]);
 
   const { highlightedInterval, validInterval, error } = useHighlightedInterval(
     hoveredCell,

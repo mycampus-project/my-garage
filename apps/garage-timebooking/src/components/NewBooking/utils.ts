@@ -1,9 +1,11 @@
 import {
   areIntervalsOverlapping,
   differenceInMinutes,
+  format,
   isAfter,
   isBefore,
   isEqual,
+  isSameDay,
   isSameMinute,
   isWithinInterval,
   set,
@@ -96,4 +98,12 @@ export const isValidRange = (
   return !existingBookings.some((bookingInterval) =>
     areIntervalsOverlapping(toInterval(range), bookingInterval),
   );
+};
+
+export const formatInterval = ({ start, end }: Interval) => {
+  if (isSameDay(start, end)) {
+    return `${format(start, 'HH:mm')}-${format(end, 'HH:mm')}`;
+  }
+
+  return `${format(start, 'eee HH:mm')}-${format(end, 'eee HH:mm')}`;
 };
