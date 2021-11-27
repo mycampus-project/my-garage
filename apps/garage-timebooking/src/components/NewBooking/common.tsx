@@ -7,4 +7,5 @@ export const TableCell = styled.td`
   line-height: 1.1;
   background: white;
   height: 19px;
+  width: 1px; // Stops cell from growing in width
 `;
