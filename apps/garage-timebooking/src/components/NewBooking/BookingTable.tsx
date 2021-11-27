@@ -7,7 +7,6 @@ import {
   intervalToDuration,
   isBefore,
   isEqual,
-  isSameDay,
   isSameMinute,
   isWithinInterval,
   subMinutes,
@@ -50,7 +49,6 @@ const findClosestIntervalEnd = (
   if (direction === 1) {
     const intervalStartTimes = occupiedIntervals
       .map(({ startAt }) => startAt)
-      .filter((date) => isSameDay(fromDate, date))
       .sort(dateSortComparator);
 
     return intervalStartTimes.find((date) => isAfterOrEqual(date, fromDate));
@@ -58,7 +56,6 @@ const findClosestIntervalEnd = (
 
   const intervalEndTimes = occupiedIntervals
     .map(({ endAt }) => endAt)
-    .filter((date) => isSameDay(fromDate, date))
     .sort(dateSortComparator)
     .reverse();
 
@@ -82,10 +79,6 @@ const useHighlightedInterval = (
 
   if (isValidRange([startAt, endAt], occupiedIntervals, maxIntervalLengthMinutes)) {
     return { error: null, highlightedInterval: { startAt, endAt } };
-  }
-
-  if (!isSameDay(selectedInterval.startAt, hoveredCell)) {
-    return { error: null, highlightedInterval: { startAt: null, endAt: null } };
   }
 
   // Calculate longest uninterrupted interval
@@ -161,11 +154,7 @@ const BookingTable = ({
   );
 
   const onCellClick = (cellDate: Date) => {
-    if (
-      selectedInterval.startAt &&
-      !selectedInterval.endAt &&
-      isSameDay(selectedInterval.startAt, cellDate)
-    ) {
+    if (selectedInterval.startAt && !selectedInterval.endAt) {
       const { startAt, endAt } = calculateStartEnd(selectedInterval.startAt, cellDate, timeUnit);
 
       if (isValidRange([startAt, endAt], occupiedIntervals, maxBookingLengthMinutes)) {

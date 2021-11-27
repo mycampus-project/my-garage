@@ -94,7 +94,7 @@ const Table = ({
             }),
           );
 
-          return rotatedMatrix.map((row) => (
+          return rotatedMatrix.map((row, index) => (
             <tr key={`${row[0].getHours()}-${row[0].getMinutes()}`}>
               <HourHeaderCell
                 isHighlighted={
@@ -103,7 +103,7 @@ const Table = ({
                   row[0].getMinutes() === hoveredCell.getMinutes()
                 }
               >
-                {format(row[0], 'HH:mm')}
+                {index % 2 === 0 ? format(row[0], 'HH:mm') : ' '}
               </HourHeaderCell>
               {row.map((date) => (
                 <TimeCell
