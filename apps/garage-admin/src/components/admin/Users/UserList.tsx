@@ -1,46 +1,70 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
-import { List } from 'antd';
+import { Spin } from 'antd';
 import useUser from 'src/hooks/useUser';
 import { User } from '@my-garage/common';
-import UserListItem from './UserListItem';
+import { AdminContext } from 'src/contexts/AdminContext';
+import { groupBy } from 'lodash';
+import { UserSorted } from 'src/types/adminTypes';
+import UserListSection from './UserListSection';
+
+const searchList = (searchValue: string, array: User[]) => {
+  const searchResult = array.filter((item) => {
+    if (
+      item.fullName.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.role.toLowerCase().includes(searchValue.toLowerCase())
+    ) {
+      return item;
+    }
+    return false;
+  });
+
+  return searchResult;
+};
 
 const UserList = () => {
+  const { searchValue } = useContext(AdminContext);
   const { data, error, isLoading } = useUser().GetListOfUsers();
-  const [filteredData, setFilteredData] = useState<User[]>([]);
-
-  const sortedArray = (dataArray: User[]) => {
-    function compareByType(a: User, b: User) {
-      if (a.fullName < b.fullName) {
-        return -1;
-      }
-      if (a.fullName > b.fullName) {
-        return 1;
-      }
-      return 0;
-    }
-
-    return dataArray.sort(compareByType);
-  };
+  const [filteredData, setFilteredData] = useState<UserSorted[]>([]);
+  const groupedItems =
+    filteredData && Object.entries(groupBy(filteredData, (user) => user.surname));
 
   useEffect(() => {
-    const sortedData = data ? sortedArray(data.data) : new Array<User>();
-    const filteredArray = sortedData.filter((item: User) => item.removedBy === undefined);
-    setFilteredData(filteredArray);
-  }, [data]);
+    const filteredArray: UserSorted[] = data
+      ? data.data.filter((item: UserSorted) => item.removedBy === undefined)
+      : new Array<UserSorted>();
+
+    const newArray = filteredArray.map((user) => {
+      const letter = user.fullName.split(' ').map((surname) => surname[0]);
+      return {
+        ...user,
+        surname: letter[1],
+      };
+    });
+
+    if (searchValue === '') {
+      setFilteredData(newArray);
+    }
+    if (searchValue !== '') {
+      setFilteredData(searchList(searchValue, newArray));
+    }
+  }, [data, searchValue]);
 
   if (error) {
     return <div>Error</div>;
   }
 
+  if (isLoading) {
+    return <Spin />;
+  }
+
   return (
-    <List
-      data-testid="userList"
-      loading={isLoading}
-      style={{ width: '100%' }}
-      dataSource={filteredData}
-      renderItem={(item) => <UserListItem item={item} />}
-    />
+    <>
+      {groupedItems?.map(([type, itemsOfType]) => (
+        <UserListSection key={type} items={itemsOfType} type={type} />
+      ))}
+    </>
   );
 };
 
