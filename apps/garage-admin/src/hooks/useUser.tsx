@@ -7,7 +7,7 @@ import { AdminContext } from 'src/contexts/AdminContext';
 
 const useUser = () => {
   const client = useQueryClient();
-  const { setSelectedUser, selectedUser } = useContext(AdminContext);
+  const { setSelectedUser, selectedUser, setModelIsVisible } = useContext(AdminContext);
   const [token] = useLocalStorage('auth_token');
 
   function GetListOfUsers() {
@@ -54,6 +54,7 @@ const useUser = () => {
             createdAt: new Date(),
           };
           setSelectedUser(newUser);
+          setModelIsVisible(false);
         },
 
         onError: (error) => {
@@ -76,7 +77,6 @@ const useUser = () => {
       AxiosError,
       {
         userId: string;
-        token: string;
         role: string;
       }
     >(
@@ -84,7 +84,7 @@ const useUser = () => {
       ({ role, userId }) =>
         apiClient
           .put(
-            `/things/${userId}`,
+            `/users/${userId}`,
             { role },
             {
               headers: {
@@ -106,6 +106,7 @@ const useUser = () => {
             role: data.role,
           };
           setSelectedUser(newUser);
+          setModelIsVisible(false);
         },
 
         onError: (error) => {
@@ -129,10 +130,10 @@ const useUser = () => {
       error: restoreUserError,
     } = useMutation<User, AxiosError, string>(
       ['restoreUser'],
-      (thingId: string) =>
+      (userId: string) =>
         apiClient
           .put(
-            `/users/${thingId}/restore`,
+            `/users/${userId}/restore`,
             {},
             {
               headers: { Authorization: `Bearer ${token}` },
@@ -141,10 +142,10 @@ const useUser = () => {
           .then((response) => response.data),
       {
         onSuccess: (data) => {
-          client.invalidateQueries('things');
+          client.invalidateQueries('users');
           openNotificationWithIcon(
             'success',
-            'Device Restored',
+            'User Restored',
             `${data.fullName} was successfully restored`,
           );
         },

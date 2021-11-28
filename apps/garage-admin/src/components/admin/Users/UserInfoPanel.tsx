@@ -62,7 +62,7 @@ function UserInfoPanel() {
                   setModelIsVisible(true);
                 }}
               >
-                Toggle Role
+                Change Role
               </Button>
               <Button
                 type="primary"

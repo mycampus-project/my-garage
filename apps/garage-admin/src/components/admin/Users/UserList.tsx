@@ -31,9 +31,9 @@ const UserList = () => {
     filteredData && Object.entries(groupBy(filteredData, (user) => user.surname));
 
   useEffect(() => {
-    const filteredArray: UserSorted[] = data
-      ? data.data.filter((item: UserSorted) => item.removedBy === undefined)
-      : new Array<UserSorted>();
+    const filteredArray = data
+      ? data.data.filter((item: User) => item.removedAt === undefined)
+      : new Array<User>();
 
     const newArray = filteredArray.map((user) => {
       const letter = user.fullName.split(' ').map((surname) => surname[0]);
