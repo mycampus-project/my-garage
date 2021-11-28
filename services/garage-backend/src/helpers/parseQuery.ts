@@ -5,7 +5,7 @@ type ReturnType<T extends Record<string, string | undefined>> = Record<
   T[keyof T] extends string | undefined ? number | undefined : number
 >;
 
-function parseQuery<T extends Record<string, string | undefined>>(input: T): ReturnType<T> {
+function parseNumericQuery<T extends Record<string, string | undefined>>(input: T): ReturnType<T> {
   const entries = Object.entries(input);
 
   return Object.fromEntries(
@@ -21,4 +21,4 @@ function parseQuery<T extends Record<string, string | undefined>>(input: T): Ret
   ) as ReturnType<T>;
 }
 
-export default parseQuery;
+export default parseNumericQuery;
