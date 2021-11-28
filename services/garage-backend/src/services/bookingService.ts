@@ -1,4 +1,6 @@
-import Booking from '../models/Booking';
+import { FilterQuery } from 'mongoose';
+
+import Booking, { BookingDocument } from '../models/Booking';
 
 export const findBookingsFiltered = async (
   { userId, thingId }: { userId?: string; thingId?: string },
@@ -8,24 +10,26 @@ export const findBookingsFiltered = async (
   const filter =
     mode === 'future'
       ? {
-          startAt: {
-            $lt: now,
-          },
           endAt: {
-            $lt: now,
+            $gte: now,
           },
         }
       : {
           endAt: {
-            $et: now,
+            $lte: now,
           },
         };
 
-  const query = {
-    user: userId,
-    thing: thingId,
+  const query: FilterQuery<BookingDocument> = {
     ...filter,
   };
+
+  if (userId) {
+    query.user = userId;
+  }
+  if (thingId) {
+    query.thing = thingId;
+  }
 
   const bookings = await Booking.find(query, null, {
     skip: offset,
