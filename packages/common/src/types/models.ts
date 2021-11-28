@@ -36,12 +36,20 @@ export type Role = {
   removedBy?: string;
 };
 
-export type Booking = {
-  thing: { id: string; name: string; description: string };
-  user: { id: string; fullName: string };
+export type BaseBooking = {
+  id: string;
+  thing: { id: string; name: string; description: string; type: string };
   startAt: Date;
   endAt: Date;
   createdAt: Date;
   removedAt?: Date;
   removedBy?: string;
+};
+
+export type Booking = BaseBooking & {
+  userId: string;
+};
+
+export type BookingWithUser = BaseBooking & {
+  user: { id: string; fullName: string; email: string };
 };

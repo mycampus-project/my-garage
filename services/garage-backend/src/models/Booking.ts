@@ -3,19 +3,19 @@ import { Booking } from '@my-garage/common';
 
 export interface BookingDocument
   extends Document<Types.ObjectId>,
-    Omit<Booking, 'thingId' | 'userId' | 'removedBy'> {
-  userId: Types.ObjectId;
-  thingId: Types.ObjectId;
+    Omit<Booking, 'id' | 'thing' | 'user' | 'removedBy'> {
+  user: Types.ObjectId;
+  thing: Types.ObjectId;
   removedBy: Types.ObjectId;
 }
 
 const bookingSchema = new mongoose.Schema<BookingDocument>({
-  thingId: {
+  thing: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Thing',
     required: true,
   },
-  userId: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
