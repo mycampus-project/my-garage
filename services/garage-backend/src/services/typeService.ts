@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 
 import Type, { TypeDocument } from '../models/Type';
 
@@ -32,7 +32,11 @@ function updateType(typeId: string, update: Partial<TypeDocument>): Promise<Type
     });
 }
 
-function deleteType(typeId: string, removedBy: ObjectId, removedAt: Date): Promise<TypeDocument> {
+function deleteType(
+  typeId: string,
+  removedBy: Types.ObjectId,
+  removedAt: Date,
+): Promise<TypeDocument> {
   const update: Partial<TypeDocument> = { removedAt, removedBy };
   return Type.findByIdAndUpdate(typeId, update, { new: true })
     .exec()

@@ -1,12 +1,12 @@
-import mongoose, { Document, ObjectId } from 'mongoose';
+import mongoose, { Document, Types } from 'mongoose';
 import { Booking } from '@my-garage/common';
 
 export interface BookingDocument
-  extends Document<ObjectId>,
+  extends Document<Types.ObjectId>,
     Omit<Booking, 'thingId' | 'userId' | 'removedBy'> {
-  userId: ObjectId;
-  thingId: ObjectId;
-  removedBy: ObjectId;
+  userId: Types.ObjectId;
+  thingId: Types.ObjectId;
+  removedBy: Types.ObjectId;
 }
 
 const bookingSchema = new mongoose.Schema<BookingDocument>({

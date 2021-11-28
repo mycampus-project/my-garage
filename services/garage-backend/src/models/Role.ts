@@ -1,8 +1,8 @@
-import mongoose, { Document, ObjectId } from 'mongoose';
+import mongoose, { Document, Types } from 'mongoose';
 import { Role } from '@my-garage/common';
 
-export interface RoleDocument extends Document<ObjectId>, Omit<Role, 'removedBy'> {
-  removedBy: ObjectId;
+export interface RoleDocument extends Document<Types.ObjectId>, Omit<Role, 'removedBy'> {
+  removedBy: Types.ObjectId;
 }
 
 const roleSchema = new mongoose.Schema<RoleDocument>({
