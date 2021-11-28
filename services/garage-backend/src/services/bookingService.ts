@@ -21,20 +21,18 @@ export const findBookingsFiltered = async (
           },
         };
 
-  const bookings = await Booking.find(
-    {
-      user: userId,
-      thing: thingId,
-      ...filter,
-    },
-    null,
-    {
-      skip: offset,
-      limit,
-    },
-  )
-    .sort(mode === 'future' ? { startAt: 1 } : { endAt: -1 })
-    .exec();
+  const query = {
+    user: userId,
+    thing: thingId,
+    ...filter,
+  };
 
-  return bookings;
+  const bookings = await Booking.find(query, null, {
+    skip: offset,
+    limit,
+  }).sort(mode === 'future' ? { startAt: 1 } : { endAt: -1 });
+
+  const total = await Booking.count(query).exec();
+
+  return { bookings, total };
 };
