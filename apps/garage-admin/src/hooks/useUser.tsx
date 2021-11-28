@@ -7,7 +7,7 @@ import { AdminContext } from 'src/contexts/AdminContext';
 
 const useUser = () => {
   const client = useQueryClient();
-  const { setModelIsVisible, setSelectedUser, selectedUser } = useContext(AdminContext);
+  const { setSelectedUser, selectedUser } = useContext(AdminContext);
   const [token] = useLocalStorage('auth_token');
 
   function GetListOfUsers() {
@@ -54,12 +54,10 @@ const useUser = () => {
             createdAt: new Date(),
           };
           setSelectedUser(newUser);
-          setModelIsVisible(false);
         },
 
         onError: (error) => {
           openNotificationWithIcon('error', 'User Not Deleted', `${error.message}`);
-          setModelIsVisible(false);
         },
       },
     );
@@ -67,12 +65,12 @@ const useUser = () => {
     return { onDelete, respDeleteUserData, isLoadingUser, deleteUserError };
   }
 
-  function UpdateUser() {
+  function ChangeUserRole() {
     const {
-      mutate: onUpdate,
-      data: respUpdateThingData,
-      isLoading: isLoadingUpdateThing,
-      error: updateThingError,
+      mutate: onUpdateRole,
+      data: respUpdateUserRoleData,
+      isLoading: isLoadingUpdateUserRole,
+      error: updateUserRoleError,
     } = useMutation<
       User,
       AxiosError,
@@ -82,7 +80,7 @@ const useUser = () => {
         role: string;
       }
     >(
-      ['updateThing'],
+      ['updateUser'],
       ({ role, userId }) =>
         apiClient
           .put(
@@ -97,7 +95,7 @@ const useUser = () => {
           .then((response) => response.data),
       {
         onSuccess: (data) => {
-          client.invalidateQueries('things');
+          client.invalidateQueries('users');
           openNotificationWithIcon(
             'success',
             'User Role Updated',
@@ -116,18 +114,55 @@ const useUser = () => {
       },
     );
     return {
-      onUpdate,
-      respUpdateThingData,
-      isLoadingUpdateThing,
-      updateThingError,
+      onUpdateRole,
+      respUpdateUserRoleData,
+      isLoadingUpdateUserRole,
+      updateUserRoleError,
     };
   }
 
-  function RestoreUser() {}
+  function RestoreUser() {
+    const {
+      mutate: onRestoreUser,
+      data: respRestoreUserData,
+      isLoading: isLoadingRestoreUser,
+      error: restoreUserError,
+    } = useMutation<User, AxiosError, string>(
+      ['restoreUser'],
+      (thingId: string) =>
+        apiClient
+          .put(
+            `/users/${thingId}/restore`,
+            {},
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          )
+          .then((response) => response.data),
+      {
+        onSuccess: (data) => {
+          client.invalidateQueries('things');
+          openNotificationWithIcon(
+            'success',
+            'Device Restored',
+            `${data.fullName} was successfully restored`,
+          );
+        },
 
-  function ChangeUserRole() {}
+        onError: (error) => {
+          openNotificationWithIcon('error', 'Device Not Restored', `${error.message}`);
+        },
+      },
+    );
+    return {
+      onRestoreUser,
+      respRestoreUserData,
+      isLoadingRestoreUser,
+      restoreUserError,
+    };
+  }
 
-  return { GetListOfUsers, DeleteUser, UpdateUser, RestoreUser, ChangeUserRole };
+  return { GetListOfUsers, DeleteUser, RestoreUser, ChangeUserRole };
 };
 
 export default useUser;

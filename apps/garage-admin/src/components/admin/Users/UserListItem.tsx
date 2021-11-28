@@ -54,7 +54,12 @@ const UserListItem = ({ item }: ListItemProps) => {
       <List.Item.Meta
         data-testid="userList.item.meta"
         style={listItemMeta}
-        avatar={<Avatar size={48} src="https://randomuser.me/api/portraits/men/75.jpg" />}
+        avatar={
+          <Avatar
+            size={{ xs: 50, sm: 50, md: 50, lg: 60, xl: 60, xxl: 60 }}
+            src="https://randomuser.me/api/portraits/men/75.jpg"
+          />
+        }
         title={item.fullName}
         description={item.email}
       />
