@@ -23,10 +23,12 @@ const bookingSchema = new mongoose.Schema<BookingDocument>({
   startAt: {
     type: Date,
     required: true,
+    index: true,
   },
   endAt: {
     type: Date,
     required: true,
+    index: true,
   },
   createdAt: {
     type: Date,
