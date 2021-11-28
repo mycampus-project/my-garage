@@ -36,3 +36,24 @@ export const findBookingsFiltered = async (
 
   return { bookings, total };
 };
+
+export const createBooking = async ({
+  thingId,
+  userId,
+  startAt,
+  endAt,
+}: {
+  thingId: string;
+  userId: string;
+  startAt: Date;
+  endAt: Date;
+}) => {
+  const booking = new Booking({
+    thing: thingId,
+    user: userId,
+    startAt,
+    endAt,
+  });
+
+  return booking.save();
+};

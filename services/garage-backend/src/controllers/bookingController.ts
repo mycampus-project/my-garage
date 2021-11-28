@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { Booking } from '@my-garage/common';
+import { Booking, BookingWithUser } from '@my-garage/common';
 
 import { serializeBooking } from '../serializers/bookings';
 import parseNumericQuery from '../helpers/parseQuery';
@@ -10,7 +10,8 @@ import {
   isOwnError,
   UnauthorizedError,
 } from '../helpers/apiError';
-import { findBookingsFiltered } from '../services/bookingService';
+import { createBooking, findBookingsFiltered } from '../services/bookingService';
+import Thing from '../models/Thing';
 
 export const getBookings = async (
   req: Request<
@@ -60,6 +61,52 @@ export const getBookings = async (
         bookings.map((booking) => serializeBooking(booking, userWithRole.role.name === 'admin')),
       ),
     });
+  } catch (e) {
+    const error = e as Error;
+    next(isOwnError(error) ? error : new InternalServerError(error.message, error));
+  }
+};
+
+export const postBooking = async (
+  req: Request<
+    never,
+    BookingWithUser,
+    {
+      thingId: string;
+      startAt: string;
+      endAt: string;
+    }
+  >,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { thingId, startAt, endAt } = req.body;
+
+    if (!thingId || !startAt || !endAt || !req.user?.id) {
+      throw new BadRequestError('Missing parameters');
+    }
+
+    const parsedStartAt = new Date(startAt);
+    const parsedEndAt = new Date(endAt);
+
+    if (Number.isNaN(parsedStartAt.getTime()) || Number.isNaN(parsedEndAt.getTime)) {
+      throw new BadRequestError('Unparceable dates');
+    }
+
+    const thing = await Thing.findOne({ id: thingId });
+    if (!thing || thing.removedAt) {
+      throw new BadRequestError('Thing not found');
+    }
+
+    const booking = await createBooking({
+      thingId,
+      userId: req.user.id,
+      startAt: parsedStartAt,
+      endAt: parsedEndAt,
+    });
+
+    res.send(await serializeBooking(booking, true));
   } catch (error) {
     next(isOwnError(error as Error) ? error : new InternalServerError(undefined, error as Error));
   }
