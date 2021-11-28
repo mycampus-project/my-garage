@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { Booking, BookingWithUser } from '@my-garage/common';
 
+import validateBookingParams from '../helpers/validateBookingParams';
 import { serializeBooking } from '../serializers/bookings';
 import parseNumericQuery from '../helpers/parseQuery';
 import Role from '../models/Role';
@@ -11,7 +12,6 @@ import {
   UnauthorizedError,
 } from '../helpers/apiError';
 import { createBooking, findBookingsFiltered } from '../services/bookingService';
-import Thing from '../models/Thing';
 
 export const getBookings = async (
   req: Request<
@@ -83,27 +83,17 @@ export const postBooking = async (
   try {
     const { thingId, startAt, endAt } = req.body;
 
-    if (!thingId || !startAt || !endAt || !req.user?.id) {
-      throw new BadRequestError('Missing parameters');
+    if (!req.user?.id) {
+      throw new InternalServerError('Cannot find user');
     }
 
-    const parsedStartAt = new Date(startAt);
-    const parsedEndAt = new Date(endAt);
-
-    if (Number.isNaN(parsedStartAt.getTime()) || Number.isNaN(parsedEndAt.getTime)) {
-      throw new BadRequestError('Unparceable dates');
-    }
-
-    const thing = await Thing.findOne({ id: thingId });
-    if (!thing || thing.removedAt) {
-      throw new BadRequestError('Thing not found');
-    }
+    await validateBookingParams(req.body);
 
     const booking = await createBooking({
       thingId,
       userId: req.user.id,
-      startAt: parsedStartAt,
-      endAt: parsedEndAt,
+      startAt: new Date(startAt),
+      endAt: new Date(endAt),
     });
 
     res.send(await serializeBooking(booking, true));
