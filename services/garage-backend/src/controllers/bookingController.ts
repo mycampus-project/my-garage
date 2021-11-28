@@ -2,17 +2,22 @@ import { NextFunction, Request, Response } from 'express';
 import { Booking } from '@my-garage/common';
 
 import { serializeBooking } from '../serializers/bookings';
-import parseQuery from '../helpers/parseQuery';
+import parseNumericQuery from '../helpers/parseQuery';
 import Role from '../models/Role';
-import { InternalServerError, isOwnError, UnauthorizedError } from '../helpers/apiError';
-import BookingModel from '../models/Booking';
+import {
+  BadRequestError,
+  InternalServerError,
+  isOwnError,
+  UnauthorizedError,
+} from '../helpers/apiError';
+import { findBookingsFiltered } from '../services/bookingService';
 
 export const getBookings = async (
   req: Request<
     never,
     Array<Booking>,
     never,
-    { userId?: string; thingId?: string; offset?: string; limit?: string }
+    { userId?: string; thingId?: string; offset?: string; limit?: string; mode?: 'future' | 'past' }
   >,
   res: Response,
   next: NextFunction,
@@ -22,9 +27,13 @@ export const getBookings = async (
       throw new InternalServerError('Issues with finding request user');
     }
 
-    const { userId, thingId } = req.query;
+    const { userId, thingId, mode = 'future' } = req.query;
 
-    const { limit = 10, offset = 0 } = parseQuery({
+    if (!['future', 'past'].includes(mode)) {
+      throw new BadRequestError('`mode` param should be either `future` or `past`');
+    }
+
+    const { limit = 10, offset = 0 } = parseNumericQuery({
       offset: req.query.offset,
       limit: req.query.limit,
     });
@@ -38,17 +47,7 @@ export const getBookings = async (
       throw new UnauthorizedError("Only admins are allowed to get other users' bookings");
     }
 
-    const bookings = await BookingModel.find(
-      {
-        user: userId,
-        thing: thingId,
-      },
-      null,
-      {
-        skip: offset,
-        limit,
-      },
-    ).exec();
+    const bookings = await findBookingsFiltered({ userId, thingId }, { offset, limit, mode });
 
     res.send(
       Promise.all(
