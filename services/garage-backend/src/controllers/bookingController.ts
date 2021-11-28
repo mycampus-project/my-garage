@@ -47,13 +47,19 @@ export const getBookings = async (
       throw new UnauthorizedError("Only admins are allowed to get other users' bookings");
     }
 
-    const bookings = await findBookingsFiltered({ userId, thingId }, { offset, limit, mode });
+    const { bookings, total } = await findBookingsFiltered(
+      { userId, thingId },
+      { offset, limit, mode },
+    );
 
-    res.send(
-      Promise.all(
+    res.send({
+      offset,
+      limit,
+      total,
+      items: await Promise.all(
         bookings.map((booking) => serializeBooking(booking, userWithRole.role.name === 'admin')),
       ),
-    );
+    });
   } catch (error) {
     next(isOwnError(error as Error) ? error : new InternalServerError(undefined, error as Error));
   }
