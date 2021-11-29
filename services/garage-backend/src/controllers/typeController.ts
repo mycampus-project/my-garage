@@ -88,7 +88,8 @@ export const deleteType = async (req: Request, res: Response, next: NextFunction
     const jsonType = await TypeService.findTypeById(typeId);
 
     if (jsonType.removedBy != null && jsonType.removedAt != null) {
-      res.send('Type already deleted');
+      next(new BadRequestError('Type already deleted'));
+
       return;
     }
     const deletedType = await TypeService.deleteType(typeId, req.user.id, new Date());
@@ -108,7 +109,8 @@ export const restoreType = async (req: Request, res: Response, next: NextFunctio
     const { typeId } = req.params;
     const jsonType = await TypeService.findTypeById(typeId);
     if (jsonType.removedBy === null && jsonType.removedAt === null) {
-      res.send('Type is not deleted');
+      next(new BadRequestError('Type is not deleted'));
+
       return;
     }
     jsonType.removedBy = undefined;

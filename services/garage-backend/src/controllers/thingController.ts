@@ -106,7 +106,8 @@ export const deleteThing = async (req: Request, res: Response, next: NextFunctio
     const { thingId } = req.params;
     const jsonThing = await ThingService.findThingById(thingId);
     if (jsonThing.removedBy != null && jsonThing.removedAt != null) {
-      res.send('Thing already deleted');
+      next(new BadRequestError('Thing already deleted'));
+
       return;
     }
     const deletedThing = await ThingService.deleteThing(thingId, req.user.id, new Date());
@@ -126,7 +127,8 @@ export const restoreThing = async (req: Request, res: Response, next: NextFuncti
     const { thingId } = req.params;
     const jsonThing = await ThingService.findThingById(thingId);
     if (jsonThing.removedBy === null && jsonThing.removedAt === null) {
-      res.send('Thing is not deleted');
+      next(new BadRequestError('Thing is not deleted'));
+
       return;
     }
     jsonThing.removedBy = undefined;

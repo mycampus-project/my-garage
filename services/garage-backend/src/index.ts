@@ -24,10 +24,6 @@ app.use('/things', thingRouter);
 app.use('/users', userRouter);
 app.use('/types', typeRouter);
 
-app.get('/', (req, res) => {
-  res.send('Express + TypeScript Server');
-});
-
 app.use('/auth', authRouter);
 app.get('/admin-only', requireAuth('admin'), (req, res) => res.send("Gratz, you're an admin"));
 
