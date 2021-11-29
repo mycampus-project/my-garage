@@ -96,7 +96,10 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
         </Space>
         <BookingTable
           selectedWeek={selectedWeek}
-          occupiedIntervals={bookingsForWeek}
+          occupiedIntervals={bookingsForWeek.map((booking) => ({
+            start: booking.startAt,
+            end: booking.endAt,
+          }))}
           startHour={START_HOUR}
           endHour={END_HOUR}
           timeUnit={BOOKING_UNIT}

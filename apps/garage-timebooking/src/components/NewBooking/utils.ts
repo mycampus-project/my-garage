@@ -1,15 +1,18 @@
 import {
+  areIntervalsOverlapping,
   differenceInMinutes,
   isAfter,
   isBefore,
   isEqual,
   isSameMinute,
   isWithinInterval,
+  set,
+  setMinutes,
 } from 'date-fns';
 
 export type Interval = {
-  startAt: Date;
-  endAt: Date;
+  start: Date;
+  end: Date;
 };
 
 /**
@@ -26,13 +29,13 @@ export const dateSortComparator = (a: Date, b: Date) => {
 
 export const sortDates = (dates: Date[]) => dates.sort(dateSortComparator);
 
-export const toRange = ({ startAt, endAt }: Interval): Range => [startAt, endAt];
+export const toRange = ({ start, end }: Interval): Range => [start, end];
 export const toInterval = (range: Range): Interval => {
-  const [startAt, endAt] = sortDates(range);
+  const [start, end] = sortDates(range);
 
   return {
-    startAt,
-    endAt,
+    start,
+    end,
   };
 };
 
@@ -58,6 +61,29 @@ export const doDateRangesOverlap = (range1: Range, range2: Range) => {
   );
 };
 
+export const floorToNearestMinutes = (date: Date, nearestTo: number) => {
+  const minutes = date.getMinutes();
+  const flooredMinutes = Math.floor(minutes / nearestTo) * nearestTo;
+
+  return setMinutes(date, flooredMinutes);
+};
+
+export const normalizeDate = (date: Date) => set(date, { seconds: 0, milliseconds: 0 });
+
+export const isInFuture = (date: Date, durationUnitMin: number) => {
+  const now = normalizeDate(new Date());
+
+  const flooredNow = floorToNearestMinutes(now, durationUnitMin);
+
+  return isAfterOrEqual(date, flooredNow);
+};
+
+export const getEarliestStart = (durationUnitMin: number) => {
+  const now = normalizeDate(new Date());
+
+  return floorToNearestMinutes(now, durationUnitMin);
+};
+
 export const isValidRange = (
   range: Range,
   existingBookings: Array<Interval>,
@@ -68,6 +94,6 @@ export const isValidRange = (
   }
 
   return !existingBookings.some((bookingInterval) =>
-    doDateRangesOverlap(range, toRange(bookingInterval)),
+    areIntervalsOverlapping(toInterval(range), bookingInterval),
   );
 };
