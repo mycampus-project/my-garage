@@ -21,25 +21,27 @@ import {
   dateSortComparator,
   isBeforeOrEqual,
   isAfterOrEqual,
+  isInFuture,
+  getEarliestStart,
 } from './utils';
 import Table from './Table';
 import ErrorTooltip from './ErrorTooltip';
 
 type NullableInterval = {
-  startAt: Date | null;
-  endAt: Date | null;
+  start: Date | null;
+  end: Date | null;
 };
 
 const calculateStartEnd = (a: Date, b: Date, timeUnitMinutes: number) => {
-  const [startAt, endCellStart] = sortDates([a, b]);
+  const [start, endCellStart] = sortDates([a, b]);
 
-  const endAt = addMinutes(endCellStart, timeUnitMinutes);
+  const end = addMinutes(endCellStart, timeUnitMinutes);
 
-  return { startAt, endAt };
+  return { start, end };
 };
 
-const formatInterval = ({ startAt, endAt }: Interval) =>
-  `${format(startAt, 'HH:mm')}-${format(endAt, 'HH:mm')}`;
+const formatInterval = ({ start, end }: Interval) =>
+  `${format(start, 'HH:mm')}-${format(end, 'HH:mm')}`;
 
 const findClosestIntervalEnd = (
   fromDate: Date,
@@ -47,15 +49,13 @@ const findClosestIntervalEnd = (
   direction: 1 | -1,
 ) => {
   if (direction === 1) {
-    const intervalStartTimes = occupiedIntervals
-      .map(({ startAt }) => startAt)
-      .sort(dateSortComparator);
+    const intervalStartTimes = occupiedIntervals.map(({ start }) => start).sort(dateSortComparator);
 
     return intervalStartTimes.find((date) => isAfterOrEqual(date, fromDate));
   }
 
   const intervalEndTimes = occupiedIntervals
-    .map(({ endAt }) => endAt)
+    .map(({ end }) => end)
     .sort(dateSortComparator)
     .reverse();
 
@@ -66,58 +66,76 @@ const useHighlightedInterval = (
   hoveredCell: Date | null,
   selectedInterval: NullableInterval,
   occupiedIntervals: Interval[],
-  timeUnit: number,
+  durationUnitMin: number,
   maxIntervalLengthMinutes: number,
 ): {
   error: string | null;
   highlightedInterval: NullableInterval;
 } => {
-  if (!selectedInterval.startAt || !hoveredCell || selectedInterval.endAt || !occupiedIntervals)
-    return { error: null, highlightedInterval: { startAt: null, endAt: null } };
+  if (!selectedInterval.start || !hoveredCell || selectedInterval.end || !occupiedIntervals)
+    return { error: null, highlightedInterval: { start: null, end: null } };
 
-  const { startAt, endAt } = calculateStartEnd(selectedInterval.startAt, hoveredCell, timeUnit);
+  const { start, end } = calculateStartEnd(selectedInterval.start, hoveredCell, durationUnitMin);
 
-  if (isValidRange([startAt, endAt], occupiedIntervals, maxIntervalLengthMinutes)) {
-    return { error: null, highlightedInterval: { startAt, endAt } };
+  if (isValidRange([start, end], occupiedIntervals, maxIntervalLengthMinutes)) {
+    return { error: null, highlightedInterval: { start, end } };
   }
 
-  // Calculate longest uninterrupted interval
-  const direction = isBefore(selectedInterval.startAt, hoveredCell) ? 1 : -1;
+  const direction = isBefore(selectedInterval.start, hoveredCell) ? 1 : -1;
 
-  const hoveredIntervalDuration = Math.abs(differenceInMinutes(startAt, endAt));
+  const closestEnd = findClosestIntervalEnd(selectedInterval.start, occupiedIntervals, direction);
 
+  // Is there an existing booking inside hovered interval, that is shorter than max allowed?
   if (
-    isValidRange([startAt, endAt], occupiedIntervals) &&
-    hoveredIntervalDuration > maxIntervalLengthMinutes
+    closestEnd &&
+    Math.abs(differenceInMinutes(direction === 1 ? start : end, closestEnd)) <
+      maxIntervalLengthMinutes
   ) {
+    return {
+      error: 'Interval overlaps with existing bookings',
+
+      highlightedInterval: calculateStartEnd(
+        selectedInterval.start,
+        direction === 1 ? subMinutes(closestEnd, durationUnitMin) : closestEnd,
+        durationUnitMin,
+      ),
+    };
+  }
+  const hoveredIntervalDuration = Math.abs(differenceInMinutes(start, end));
+
+  // Is interval longer than allowed?
+  if (hoveredIntervalDuration > maxIntervalLengthMinutes) {
+    // Calculate longest uninterrupted interval
     const maxAllowedEndTime = addMinutes(
-      selectedInterval.startAt,
-      (maxIntervalLengthMinutes - timeUnit) * direction,
+      selectedInterval.start,
+      (maxIntervalLengthMinutes - durationUnitMin) * direction,
     );
 
     return {
       error: `Interval longer than ${formatDuration(
         intervalToDuration({ start: 0, end: maxIntervalLengthMinutes * 60 * 1000 }),
       )}`,
-      highlightedInterval: calculateStartEnd(selectedInterval.startAt, maxAllowedEndTime, timeUnit),
-    };
-  }
-
-  const end = findClosestIntervalEnd(selectedInterval.startAt, occupiedIntervals, direction);
-
-  if (end) {
-    return {
-      error: 'Interval overlaps with existing bookings',
-
       highlightedInterval: calculateStartEnd(
-        selectedInterval.startAt,
-        direction === 1 ? subMinutes(end, timeUnit) : end,
-        timeUnit,
+        selectedInterval.start,
+        maxAllowedEndTime,
+        durationUnitMin,
       ),
     };
   }
 
-  return { error: null, highlightedInterval: { startAt, endAt } };
+  if (!isInFuture(start, durationUnitMin)) {
+    const earliestStart = getEarliestStart(durationUnitMin);
+
+    return {
+      error: `Earliest allowed start for a booking is ${format(earliestStart, 'eee HH:mm')}`,
+      highlightedInterval: {
+        start: earliestStart,
+        end,
+      },
+    };
+  }
+
+  return { error: null, highlightedInterval: { start, end } };
 };
 
 interface Props {
@@ -141,8 +159,8 @@ const BookingTable = ({
   const weekDateCells = useWeekDateCells(selectedWeek, startHour, endHour, timeUnit);
 
   const [selectedInterval, setSelectedInterval] = useState<NullableInterval>({
-    startAt: null,
-    endAt: null,
+    start: null,
+    end: null,
   });
 
   const { highlightedInterval, error } = useHighlightedInterval(
@@ -154,50 +172,45 @@ const BookingTable = ({
   );
 
   const onCellClick = (cellDate: Date) => {
-    if (selectedInterval.startAt && !selectedInterval.endAt) {
-      const { startAt, endAt } = calculateStartEnd(selectedInterval.startAt, cellDate, timeUnit);
-
-      if (isValidRange([startAt, endAt], occupiedIntervals, maxBookingLengthMinutes)) {
-        setSelectedInterval({ startAt, endAt });
-        return;
-      }
+    if (selectedInterval.start && !selectedInterval.end && !error) {
+      setSelectedInterval(highlightedInterval);
+    } else {
+      setSelectedInterval({ start: cellDate, end: null });
     }
-
-    setSelectedInterval({ startAt: cellDate, endAt: null });
   };
 
   const getIsTableCellSelected = (cellDate: Date) => {
-    const { startAt, endAt } = selectedInterval;
-    if (!startAt || !endAt) return false;
+    const { start, end } = selectedInterval;
+    if (!start || !end) return false;
 
-    return isBetweenInclusive(cellDate, [startAt, endAt]) && !isEqual(cellDate, endAt);
+    return isBetweenInclusive(cellDate, [start, end]) && !isEqual(cellDate, end);
   };
 
   const getIsTableCellHighlighted = (cellDate: Date) => {
-    const { startAt, endAt } = highlightedInterval;
+    const { start, end } = highlightedInterval;
 
-    if (!startAt || !endAt) return false;
+    if (!start || !end) return false;
 
-    return isBetweenInclusive(cellDate, [startAt, endAt]) && !isEqual(cellDate, endAt);
+    return isBetweenInclusive(cellDate, [start, end]) && !isEqual(cellDate, end);
   };
 
   const getIsTableCellUnavailable = (cellDate: Date) =>
+    !isInFuture(cellDate, timeUnit) ||
     occupiedIntervals.some(
-      ({ startAt, endAt }) =>
-        isWithinInterval(cellDate, { start: startAt!, end: endAt! }) &&
-        !isSameMinute(cellDate, endAt),
+      ({ start, end }) =>
+        isWithinInterval(cellDate, { start: start!, end: end! }) && !isSameMinute(cellDate, end),
     );
 
   const getTimeCellText = (cellDate: Date) => {
     if (
-      selectedInterval.startAt &&
-      selectedInterval.endAt &&
-      isEqual(selectedInterval.startAt, cellDate)
+      selectedInterval.start &&
+      selectedInterval.end &&
+      isEqual(selectedInterval.start, cellDate)
     ) {
       return formatInterval(selectedInterval as Interval);
     }
 
-    const { startAt: startHighlighted, endAt: endHighlighted } = highlightedInterval;
+    const { start: startHighlighted, end: endHighlighted } = highlightedInterval;
 
     if (startHighlighted && endHighlighted && isEqual(startHighlighted, cellDate)) {
       return formatInterval(highlightedInterval as Interval);
@@ -219,8 +232,8 @@ const BookingTable = ({
           getIsTableCellHighlighted(cellDate) &&
           !!hoveredCell &&
           !isWithinInterval(hoveredCell, {
-            start: highlightedInterval.startAt!,
-            end: subMinutes(highlightedInterval.endAt!, timeUnit),
+            start: highlightedInterval.start!,
+            end: subMinutes(highlightedInterval.end!, timeUnit),
           })
         }
         getTimeCellText={getTimeCellText}
