@@ -9,8 +9,14 @@ interface Props {
 
 const DeviceListSection = ({ type, items }: Props) => (
   <>
-    <Divider orientation="left">{type}</Divider>
-    <List dataSource={items} renderItem={(item) => <DeviceListItem item={item} />} />
+    <Divider data-testid="device.list.divider" orientation="left">
+      {type}
+    </Divider>
+    <List
+      data-testid="device.list"
+      dataSource={items}
+      renderItem={(item) => <DeviceListItem item={item} />}
+    />
   </>
 );
 

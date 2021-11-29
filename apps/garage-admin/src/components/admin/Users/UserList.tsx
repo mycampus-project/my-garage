@@ -8,7 +8,7 @@ import { groupBy } from 'lodash';
 import { UserSorted } from 'src/types/adminTypes';
 import UserListSection from './UserListSection';
 
-const searchList = (searchValue: string, array: User[]) => {
+const searchList = (searchValue: string, array: UserSorted[]) => {
   const searchResult = array.filter((item) => {
     if (
       item.fullName.toLowerCase().includes(searchValue.toLowerCase()) ||
@@ -21,6 +21,20 @@ const searchList = (searchValue: string, array: User[]) => {
   });
 
   return searchResult;
+};
+
+const sortedArray = (dataArray: UserSorted[]) => {
+  function compareByType(a: UserSorted, b: UserSorted) {
+    if (a.surname < b.surname) {
+      return -1;
+    }
+    if (a.surname > b.surname) {
+      return 1;
+    }
+    return 0;
+  }
+
+  return dataArray.sort(compareByType);
 };
 
 const UserList = () => {
@@ -44,10 +58,10 @@ const UserList = () => {
     });
 
     if (searchValue === '') {
-      setFilteredData(newArray);
+      setFilteredData(sortedArray(newArray));
     }
     if (searchValue !== '') {
-      setFilteredData(searchList(searchValue, newArray));
+      setFilteredData(searchList(searchValue, sortedArray(newArray)));
     }
   }, [data, searchValue]);
 

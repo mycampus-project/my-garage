@@ -33,16 +33,18 @@ describe('Testing interactions with devices on the Admin page', () => {
     cy.findByTestId('nav.devices').should('be.visible');
   });
 
-  it('should click devices in navigation and display a list of 11 items', () => {
+  it('should click devices in navigation and display a list of 5 sections', () => {
     cy.findByTestId('nav.devices').click();
     localStorage.getItem('token');
-    cy.findByTestId('deviceList').children().find('li').should('have.length.at.least', 11);
+    cy.findAllByTestId('device.list').children().should('be.length', 5);
+
+    cy.findAllByTestId('device.list.divider').contains('Printer');
   });
 
   it('should click on 3D Printer -3 and check is that isAvailable is set to Unavailable', () => {
     cy.findByTestId('nav.devices').click();
 
-    cy.findByTestId('deviceList').contains('3D Printer - 3').click();
+    cy.findAllByTestId('device.list').contains('3D Printer - 3').click();
 
     cy.findByTestId('details.table')
       .children()

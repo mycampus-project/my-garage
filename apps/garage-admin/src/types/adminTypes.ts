@@ -38,5 +38,5 @@ export type UserSorted = {
   createdAt: Date;
   removedAt?: Date;
   removedBy?: User;
-  surname?: string;
+  surname: string;
 };

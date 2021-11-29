@@ -22,6 +22,20 @@ const searchList = (searchValue: string, array: Thing[]) => {
   return searchResult;
 };
 
+const sortedArray = (dataArray: Thing[]) => {
+  function compareByType(a: Thing, b: Thing) {
+    if (a.type < b.type) {
+      return -1;
+    }
+    if (a.type > b.type) {
+      return 1;
+    }
+    return 0;
+  }
+
+  return dataArray.sort(compareByType);
+};
+
 const DeviceList = () => {
   const { searchValue } = useContext(AdminContext);
   const { data, error, isLoading } = useThing().GetListOfThings();
@@ -34,10 +48,10 @@ const DeviceList = () => {
       : new Array<Thing>();
 
     if (searchValue === '') {
-      setFilteredData(filteredArray);
+      setFilteredData(sortedArray(filteredArray));
     }
     if (searchValue !== '') {
-      setFilteredData(searchList(searchValue, filteredArray));
+      setFilteredData(searchList(searchValue, sortedArray(filteredArray)));
     }
   }, [data, searchValue]);
 
