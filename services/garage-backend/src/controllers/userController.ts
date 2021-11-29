@@ -1,6 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { BadRequestError, NotFoundError, UnauthorizedError } from '../helpers/apiError';
+import {
+  BadRequestError,
+  InternalServerError,
+  isOwnError,
+  NotFoundError,
+  UnauthorizedError,
+} from '../helpers/apiError';
 import UserService from '../services/userService';
 import { serializeUser } from '../serializers/users';
 import Role from '../models/Role';
@@ -53,7 +59,7 @@ export const removeUser = async (req: Request, res: Response, next: NextFunction
     const { userId } = req.params;
     const jsonUser = await UserService.findUserById(userId);
     if (jsonUser.removedBy != null && jsonUser.removedAt != null) {
-      res.send('User is already deleted');
+      next(new BadRequestError('User is already deleted'));
       return;
     }
     const removedUser = await UserService.deleteUser(userId, req.user.id, new Date());
@@ -73,7 +79,8 @@ export const restoreUser = async (req: Request, res: Response, next: NextFunctio
     const { userId } = req.params;
     const jsonUser = await UserService.findUserById(userId);
     if (jsonUser.removedBy === null && jsonUser.removedAt === null) {
-      res.send('User is not deleted');
+      next(new BadRequestError('User is not deleted'));
+
       return;
     }
     jsonUser.removedBy = undefined;
@@ -81,6 +88,10 @@ export const restoreUser = async (req: Request, res: Response, next: NextFunctio
     await jsonUser.save();
     res.json(await serializeUser(jsonUser));
   } catch (error: any) {
-    next(new NotFoundError('User not found', error));
+    if (isOwnError(error)) {
+      next(error);
+    } else {
+      next(new InternalServerError(error.message, error));
+    }
   }
 };

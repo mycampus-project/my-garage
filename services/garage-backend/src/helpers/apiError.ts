@@ -34,3 +34,13 @@ export class BadRequestError extends ApiError {
     super(400, message, source);
   }
 }
+
+export const isOwnError = (error: Error) =>
+  [
+    ApiError,
+    NotFoundError,
+    ForbiddenError,
+    InternalServerError,
+    UnauthorizedError,
+    BadRequestError,
+  ].some((errorType) => error instanceof errorType);
