@@ -2,9 +2,6 @@ name: Cypress End to End Testing
 on:
   pull_request:
     types: [opened, synchronize]
-  push:
-    branches:
-      - "mikedev"
 
 jobs:
   cypress-run:
