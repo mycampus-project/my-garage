@@ -1,3 +1,6 @@
+import Search from 'antd/lib/input/Search';
+import { useContext } from 'react';
+import { AdminContext } from 'src/contexts/AdminContext';
 import styled from 'styled-components';
 
 const StyledOuterContainer = styled.div`
@@ -9,9 +12,7 @@ const StyledOuterContainer = styled.div`
 `;
 
 const StyledListContainer = styled.div`
-  max-width: 400px;
-  min-width: 260px;
-  width: 40%;
+  width: 100%;
   overflow: auto;
   padding: 0;
 
@@ -33,6 +34,15 @@ const StyledDetailsContainer = styled.div`
   flex-grow: 1;
 `;
 
+const LeftContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  min-width: 260px;
+  width: 40%;
+  padding: 0;
+`;
+
 interface MainContainerProps {
   list: JSX.Element;
   details: JSX.Element;
@@ -40,9 +50,17 @@ interface MainContainerProps {
 
 // Overall user component. List all users on right, and selected user details on left.
 function MainContainer({ list, details }: MainContainerProps) {
+  const { setSearchValue } = useContext(AdminContext);
+
+  const onSearch = (value: string) => {
+    setSearchValue(value);
+  };
   return (
     <StyledOuterContainer>
-      <StyledListContainer>{list}</StyledListContainer>
+      <LeftContainer>
+        <Search placeholder="input search text" onSearch={onSearch} allowClear />
+        <StyledListContainer>{list}</StyledListContainer>
+      </LeftContainer>
       <StyledDetailsContainer>{details}</StyledDetailsContainer>
     </StyledOuterContainer>
   );

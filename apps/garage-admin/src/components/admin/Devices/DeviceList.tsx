@@ -1,46 +1,74 @@
 import 'antd/dist/antd.css';
-import { List } from 'antd';
 import useThing from 'src/hooks/useThing';
+import { groupBy } from 'lodash';
+import { useContext, useEffect, useState } from 'react';
 import { Thing } from '@my-garage/common';
-import { useEffect, useState } from 'react';
-import DeviceListItem from './DeviceListItem';
+import { Spin } from 'antd';
+import { AdminContext } from 'src/contexts/AdminContext';
+import DeviceListSection from './DeviceListSection';
+
+const searchList = (searchValue: string, array: Thing[]) => {
+  const searchResult = array.filter((item) => {
+    if (
+      item.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.type.toLowerCase().includes(searchValue.toLowerCase())
+    ) {
+      return item;
+    }
+    return false;
+  });
+
+  return searchResult;
+};
+
+const sortedArray = (dataArray: Thing[]) => {
+  function compareByType(a: Thing, b: Thing) {
+    if (a.type < b.type) {
+      return -1;
+    }
+    if (a.type > b.type) {
+      return 1;
+    }
+    return 0;
+  }
+
+  return dataArray.sort(compareByType);
+};
 
 const DeviceList = () => {
+  const { searchValue } = useContext(AdminContext);
   const { data, error, isLoading } = useThing().GetListOfThings();
   const [filteredData, setFilteredData] = useState<Thing[]>([]);
-
-  const sortedArray = (dataArray: Thing[]) => {
-    function compareByType(a: Thing, b: Thing) {
-      if (a.type < b.type) {
-        return -1;
-      }
-      if (a.type > b.type) {
-        return 1;
-      }
-      return 0;
-    }
-
-    return dataArray.sort(compareByType);
-  };
+  const groupedItems = filteredData && Object.entries(groupBy(filteredData, (thing) => thing.type));
 
   useEffect(() => {
-    const sortedData = data ? sortedArray(data.data) : new Array<Thing>();
-    const filteredArray = sortedData.filter((item: Thing) => item.removedBy === undefined);
-    setFilteredData(filteredArray);
-  }, [data]);
+    const filteredArray = data
+      ? data.data.filter((item: Thing) => item.removedBy === undefined)
+      : new Array<Thing>();
+
+    if (searchValue === '') {
+      setFilteredData(sortedArray(filteredArray));
+    }
+    if (searchValue !== '') {
+      setFilteredData(searchList(searchValue, sortedArray(filteredArray)));
+    }
+  }, [data, searchValue]);
 
   if (error) {
     return <div>Error</div>;
   }
 
+  if (isLoading) {
+    return <Spin />;
+  }
+
   return (
-    <List
-      data-testid="deviceList"
-      loading={isLoading}
-      style={{ width: '100%' }}
-      dataSource={filteredData}
-      renderItem={(item) => <DeviceListItem item={item} />}
-    />
+    <>
+      {groupedItems?.map(([type, itemsOfType]) => (
+        <DeviceListSection key={type} items={itemsOfType} type={type} />
+      ))}
+    </>
   );
 };
 

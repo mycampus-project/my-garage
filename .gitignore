@@ -169,4 +169,5 @@ cypress.env.json
 
 #Upload to gitignore
 uploads/*
-
+# file for admin user
+admin.json

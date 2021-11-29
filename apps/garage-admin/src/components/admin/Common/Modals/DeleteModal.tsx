@@ -1,6 +1,7 @@
 import { Modal, Spin } from 'antd';
 import { useContext } from 'react';
 import useThing from 'src/hooks/useThing';
+import useUser from 'src/hooks/useUser';
 import { AdminContext } from '../../../../contexts/AdminContext';
 
 interface DeleteModalProps {
@@ -16,9 +17,19 @@ const defaultProps = {
 };
 
 const DeleteModal = ({ isDevice, isBooking, isUser }: DeleteModalProps) => {
-  const { modelIsVisible, setModelIsVisible, selectedThing } = useContext(AdminContext);
+  const { modelIsVisible, setModelIsVisible, selectedThing, selectedUser } =
+    useContext(AdminContext);
 
-  const { onDelete, isLoadingDeleteThing } = useThing().DeleteThing();
+  const { onDelete, isLoadingDeleteThing, deleteThingError } = useThing().DeleteThing();
+  const { onDelete: onDeleteUser, isLoadingUser, deleteUserError } = useUser().DeleteUser();
+
+  if (deleteUserError || deleteThingError) {
+    return <div>Error</div>;
+  }
+
+  if (isLoadingDeleteThing || isLoadingUser) {
+    return <Spin />;
+  }
 
   return (
     <Modal
@@ -29,14 +40,17 @@ const DeleteModal = ({ isDevice, isBooking, isUser }: DeleteModalProps) => {
         if (isDevice) {
           onDelete(selectedThing.id);
         }
+        if (isUser) {
+          onDeleteUser(selectedUser.id);
+        }
       }}
       onCancel={() => setModelIsVisible(false)}
       width={500}
     >
       <Spin spinning={isLoadingDeleteThing}>
-        {isDevice && <p>Do you want to delete this device?</p>}
+        {isDevice && <p>Do you want to delete device {selectedThing.name}?</p>}
         {isBooking && <p>Do you want to delete this booking?</p>}
-        {isUser && <p>Do you want to delete this user?</p>}
+        {isUser && <p>Do you want to delete user {selectedUser.fullName}?</p>}
       </Spin>
     </Modal>
   );

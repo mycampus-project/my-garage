@@ -60,7 +60,7 @@ const DeviceListItem = ({ item }: ListItemProps) => {
           />
         }
         title={item.name}
-        description={item.type}
+        description={item.description}
       />
     </StyledListItem>
   );

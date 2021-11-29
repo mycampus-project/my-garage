@@ -15,7 +15,7 @@ const useThing = () => {
       ['things'],
       () => {
         if (!token) return Promise.resolve(null);
-        return apiClient.get<Thing[]>('/things/', {
+        return apiClient.get<Thing[]>('/things', {
           headers: { Authorization: `Bearer ${token}` },
         });
       },

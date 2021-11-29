@@ -2,6 +2,7 @@ import { Modal } from 'antd';
 import { useContext } from 'react';
 import { AdminContext } from '../../../../contexts/AdminContext';
 import RestoreDeviceList from '../../Devices/RestoreDeviceList';
+import RestoreUserList from '../../Devices/RestoreUserList';
 
 interface RestoreModalProps {
   isDevice?: boolean;
@@ -31,7 +32,7 @@ const RestoreModal = ({ isDevice, isUser, isBooking }: RestoreModalProps) => {
       footer={[]}
     >
       {isDevice && <RestoreDeviceList />}
-      {isUser && <RestoreDeviceList />}
+      {isUser && <RestoreUserList />}
       {isBooking && <RestoreDeviceList />}
     </Modal>
   );

@@ -29,3 +29,14 @@ export type AddDeviceFormProps = {
   form: FormInstance;
   showEdit?: boolean;
 };
+
+export type UserSorted = {
+  id: string;
+  fullName: string;
+  email: string;
+  role: string;
+  createdAt: Date;
+  removedAt?: Date;
+  removedBy?: User;
+  surname: string;
+};
