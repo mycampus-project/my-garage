@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import { Thing } from '@my-garage/common';
 import { Spin } from 'antd';
 import { AdminContext } from 'src/contexts/AdminContext';
+import sortedThingArray from 'src/utilities/utilityFunctions';
 import DeviceListSection from './DeviceListSection';
 
 const searchList = (searchValue: string, array: Thing[]) => {
@@ -22,20 +23,6 @@ const searchList = (searchValue: string, array: Thing[]) => {
   return searchResult;
 };
 
-const sortedArray = (dataArray: Thing[]) => {
-  function compareByType(a: Thing, b: Thing) {
-    if (a.type < b.type) {
-      return -1;
-    }
-    if (a.type > b.type) {
-      return 1;
-    }
-    return 0;
-  }
-
-  return dataArray.sort(compareByType);
-};
-
 const DeviceList = () => {
   const { searchValue } = useContext(AdminContext);
   const { data, error, isLoading } = useThing().GetListOfThings();
@@ -48,10 +35,10 @@ const DeviceList = () => {
       : new Array<Thing>();
 
     if (searchValue === '') {
-      setFilteredData(sortedArray(filteredArray));
+      setFilteredData(sortedThingArray(filteredArray, 'type'));
     }
     if (searchValue !== '') {
-      setFilteredData(searchList(searchValue, sortedArray(filteredArray)));
+      setFilteredData(searchList(searchValue, sortedThingArray(filteredArray, 'type')));
     }
   }, [data, searchValue]);
 
