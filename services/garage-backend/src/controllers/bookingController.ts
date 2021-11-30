@@ -9,9 +9,11 @@ import {
   BadRequestError,
   InternalServerError,
   isOwnError,
+  NotFoundError,
   UnauthorizedError,
 } from '../helpers/apiError';
 import { createBooking, findBookingsFiltered } from '../services/bookingService';
+import BookingModel from '../models/Booking';
 
 export const getBookings = async (
   req: Request<
@@ -102,4 +104,32 @@ export const postBooking = async (
   }
 };
 
-export const getBooking = async (req: Request, res: Response, next: NextFunction) => {};
+export const getBooking = async (
+  req: Request<{ bookingId: string }, Booking | BookingWithUser>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { bookingId } = req.params;
+
+    if (!req.user) throw new InternalServerError('Could not get user');
+
+    const booking = await BookingModel.findById(bookingId);
+
+    if (booking === null) {
+      throw new NotFoundError(`Booking with id ${bookingId} could not be found`);
+    }
+
+    const userRole = await Role.findById(req.user.role);
+    if (!userRole) throw new InternalServerError("Could not get user's role");
+
+    if (userRole.name === 'admin' && booking.user.toString() === req.user.id) {
+      res.send(await serializeBooking(booking, true));
+    } else {
+      throw new NotFoundError(`Booking with id ${bookingId} could not be found`);
+    }
+  } catch (e) {
+    const error = e as Error;
+    next(isOwnError(error) ? error : new InternalServerError(error.message, error));
+  }
+};
