@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { ErrorRequestHandler } from 'express';
 import cors from 'cors';
 
 import mongo from './mongo';
@@ -33,6 +33,14 @@ app.get('/', (req, res) => {
 app.use('/auth', authRouter);
 app.get('/admin-only', requireAuth('admin'), (req, res) => res.send("Gratz, you're an admin"));
 
+const errorLogger: ErrorRequestHandler = (error, _1, _2, next) => {
+  if (error) {
+    console.error(error);
+    next(error);
+  }
+  next();
+};
+app.use(errorLogger);
 app.use(apiErrorHandler);
 
 process.on('uncaughtException', (error) => {
