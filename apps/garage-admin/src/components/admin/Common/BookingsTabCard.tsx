@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import { AdminContext } from 'src/contexts/AdminContext';
 import { useQueryClient } from 'react-query';
 import { BookingsElements, TabList } from '../../../types/adminTypes';
-import PaginationUserBookingsList from '../Users/PaginationUserBookingsList';
 import PaginationDeviceBookingList from '../Devices/PaginationDeviceBookingsList';
+import PaginationUserBookingsList from '../Users/PaginationUserBookingsList';
 
 const StyledCard = styled(Card)`
   display: flex;
@@ -46,13 +46,13 @@ const BookingsTabsCard = ({ showThings }: BookingsTabsCardProps) => {
   };
 
   const contentListUsers: BookingsElements = {
-    future: <PaginationUserBookingsList mode="future" />,
-    past: <PaginationUserBookingsList mode="past" />,
+    future: <PaginationUserBookingsList mode={activeTabKey} />,
+    past: <PaginationUserBookingsList mode={activeTabKey} />,
   };
 
   const contentListDevice: BookingsElements = {
-    future: <PaginationDeviceBookingList mode="future" thingId={selectedThing.id} />,
-    past: <PaginationDeviceBookingList mode="past" thingId={selectedThing.id} />,
+    future: <PaginationDeviceBookingList mode={activeTabKey} thingId={selectedThing.id} />,
+    past: <PaginationDeviceBookingList mode={activeTabKey} thingId={selectedThing.id} />,
   };
 
   return (
