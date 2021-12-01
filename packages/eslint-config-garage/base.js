@@ -32,6 +32,7 @@ module.exports = {
       },
     ],
     'unused-imports/no-unused-imports': 'error',
+    'import/prefer-default-export': 0,
     'import/order': [
       'error',
       {

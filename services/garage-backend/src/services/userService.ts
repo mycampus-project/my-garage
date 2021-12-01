@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 
 import Role from '../models/Role';
 import User, { UserDocument } from '../models/User';
@@ -79,7 +79,11 @@ function updateUser(userId: string, update: Partial<UserDocument>): Promise<User
     });
 }
 
-function deleteUser(userId: string, removedBy: ObjectId, removedAt: Date): Promise<UserDocument> {
+function deleteUser(
+  userId: string,
+  removedBy: Types.ObjectId,
+  removedAt: Date,
+): Promise<UserDocument> {
   const update: Partial<UserDocument> = { removedAt, removedBy };
   return User.findByIdAndUpdate(userId, update, { new: true })
     .exec()
