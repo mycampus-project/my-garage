@@ -1,12 +1,15 @@
 import 'antd/dist/antd.css';
-import { List, Pagination } from 'antd';
+import { List, Pagination, Spin } from 'antd';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { BookingData } from '../../../types/adminTypes';
+import { BookingWithUser } from '@my-garage/common';
+import { PaginationResponse } from 'src/types/adminTypes';
+import useBooking from 'src/hooks/useBooking';
 import DeviceBookingItem from './DeviceBookingItem';
 
 interface DataProps {
-  data: BookingData[];
+  mode: string;
+  thingId: string;
 }
 
 const StyledPagination = styled(Pagination)`
@@ -20,25 +23,47 @@ const StyledDiv = styled.div`
   justify-content: space-between;
 `;
 
-const PaginationDeviceList = ({ data }: DataProps) => {
-  const [filteredData, setFilteredData] = useState<BookingData[]>([]);
+const PaginationDeviceBookingList = ({ mode, thingId }: DataProps) => {
+  const pageSize: number = 5;
+  const [filteredData, setFilteredData] = useState<BookingWithUser[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [minIndex, setMinIndex] = useState<number>(0);
   const [maxIndex, setMaxIndex] = useState<number>(0);
-  const pageSize: number = 5;
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [offset, setOffset] = useState<number>(0);
+
+  const { onFetchBookings, bookingData, isLoadingBookings, bookingsError } =
+    useBooking().GetThingBookings(offset, thingId, mode);
 
   useEffect(() => {
-    setFilteredData(data);
+    const bookings: PaginationResponse | null = bookingData ? bookingData.data : null;
+    if (bookings !== null) {
+      setFilteredData(bookings.items);
+      setTotalPages(bookings.total);
+    }
+
     setMinIndex(0);
     setMaxIndex(pageSize);
-    setCurrentPage(1);
-  }, [data]);
+  }, [bookingData, offset, onFetchBookings, thingId]);
+
+  useEffect(() => {
+    onFetchBookings({ offset, thingId, mode });
+  }, [mode, offset, onFetchBookings, thingId]);
 
   const handleOnChange = (page: number) => {
+    setOffset((page - 1) * pageSize);
     setCurrentPage(page);
     setMinIndex((page - 1) * pageSize);
     setMaxIndex(page * pageSize);
   };
+
+  if (bookingsError) {
+    return <div>Error</div>;
+  }
+
+  if (isLoadingBookings) {
+    return <Spin />;
+  }
 
   return (
     <StyledDiv>
@@ -51,11 +76,11 @@ const PaginationDeviceList = ({ data }: DataProps) => {
       <StyledPagination
         pageSize={pageSize}
         current={currentPage}
-        total={filteredData.length}
+        total={totalPages}
         onChange={handleOnChange}
       />
     </StyledDiv>
   );
 };
 
-export default PaginationDeviceList;
+export default PaginationDeviceBookingList;

@@ -1,11 +1,11 @@
+import { BookingWithUser } from '@my-garage/common';
 import { List, Avatar, Button } from 'antd';
 import { useContext } from 'react';
 import { AdminContext } from 'src/contexts/AdminContext';
 import styled from 'styled-components';
-import { BookingData } from '../../../types/adminTypes';
 
 interface BookingItemProps {
-  item: BookingData;
+  item: BookingWithUser;
 }
 const DescriptionContainer = styled.div`
   display: flex;
@@ -90,13 +90,13 @@ const DeviceBookingItem = ({ item }: BookingItemProps) => {
         description={
           <DescriptionContainer>
             <p>
-              <StyledSpan>Date:</StyledSpan> {new Date(item.date).toLocaleDateString()}
+              <StyledSpan>Date:</StyledSpan> {new Date(item.startAt).toLocaleDateString()}
             </p>
             <p>
-              <StyledSpan>Start Time:</StyledSpan> {new Date(item.date).toLocaleTimeString()}
+              <StyledSpan>Start Time:</StyledSpan> {new Date(item.startAt).toLocaleTimeString()}
             </p>
             <p>
-              <StyledSpan>End Time:</StyledSpan> {new Date(item.date).toLocaleTimeString()}
+              <StyledSpan>End Time:</StyledSpan> {new Date(item.endAt).toLocaleTimeString()}
             </p>
           </DescriptionContainer>
         }

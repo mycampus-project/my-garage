@@ -78,7 +78,7 @@ function DeviceInfoPanel() {
           </Space>
         </ButtonContainer>
 
-        <BookingsTabsCard things />
+        <BookingsTabsCard showThings />
       </StyledCard>
     );
   }
