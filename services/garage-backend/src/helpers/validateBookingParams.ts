@@ -1,18 +1,24 @@
 import { BOOKING_UNIT, END_HOUR, START_HOUR } from '@my-garage/common';
 import { isBefore, isEqual, isFuture } from 'date-fns';
 
-import Booking from '../models/Booking';
+import Booking, { BookingDocument } from '../models/Booking';
 import Thing from '../models/Thing';
 import { BadRequestError } from './apiError';
 
-const validateIntersectingWithOtherBookings = async ({
-  startAt,
-  endAt,
-}: {
-  startAt: Date;
-  endAt: Date;
-}) => {
+const validateIntersectingWithOtherBookings = async (
+  {
+    startAt,
+    endAt,
+  }: {
+    startAt: Date;
+    endAt: Date;
+  },
+  thingId?: string,
+  bookingId?: string,
+) => {
   const count = await Booking.count({
+    thing: thingId,
+    _id: { $not: { $eq: bookingId } },
     $or: [
       {
         $and: [
@@ -68,11 +74,15 @@ const validateIsInFuture = ({ endAt }: { startAt: Date; endAt: Date }) => {
   }
 };
 
-const validateStartEndTime = async (interval: { startAt: Date; endAt: Date }) => {
+const validateStartEndTime = async (
+  interval: { startAt: Date; endAt: Date },
+  thingId?: string,
+  bookingId?: string,
+) => {
   validateOrder(interval);
   validateMinutesSeconds(interval);
   validateIsInFuture(interval);
-  await validateIntersectingWithOtherBookings(interval);
+  await validateIntersectingWithOtherBookings(interval, thingId, bookingId);
 };
 
 const validateThingId = async (thingId: string) => {
@@ -96,26 +106,34 @@ const parseDates = ({ startAt, endAt }: Pick<Params, 'startAt' | 'endAt'>) => {
   };
 };
 
-interface Params {
-  thingId: string;
-  startAt: string;
-  endAt: string;
-}
+type Params = { startAt: string; endAt: string } & (
+  | {
+      thingId: string;
+    }
+  | {
+      booking: BookingDocument;
+    }
+);
 
 const validateBookingParams = async ({
-  thingId,
   startAt: startAtString,
   endAt: endAtString,
+  ...rest
 }: Params) => {
-  if (!thingId || !startAtString || !endAtString) {
+  if (!startAtString || !endAtString) {
     throw new BadRequestError('Missing parameters');
   }
-
   const { startAt, endAt } = parseDates({ startAt: startAtString, endAt: endAtString });
 
-  await validateThingId(thingId);
+  if ('thingId' in rest) {
+    await validateThingId(rest.thingId);
 
-  await validateStartEndTime({ startAt, endAt });
+    await validateStartEndTime({ startAt, endAt }, rest.thingId);
+  } else {
+    const { booking } = rest;
+
+    await validateStartEndTime({ startAt, endAt }, booking.thing._id.toString(), booking.id);
+  }
 };
 
 export default validateBookingParams;

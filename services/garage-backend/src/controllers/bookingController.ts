@@ -12,7 +12,7 @@ import {
   NotFoundError,
   UnauthorizedError,
 } from '../helpers/apiError';
-import { createBooking, findBookingsFiltered } from '../services/bookingService';
+import { createBooking, findBookingsFiltered, updateBooking } from '../services/bookingService';
 import BookingModel from '../models/Booking';
 
 export const getBookings = async (
@@ -20,7 +20,14 @@ export const getBookings = async (
     never,
     Array<Booking>,
     never,
-    { userId?: string; thingId?: string; offset?: string; limit?: string; mode?: 'future' | 'past' }
+    {
+      userId?: string;
+      thingId?: string;
+      offset?: string;
+      limit?: string;
+      mode?: 'future' | 'past';
+      date?: string;
+    }
   >,
   res: Response,
   next: NextFunction,
@@ -30,7 +37,7 @@ export const getBookings = async (
       throw new InternalServerError('Issues with finding request user');
     }
 
-    const { userId, thingId, mode = 'future' } = req.query;
+    const { userId, thingId, mode = 'future', date } = req.query;
 
     if (!['future', 'past'].includes(mode)) {
       throw new BadRequestError('`mode` param should be either `future` or `past`');
@@ -40,6 +47,12 @@ export const getBookings = async (
       offset: req.query.offset,
       limit: req.query.limit,
     });
+
+    const parsedDate = date !== undefined ? new Date(date) : undefined;
+
+    if (Number.isNaN(parsedDate?.getTime())) {
+      throw new BadRequestError('Could not parse date');
+    }
 
     const userWithRole = await req.user.populate<{ role: typeof Role }>({
       path: 'role',
@@ -52,7 +65,7 @@ export const getBookings = async (
 
     const { bookings, total } = await findBookingsFiltered(
       { userId, thingId },
-      { offset, limit, mode },
+      { offset, limit, mode, date: parsedDate },
     );
 
     res.send({
@@ -123,8 +136,83 @@ export const getBooking = async (
     const userRole = await Role.findById(req.user.role);
     if (!userRole) throw new InternalServerError("Could not get user's role");
 
-    if (userRole.name === 'admin' && booking.user.toString() === req.user.id) {
+    if (userRole.name === 'admin' || booking.user.toString() === req.user.id) {
       res.send(await serializeBooking(booking, true));
+    } else {
+      throw new NotFoundError(`Booking with id ${bookingId} could not be found`);
+    }
+  } catch (e) {
+    const error = e as Error;
+    next(isOwnError(error) ? error : new InternalServerError(error.message, error));
+  }
+};
+
+export const putBooking = async (
+  req: Request<{ bookingId: string }, BookingWithUser, { startAt?: string; endAt?: string }>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { bookingId } = req.params;
+
+    if (!req.user) throw new InternalServerError('Could not get user');
+
+    const booking = await BookingModel.findById(bookingId);
+
+    if (booking === null) {
+      throw new NotFoundError(`Booking with id ${bookingId} could not be found`);
+    }
+
+    const { startAt = booking.startAt.toISOString(), endAt = booking.endAt.toISOString() } =
+      req.body;
+
+    const userRole = await Role.findById(req.user.role);
+    if (!userRole) throw new InternalServerError("Could not get user's role");
+
+    if (userRole.name === 'admin' || booking.user.toString() === req.user.id) {
+      await validateBookingParams({
+        startAt,
+        endAt,
+        booking,
+      });
+
+      await updateBooking({
+        booking,
+        startAt: new Date(startAt),
+        endAt: new Date(endAt),
+      });
+      res.send(await serializeBooking(booking, true));
+    } else {
+      throw new NotFoundError(`Booking with id ${bookingId} could not be found`);
+    }
+  } catch (e) {
+    const error = e as Error;
+    next(isOwnError(error) ? error : new InternalServerError(error.message, error));
+  }
+};
+
+export const deleteBooking = async (
+  req: Request<{ bookingId: string }, Booking | BookingWithUser>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { bookingId } = req.params;
+
+    if (!req.user) throw new InternalServerError('Could not get user');
+
+    const booking = await BookingModel.findById(bookingId);
+
+    if (booking === null) {
+      throw new NotFoundError(`Booking with id ${bookingId} could not be found`);
+    }
+
+    const userRole = await Role.findById(req.user.role);
+    if (!userRole) throw new InternalServerError("Could not get user's role");
+
+    if (userRole.name === 'admin' && booking.user.toString() === req.user.id) {
+      await booking.delete();
+      res.send({ status: 'success' });
     } else {
       throw new NotFoundError(`Booking with id ${bookingId} could not be found`);
     }

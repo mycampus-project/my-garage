@@ -1,24 +1,53 @@
+import { endOfDay, startOfDay } from 'date-fns';
 import { FilterQuery } from 'mongoose';
 
 import Booking, { BookingDocument } from '../models/Booking';
 
+const getFilter = (mode: 'future' | 'past', date?: Date) => {
+  if (date) {
+    return {
+      $or: [
+        {
+          $and: [
+            {
+              startAt: { $lte: startOfDay(date) },
+            },
+            {
+              endAt: { $gt: startOfDay(date) },
+            },
+          ],
+        },
+        { $and: [{ startAt: { $gte: startOfDay(date) } }, { startAt: { $lt: endOfDay(date) } }] },
+      ],
+    };
+  }
+  const now = new Date();
+
+  return mode === 'future'
+    ? {
+        endAt: {
+          $gte: now,
+        },
+      }
+    : {
+        endAt: {
+          $lte: now,
+        },
+      };
+};
+
 export const findBookingsFiltered = async (
   { userId, thingId }: { userId?: string; thingId?: string },
-  { offset, limit, mode }: { offset?: number; limit?: number; mode: 'future' | 'past' },
+  {
+    offset,
+    limit,
+    mode,
+    date,
+  }: { offset?: number; limit?: number; mode: 'future' | 'past'; date?: Date },
 ) => {
-  const now = new Date();
-  const filter =
-    mode === 'future'
-      ? {
-          endAt: {
-            $gte: now,
-          },
-        }
-      : {
-          endAt: {
-            $lte: now,
-          },
-        };
+  const filter = getFilter(mode, date);
+
+  console.log(filter);
 
   const query: FilterQuery<BookingDocument> = {
     ...filter,
@@ -60,4 +89,18 @@ export const createBooking = async ({
   });
 
   return booking.save();
+};
+
+export const updateBooking = async ({
+  booking,
+  startAt,
+  endAt,
+}: {
+  booking: BookingDocument;
+  startAt: Date;
+  endAt: Date;
+}) => {
+  booking.startAt = startAt;
+  booking.endAt = endAt;
+  return booking.save;
 };
