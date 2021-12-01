@@ -1,9 +1,11 @@
-import mongoose, { Document, ObjectId } from 'mongoose';
+import mongoose, { Document, Types } from 'mongoose';
 import { User } from '@my-garage/common';
 
-export interface UserDocument extends Document<ObjectId>, Omit<User, 'removedBy' | 'role' | 'id'> {
-  removedBy?: ObjectId;
-  role: ObjectId;
+export interface UserDocument
+  extends Document<Types.ObjectId>,
+    Omit<User, 'removedBy' | 'role' | 'id'> {
+  removedBy?: Types.ObjectId;
+  role: Types.ObjectId;
   token: string;
   tokenIv: string;
   tokenExp: number;

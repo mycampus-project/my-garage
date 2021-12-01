@@ -8,7 +8,7 @@ import styled from 'styled-components';
 const { Content, Sider } = Layout;
 
 const FullHeightLayout = styled(Layout)`
-  height: 100vh;
+  min-height: 100vh;
 `;
 
 const SpinnerContainer = styled.div`

@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 
 import Thing, { ThingDocument } from '../models/Thing';
 
@@ -34,7 +34,7 @@ function updateThing(thingId: string, update: Partial<ThingDocument>): Promise<T
 
 function deleteThing(
   thingId: string,
-  removedBy: ObjectId,
+  removedBy: Types.ObjectId,
   removedAt: Date,
 ): Promise<ThingDocument> {
   const update: Partial<ThingDocument> = { removedAt, removedBy };

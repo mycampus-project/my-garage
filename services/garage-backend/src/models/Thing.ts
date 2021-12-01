@@ -1,12 +1,12 @@
-import mongoose, { Document, ObjectId } from 'mongoose';
+import mongoose, { Document, Types } from 'mongoose';
 import { Thing } from '@my-garage/common';
 
 export interface ThingDocument
-  extends Document<ObjectId>,
+  extends Document<Types.ObjectId>,
     Omit<Thing, 'createdBy' | 'removedBy' | 'id' | 'type'> {
-  createdBy: ObjectId;
-  removedBy?: ObjectId;
-  type: ObjectId;
+  createdBy: Types.ObjectId;
+  removedBy?: Types.ObjectId;
+  type: Types.ObjectId;
 }
 
 const thingSchema = new mongoose.Schema<ThingDocument>({
