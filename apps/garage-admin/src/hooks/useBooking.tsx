@@ -26,7 +26,7 @@ const useBooking = () => {
         thingId: string;
         mode: string;
       }
-    >(['futureThingBookings', offset], () => {
+    >(['thingBookings', offset], () => {
       if (!token) return Promise.resolve(null);
       return apiClient.get<PaginationResponse>('/bookings', {
         params: {
@@ -56,7 +56,7 @@ const useBooking = () => {
         userId: string;
         mode: string;
       }
-    >(['futureThingBookings', offset], () => {
+    >(['userBookings', offset], () => {
       if (!token) return Promise.resolve(null);
       return apiClient.get<PaginationResponse>('/bookings', {
         params: {
