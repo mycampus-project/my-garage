@@ -11,4 +11,8 @@ module.exports = {
       },
     },
   },
+  rules: {
+    'no-param-reassign': 0,
+    no_underscore_dangle: 0,
+  },
 };

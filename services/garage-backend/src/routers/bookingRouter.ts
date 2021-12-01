@@ -6,6 +6,7 @@ import {
   getBooking,
   postBooking,
   deleteBooking,
+  putBooking,
 } from '../controllers/bookingController';
 
 const router = express.Router();
@@ -16,5 +17,6 @@ router.get('/', getBookings);
 router.post('/', postBooking);
 router.get('/:bookingId', getBooking);
 router.delete('/:bookingId', deleteBooking);
+router.put('/:bookingId', putBooking);
 
 export default router;

@@ -61,3 +61,17 @@ export const createBooking = async ({
 
   return booking.save();
 };
+
+export const updateBooking = async ({
+  booking,
+  startAt,
+  endAt,
+}: {
+  booking: BookingDocument;
+  startAt: Date;
+  endAt: Date;
+}) => {
+  booking.startAt = startAt;
+  booking.endAt = endAt;
+  return booking.save;
+};
