@@ -12,7 +12,7 @@ import {
   NotFoundError,
   UnauthorizedError,
 } from '../helpers/apiError';
-import { createBooking, findBookingsFiltered } from '../services/bookingService';
+import { createBooking, findBookingsFiltered, updateBooking } from '../services/bookingService';
 import BookingModel from '../models/Booking';
 
 export const getBookings = async (
@@ -123,7 +123,51 @@ export const getBooking = async (
     const userRole = await Role.findById(req.user.role);
     if (!userRole) throw new InternalServerError("Could not get user's role");
 
-    if (userRole.name === 'admin' && booking.user.toString() === req.user.id) {
+    if (userRole.name === 'admin' || booking.user.toString() === req.user.id) {
+      res.send(await serializeBooking(booking, true));
+    } else {
+      throw new NotFoundError(`Booking with id ${bookingId} could not be found`);
+    }
+  } catch (e) {
+    const error = e as Error;
+    next(isOwnError(error) ? error : new InternalServerError(error.message, error));
+  }
+};
+
+export const putBooking = async (
+  req: Request<{ bookingId: string }, BookingWithUser, { startAt?: string; endAt?: string }>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { bookingId } = req.params;
+
+    if (!req.user) throw new InternalServerError('Could not get user');
+
+    const booking = await BookingModel.findById(bookingId);
+
+    if (booking === null) {
+      throw new NotFoundError(`Booking with id ${bookingId} could not be found`);
+    }
+
+    const { startAt = booking.startAt.toISOString(), endAt = booking.endAt.toISOString() } =
+      req.body;
+
+    const userRole = await Role.findById(req.user.role);
+    if (!userRole) throw new InternalServerError("Could not get user's role");
+
+    if (userRole.name === 'admin' || booking.user.toString() === req.user.id) {
+      await validateBookingParams({
+        startAt,
+        endAt,
+        booking,
+      });
+
+      await updateBooking({
+        booking,
+        startAt: new Date(startAt),
+        endAt: new Date(endAt),
+      });
       res.send(await serializeBooking(booking, true));
     } else {
       throw new NotFoundError(`Booking with id ${bookingId} could not be found`);
