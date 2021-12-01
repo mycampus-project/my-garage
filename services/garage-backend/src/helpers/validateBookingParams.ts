@@ -5,14 +5,18 @@ import Booking from '../models/Booking';
 import Thing from '../models/Thing';
 import { BadRequestError } from './apiError';
 
-const validateIntersectingWithOtherBookings = async ({
-  startAt,
-  endAt,
-}: {
-  startAt: Date;
-  endAt: Date;
-}) => {
+const validateIntersectingWithOtherBookings = async (
+  thingId: string,
+  {
+    startAt,
+    endAt,
+  }: {
+    startAt: Date;
+    endAt: Date;
+  },
+) => {
   const count = await Booking.count({
+    thing: thingId,
     $or: [
       {
         $and: [
@@ -68,11 +72,11 @@ const validateIsInFuture = ({ endAt }: { startAt: Date; endAt: Date }) => {
   }
 };
 
-const validateStartEndTime = async (interval: { startAt: Date; endAt: Date }) => {
+const validateStartEndTime = async (thingId: string, interval: { startAt: Date; endAt: Date }) => {
   validateOrder(interval);
   validateMinutesSeconds(interval);
   validateIsInFuture(interval);
-  await validateIntersectingWithOtherBookings(interval);
+  await validateIntersectingWithOtherBookings(thingId, interval);
 };
 
 const validateThingId = async (thingId: string) => {
@@ -110,12 +114,13 @@ const validateBookingParams = async ({
   if (!thingId || !startAtString || !endAtString) {
     throw new BadRequestError('Missing parameters');
   }
+  console.log(thingId);
 
   const { startAt, endAt } = parseDates({ startAt: startAtString, endAt: endAtString });
 
   await validateThingId(thingId);
 
-  await validateStartEndTime({ startAt, endAt });
+  await validateStartEndTime(thingId, { startAt, endAt });
 };
 
 export default validateBookingParams;
