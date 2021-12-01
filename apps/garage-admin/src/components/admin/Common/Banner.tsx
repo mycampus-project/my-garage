@@ -68,7 +68,7 @@ function Banner({ title, showAddThing, showRestoreUser }: BannerProps) {
   ];
 
   return (
-    <div data-testid="banner">
+    <div data-testid="banner" style={{ width: '100%' }}>
       <PageHeader
         title={title}
         extra={(showAddThing && showAddThings) || (showRestoreUser && showRestoreUsers) || []}

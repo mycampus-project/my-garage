@@ -4,6 +4,7 @@ import { Thing } from '@my-garage/common';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { List } from 'antd';
+import sortedThingArray from 'src/utilities/utilityFunctions';
 import RestoreDeviceListItem from './RestoreDeviceListItem';
 
 const StyledListContainer = styled.div`
@@ -15,22 +16,8 @@ const RestoreDeviceList = () => {
   const { data, error, isLoading } = useThing().GetListOfThings();
   const [filteredData, setFilteredData] = useState<Thing[]>([]);
 
-  const sortedByNameAlphabetically = (dataArray: Thing[]) => {
-    function compareByName(a: Thing, b: Thing) {
-      if (a.name < b.name) {
-        return -1;
-      }
-      if (a.name > b.name) {
-        return 1;
-      }
-      return 0;
-    }
-
-    return dataArray.sort(compareByName);
-  };
-
   useEffect(() => {
-    const sortedData = data ? sortedByNameAlphabetically(data.data) : new Array<Thing>();
+    const sortedData = data ? sortedThingArray(data.data, 'name') : new Array<Thing>();
     const filteredArray = sortedData.filter((item: Thing) => item.removedBy !== undefined);
     setFilteredData(filteredArray);
   }, [data]);
