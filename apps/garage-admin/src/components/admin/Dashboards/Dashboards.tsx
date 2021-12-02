@@ -5,6 +5,7 @@ import { useFullScreenHandle } from 'react-full-screen';
 import useThing from 'src/hooks/useThing';
 import useType from 'src/hooks/useType';
 import styled from 'styled-components';
+import useBooking from 'src/hooks/useBooking';
 import Banner from '../Common/Banner';
 import DashboardPicker from './DashboardPicker';
 import sortedThingArray from '../../../utilities/utilityFunctions';
@@ -56,10 +57,13 @@ function Dashboards() {
   const fullscreen = useFullScreenHandle();
   const { data, error, isLoading } = useThing().GetListOfThings();
   const { data: dataTypes } = useType().GetListOfTypes();
+  const { onFetchBookingsByDate, isLoadingBookings, bookingsError } =
+    useBooking().GetThingBookingsByDate('2022-01-10T00:00:00.000Z', '2022-01-11T00:00:00.000Z');
   const [filteredThingData, setFilteredThingData] = useState<Thing[]>([]);
   const [typeData, setTypeData] = useState<Type[]>([]);
   const [selectedList, setSelectedList] = useState<Thing[]>([]);
   const [selectedNames, setSelectedNames] = useState<string[]>([]);
+  // const [selectedBookingData, setSelectedBookingData] = useState<BookingWithUser[]>([]);
 
   useEffect(() => {
     const filteredThings = data
@@ -77,7 +81,10 @@ function Dashboards() {
   useEffect(() => {
     const names = selectedList.map((item: Thing) => item.name);
     setSelectedNames(names);
-  }, [selectedList]);
+
+    const bookingArray = selectedList.map((item) => onFetchBookingsByDate({ thingId: item.id }));
+    console.log(bookingArray);
+  }, [onFetchBookingsByDate, selectedList]);
 
   const handleClear = () => {
     setSelectedNames([]);
@@ -105,11 +112,11 @@ function Dashboards() {
     setSelectedList(array);
   };
 
-  if (error) {
+  if (error || bookingsError) {
     return <div>Error</div>;
   }
 
-  if (isLoading) {
+  if (isLoading || isLoadingBookings) {
     return <Spin />;
   }
 

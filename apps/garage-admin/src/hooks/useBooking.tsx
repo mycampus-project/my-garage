@@ -17,7 +17,7 @@ const useBooking = () => {
   const [token] = useLocalStorage('auth_token');
   const { setModelIsVisible, setSelectedBookingId } = useContext(AdminContext);
 
-  const GetThingBookingsByDate = (thingId: string, startAt: string, endAt: string) => {
+  const GetThingBookingsByDate = (startAt: string, endAt: string) => {
     const {
       mutate: onFetchBookingsByDate,
       data: bookingData,
@@ -28,10 +28,8 @@ const useBooking = () => {
       AxiosError,
       {
         thingId: string;
-        startAt: string;
-        endAt: string;
       }
-    >(['thingBookingsByDate'], () => {
+    >(['thingBookingsByDate'], (thingId) => {
       if (!token) return Promise.resolve(null);
       return apiClient.get<PaginationResponse>('/bookings', {
         params: {

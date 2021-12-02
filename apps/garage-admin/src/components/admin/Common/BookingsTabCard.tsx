@@ -34,7 +34,7 @@ const defaultProps = {
 const BookingsTabsCard = ({ showThings }: BookingsTabsCardProps) => {
   const client = useQueryClient();
   const [activeTabKey, setActiveTabKey] = useState('future');
-  const { selectedThing } = useContext(AdminContext);
+  const { selectedThing, selectedUser } = useContext(AdminContext);
 
   useEffect(() => {
     client.invalidateQueries('futureThingBookings');
@@ -46,8 +46,8 @@ const BookingsTabsCard = ({ showThings }: BookingsTabsCardProps) => {
   };
 
   const contentListUsers: BookingsElements = {
-    future: <PaginationUserBookingsList mode={activeTabKey} />,
-    past: <PaginationUserBookingsList mode={activeTabKey} />,
+    future: <PaginationUserBookingsList mode={activeTabKey} userId={selectedUser.id} />,
+    past: <PaginationUserBookingsList mode={activeTabKey} userId={selectedUser.id} />,
   };
 
   const contentListDevice: BookingsElements = {

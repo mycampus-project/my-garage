@@ -10,6 +10,7 @@ import UserBookingItem from './UserBookingItem';
 
 interface DataProps {
   mode: string;
+  userId: string;
 }
 
 const StyledPagination = styled(Pagination)`
@@ -23,9 +24,9 @@ const StyledDiv = styled.div`
   justify-content: space-between;
 `;
 
-const PaginationUserBookingList = ({ mode }: DataProps) => {
+const PaginationUserBookingList = ({ mode, userId }: DataProps) => {
   const pageSize: number = 5;
-  const { selectedUser, selectedBookingId } = useContext(AdminContext);
+  const { selectedBookingId } = useContext(AdminContext);
   const [filteredData, setFilteredData] = useState<BookingWithUser[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [minIndex, setMinIndex] = useState<number>(0);
@@ -34,7 +35,7 @@ const PaginationUserBookingList = ({ mode }: DataProps) => {
   const [offset, setOffset] = useState<number>(0);
 
   const { onFetchBookings, bookingData, isLoadingBookings, bookingsError } =
-    useBooking().GetUserBookings(offset, selectedUser.id, mode);
+    useBooking().GetUserBookings(offset, userId, mode);
 
   useEffect(() => {
     const bookings: PaginationResponse | null = bookingData ? bookingData.data : null;
@@ -45,11 +46,11 @@ const PaginationUserBookingList = ({ mode }: DataProps) => {
 
     setMinIndex(0);
     setMaxIndex(pageSize);
-  }, [bookingData, offset, onFetchBookings, selectedUser]);
+  }, [bookingData, offset, onFetchBookings, userId]);
 
   useEffect(() => {
-    onFetchBookings({ offset, userId: selectedUser.id, mode });
-  }, [mode, offset, onFetchBookings, selectedUser, selectedBookingId]);
+    onFetchBookings({ offset, userId, mode });
+  }, [mode, offset, onFetchBookings, userId, selectedBookingId]);
 
   const handleOnChange = (page: number) => {
     setOffset((page - 1) * pageSize);
