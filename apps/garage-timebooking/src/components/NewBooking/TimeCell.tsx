@@ -114,7 +114,7 @@ const TimeCell: React.FC<Props> = ({
   children,
 }) => (
   <TimeTableCell
-    onClick={() => !isUnavailable && onClick(date)}
+    onClick={() => !isUnavailable && !occupiedType && onClick(date)}
     isHighlighted={isHighlighted}
     isUnavalilable={isUnavailable}
     isInvalid={isInvalid}
