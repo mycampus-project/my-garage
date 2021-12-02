@@ -42,8 +42,6 @@ export type BaseBooking = {
   startAt: Date;
   endAt: Date;
   createdAt: Date;
-  removedAt?: Date;
-  removedBy?: string;
 };
 
 export type Booking = BaseBooking & {

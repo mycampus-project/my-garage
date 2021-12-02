@@ -1,12 +1,34 @@
-import { format, getWeek, set, setDay, setWeek } from 'date-fns';
-import { Thing, START_HOUR, END_HOUR, BOOKING_UNIT } from '@my-garage/common';
+import { endOfWeek, format, getWeek, setWeek, startOfWeek } from 'date-fns';
+import {
+  Thing,
+  START_HOUR,
+  END_HOUR,
+  BOOKING_UNIT,
+  apiClient,
+  Booking,
+  BookingWithUser,
+} from '@my-garage/common';
 import moment from 'moment';
-import { DatePicker, PageHeader, Space, Form, Typography, Image, Button } from 'antd';
-import { useState } from 'react';
+import {
+  DatePicker,
+  PageHeader,
+  Space,
+  Form,
+  Typography,
+  Image,
+  Button,
+  Spin,
+  notification,
+} from 'antd';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Navigate } from 'react-router-dom';
+import { CheckCircleOutlined } from '@ant-design/icons';
 
+import { useMutation, useQuery } from 'react-query';
+import { AuthContext } from 'src/contexts/AuthContext';
 import BookingTable from './BookingTable';
-import { Interval } from './utils';
+import { formatInterval, Interval } from './utils';
 
 const Root = styled.div`
   padding: var(--padding-m);
@@ -25,6 +47,20 @@ const StyledPageHeader = styled(PageHeader)`
   flex: 1;
 `;
 
+const Loader = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background-color: rgba(0, 0, 0, 0.06);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const getInitialWeekValue = () => {
   const now = new Date();
 
@@ -34,20 +70,87 @@ const getInitialWeekValue = () => {
   return now;
 };
 
-const useBookingsForWeek = (week: Date): Array<{ startAt: Date; endAt: Date }> => [
-  {
-    startAt: set(setDay(week, 1), { hours: 11, minutes: 0, seconds: 0, milliseconds: 0 }),
-    endAt: set(setDay(week, 1), { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 }),
-  },
-  {
-    startAt: set(setDay(week, 1), { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 }),
-    endAt: set(setDay(week, 1), { hours: 14, minutes: 0, seconds: 0, milliseconds: 0 }),
-  },
-  {
-    startAt: set(setDay(week, 2), { hours: 13, minutes: 0, seconds: 0, milliseconds: 0 }),
-    endAt: set(setDay(week, 2), { hours: 16, minutes: 0, seconds: 0, milliseconds: 0 }),
-  },
-];
+const useBookingsForWeek = (selectedWeek: Date, thingId: string) => {
+  const { token } = useContext(AuthContext);
+  const { data } = useQuery(['bookings', selectedWeek, thingId], async () =>
+    apiClient
+      .get<{ items: (Booking | BookingWithUser)[] }>('/bookings', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          start: startOfWeek(selectedWeek).toISOString(),
+          end: endOfWeek(selectedWeek).toISOString(),
+          thingId,
+          limit: 0,
+        },
+      })
+      .then((response) => response.data)
+      .then((bookings) =>
+        bookings.items.map((booking) => ({
+          ...booking,
+          startAt: new Date(booking.startAt),
+          endAt: new Date(booking.endAt),
+        })),
+      ),
+  );
+
+  return data;
+};
+
+const useBookInterval = (selectedInterval: Interval | null, thingId: string) => {
+  const { token } = useContext(AuthContext);
+  const {
+    mutate: sendBooking,
+    data: booking,
+    ...rest
+  } = useMutation(
+    ['book interval', selectedInterval, thingId],
+    () => {
+      if (!selectedInterval) throw Error('Interval not selected');
+
+      return apiClient
+        .post<BookingWithUser>(
+          '/bookings',
+          {
+            thingId,
+            startAt: selectedInterval.start,
+            endAt: selectedInterval.end,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        )
+        .then((response) => response.data)
+        .then((bookingData) => ({
+          ...bookingData,
+          startAt: new Date(bookingData.startAt),
+          endAt: new Date(bookingData.endAt),
+        }));
+    },
+    {
+      onSuccess: ({ thing, startAt, endAt }) => {
+        notification.open({
+          icon: <CheckCircleOutlined style={{ color: 'var(--ant-success-color)' }} />,
+          message: 'Booking saved!',
+          placement: 'topLeft',
+          description: `You have booked ${thing.name} for interval ${formatInterval({
+            start: startAt,
+            end: endAt,
+          })}`,
+        });
+      },
+    },
+  );
+
+  return {
+    sendBooking,
+    booking,
+    ...rest,
+  };
+};
 
 interface Props {
   thing: Thing;
@@ -55,10 +158,20 @@ interface Props {
 }
 
 const DeviceBooking = ({ thing, onBackClick }: Props) => {
+  const { user } = useContext(AuthContext);
   const [selectedWeek, setSelectedWeek] = useState<Date>(getInitialWeekValue());
-  const bookingsForWeek = useBookingsForWeek(selectedWeek);
+  const bookingsForWeek = useBookingsForWeek(selectedWeek, thing.id);
 
   const [selectedInterval, setSelectedInterval] = useState<Interval | null>(null);
+  const { sendBooking, booking, isLoading } = useBookInterval(selectedInterval, thing.id);
+
+  useEffect(() => {
+    setSelectedInterval(null);
+  }, [thing]);
+
+  if (booking) {
+    return <Navigate to={`/current/${booking.id}`} state={booking} />;
+  }
 
   return (
     <>
@@ -78,6 +191,11 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
         </ImageContainer>
       </HeaderRow>
       <Root>
+        {isLoading && (
+          <Loader>
+            <Spin size="large" />
+          </Loader>
+        )}
         <Space direction="vertical">
           <Form layout="vertical">
             <Form.Item label="Select week">
@@ -127,25 +245,36 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
               </Space>
             </Form.Item>
             <Form.Item>
-              <Button size="large" type="primary" disabled={!selectedInterval}>
+              <Button
+                size="large"
+                type="primary"
+                disabled={!selectedInterval}
+                loading={isLoading}
+                onClick={() => sendBooking()}
+              >
                 Book
               </Button>
             </Form.Item>
           </Form>
         </Space>
-        <BookingTable
-          selectedWeek={selectedWeek}
-          occupiedIntervals={bookingsForWeek.map((booking) => ({
-            start: booking.startAt,
-            end: booking.endAt,
-          }))}
-          startHour={START_HOUR}
-          endHour={END_HOUR}
-          timeUnit={BOOKING_UNIT}
-          onIntervalSelect={setSelectedInterval}
-          selectedInterval={selectedInterval}
-          maxBookingLengthMinutes={2880}
-        />
+        {bookingsForWeek ? (
+          <BookingTable
+            selectedWeek={selectedWeek}
+            occupiedIntervals={bookingsForWeek.map((b) => ({
+              start: b.startAt,
+              end: b.endAt,
+              type: 'user' in b && b.user.id === user?.id ? 'user' : 'unknown',
+            }))}
+            startHour={START_HOUR}
+            endHour={END_HOUR}
+            timeUnit={BOOKING_UNIT}
+            onIntervalSelect={setSelectedInterval}
+            selectedInterval={selectedInterval}
+            maxBookingLengthMinutes={2880}
+          />
+        ) : (
+          <Spin size="large" />
+        )}
       </Root>
     </>
   );
