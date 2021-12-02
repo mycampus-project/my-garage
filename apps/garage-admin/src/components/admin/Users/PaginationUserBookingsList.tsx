@@ -25,7 +25,7 @@ const StyledDiv = styled.div`
 
 const PaginationUserBookingList = ({ mode }: DataProps) => {
   const pageSize: number = 5;
-  const { selectedUser } = useContext(AdminContext);
+  const { selectedUser, selectedBookingId } = useContext(AdminContext);
   const [filteredData, setFilteredData] = useState<BookingWithUser[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [minIndex, setMinIndex] = useState<number>(0);
@@ -49,7 +49,7 @@ const PaginationUserBookingList = ({ mode }: DataProps) => {
 
   useEffect(() => {
     onFetchBookings({ offset, userId: selectedUser.id, mode });
-  }, [mode, offset, onFetchBookings, selectedUser]);
+  }, [mode, offset, onFetchBookings, selectedUser, selectedBookingId]);
 
   const handleOnChange = (page: number) => {
     setOffset((page - 1) * pageSize);
@@ -72,7 +72,7 @@ const PaginationUserBookingList = ({ mode }: DataProps) => {
         data-testid="deviceList"
         style={{ width: '100%' }}
         dataSource={filteredData.filter((_, index) => index >= minIndex && index < maxIndex)}
-        renderItem={(item) => <UserBookingItem item={item} />}
+        renderItem={(item) => <UserBookingItem item={item} mode={mode} />}
       />
       <StyledPagination
         pageSize={pageSize}

@@ -1,6 +1,9 @@
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { AxiosError, AxiosResponse } from 'axios';
 import { apiClient, BookingWithUser, useLocalStorage } from '@my-garage/common';
+import openNotificationWithIcon from 'src/components/admin/Common/OpenNotificationWithIcon';
+import { AdminContext } from 'src/contexts/AdminContext';
+import { useContext } from 'react';
 
 interface PaginationResponse {
   offset: number;
@@ -10,23 +13,38 @@ interface PaginationResponse {
 }
 
 const useBooking = () => {
+  const client = useQueryClient();
   const [token] = useLocalStorage('auth_token');
+  const { setModelIsVisible, setSelectedBookingId } = useContext(AdminContext);
 
-  const GetAllBookingsByDate = (date: Date) => {
-    const { data, error, isLoading } = useQuery<
+  const GetThingBookingsByDate = (thingId: string, startAt: string, endAt: string) => {
+    const {
+      mutate: onFetchBookingsByDate,
+      data: bookingData,
+      isLoading: isLoadingBookings,
+      error: bookingsError,
+    } = useMutation<
       AxiosResponse<PaginationResponse> | null,
-      AxiosError
-    >(['bookingsByDate'], () => {
+      AxiosError,
+      {
+        thingId: string;
+        startAt: string;
+        endAt: string;
+      }
+    >(['thingBookingsByDate'], () => {
       if (!token) return Promise.resolve(null);
       return apiClient.get<PaginationResponse>('/bookings', {
         params: {
-          date,
+          thingId,
+          limit: 0,
+          startAt,
+          endAt,
         },
         headers: { Authorization: `Bearer ${token}` },
       });
     });
 
-    return { data, error, isLoading };
+    return { onFetchBookingsByDate, bookingData, isLoadingBookings, bookingsError };
   };
 
   const GetThingBookings = (offset: number, thingId: string, mode: string) => {
@@ -89,7 +107,50 @@ const useBooking = () => {
     return { onFetchBookings, bookingData, isLoadingBookings, bookingsError };
   };
 
-  return { GetThingBookings, GetUserBookings, GetAllBookingsByDate };
+  function DeleteBooking() {
+    const {
+      mutate: onDelete,
+      data: respDeleteThingData,
+      isLoading: isLoadingDeleteBooking,
+      error: deleteBookingError,
+    } = useMutation<BookingWithUser, AxiosError, string>(
+      ['deleteBooking'],
+      (bookingId: string) =>
+        apiClient
+          .delete(`/bookings/${bookingId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then((response) => response.data),
+      {
+        onSuccess: () => {
+          client.invalidateQueries('userBookings');
+          client.invalidateQueries('thingsBookings');
+          client.invalidateQueries('userBookings');
+          client.invalidateQueries('thingBookingsByDate');
+          openNotificationWithIcon(
+            'success',
+            'Booking Deleted',
+            'Booking was successfully deleted',
+          );
+          setSelectedBookingId('');
+          setModelIsVisible(false);
+        },
+
+        onError: (error) => {
+          openNotificationWithIcon('error', 'Booking Not Deleted', `${error.message}`);
+          setModelIsVisible(false);
+        },
+      },
+    );
+    return {
+      onDelete,
+      respDeleteThingData,
+      isLoadingDeleteBooking,
+      deleteBookingError,
+    };
+  }
+
+  return { GetThingBookings, GetUserBookings, GetThingBookingsByDate, DeleteBooking };
 };
 
 export default useBooking;

@@ -2,6 +2,7 @@ import { createContext, useState, FC } from 'react';
 import { Thing, User } from '@my-garage/common';
 
 interface AdminContextInterface {
+  selectedBookingId: string;
   searchValue: string;
   selectedUser: User;
   selectedThing: Thing;
@@ -14,9 +15,11 @@ interface AdminContextInterface {
   setSelectedThing: (name: Thing) => void;
   setImage: (file: File) => void;
   setSearchValue: (value: string) => void;
+  setSelectedBookingId: (id: string) => void;
 }
 
 const defaultContextState: AdminContextInterface = {
+  selectedBookingId: '',
   searchValue: '',
   modelType: '',
   image: undefined,
@@ -44,6 +47,7 @@ const defaultContextState: AdminContextInterface = {
   setSelectedThing: () => {},
   setImage: () => {},
   setSearchValue: () => {},
+  setSelectedBookingId: () => {},
 };
 
 export const AdminContext = createContext<AdminContextInterface>(defaultContextState);
@@ -55,11 +59,16 @@ const AdminContextProvider: FC = ({ children }) => {
   const [modelType, setModelType] = useState<string>(defaultContextState.modelType);
   const [image, setImage] = useState<File | undefined>(defaultContextState.image);
   const [searchValue, setSearchValue] = useState<string>(defaultContextState.searchValue);
+  const [selectedBookingId, setSelectedBookingId] = useState<string>(
+    defaultContextState.selectedBookingId,
+  );
 
   return (
     <AdminContext.Provider
       value={{
         selectedUser,
+        selectedBookingId,
+        setSelectedBookingId,
         modelIsVisible,
         modelType,
         setModelType,

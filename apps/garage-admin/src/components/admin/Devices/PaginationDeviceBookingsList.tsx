@@ -1,10 +1,11 @@
 import 'antd/dist/antd.css';
 import { List, Pagination, Spin } from 'antd';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { BookingWithUser } from '@my-garage/common';
 import { PaginationResponse } from 'src/types/adminTypes';
 import useBooking from 'src/hooks/useBooking';
+import { AdminContext } from 'src/contexts/AdminContext';
 import DeviceBookingItem from './DeviceBookingItem';
 
 interface DataProps {
@@ -25,6 +26,7 @@ const StyledDiv = styled.div`
 
 const PaginationDeviceBookingList = ({ mode, thingId }: DataProps) => {
   const pageSize: number = 5;
+  const { selectedBookingId } = useContext(AdminContext);
   const [filteredData, setFilteredData] = useState<BookingWithUser[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [minIndex, setMinIndex] = useState<number>(0);
@@ -48,7 +50,7 @@ const PaginationDeviceBookingList = ({ mode, thingId }: DataProps) => {
 
   useEffect(() => {
     onFetchBookings({ offset, thingId, mode });
-  }, [mode, offset, onFetchBookings, thingId]);
+  }, [mode, offset, onFetchBookings, thingId, selectedBookingId]);
 
   const handleOnChange = (page: number) => {
     setOffset((page - 1) * pageSize);
@@ -71,7 +73,7 @@ const PaginationDeviceBookingList = ({ mode, thingId }: DataProps) => {
         data-testid="deviceList"
         style={{ width: '100%' }}
         dataSource={filteredData.filter((_, index) => index >= minIndex && index < maxIndex)}
-        renderItem={(item) => <DeviceBookingItem item={item} />}
+        renderItem={(item) => <DeviceBookingItem item={item} mode={mode} />}
       />
       <StyledPagination
         pageSize={pageSize}

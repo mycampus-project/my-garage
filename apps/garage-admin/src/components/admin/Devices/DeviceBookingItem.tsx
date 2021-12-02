@@ -1,13 +1,15 @@
 import { UserOutlined } from '@ant-design/icons';
 import { BookingWithUser } from '@my-garage/common';
 import { List, Avatar, Button } from 'antd';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AdminContext } from 'src/contexts/AdminContext';
 import styled from 'styled-components';
 
 interface BookingItemProps {
   item: BookingWithUser;
+  mode: string;
 }
+
 const DescriptionContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -28,7 +30,7 @@ const DescriptionContainer = styled.div`
   }
 `;
 
-const StyledListItem = styled(List.Item)`
+const StyledListItem = styled(({ mode, ...props }) => <List.Item {...props} />)<BookingItemProps>`
   @media screen and (max-width: 800px) {
     font-size: 12px;
 
@@ -54,22 +56,33 @@ const StyledSpan = styled.span`
   font-weight: 700;
 `;
 
-const DeviceBookingItem = ({ item }: BookingItemProps) => {
-  const { setModelIsVisible, setModelType } = useContext(AdminContext);
+const DeviceBookingItem = ({ item, mode }: BookingItemProps) => {
+  const { setModelIsVisible, setModelType, setSelectedBookingId } = useContext(AdminContext);
+  const [showDelete, setDelete] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (mode === 'future') {
+      setDelete(true);
+    } else {
+      setDelete(false);
+    }
+  }, [mode]);
 
   return (
     <StyledListItem
-      actions={[
-        <Button
-          type="link"
-          onClick={() => {
-            setModelType('delete-booking');
-            setModelIsVisible(true);
-          }}
-        >
-          Delete
-        </Button>,
-      ]}
+      actions={
+        showDelete && [
+          <Button
+            onClick={() => {
+              setSelectedBookingId(item.id);
+              setModelType('delete-booking');
+              setModelIsVisible(true);
+            }}
+          >
+            Delete
+          </Button>,
+        ]
+      }
     >
       <List.Item.Meta
         avatar={
