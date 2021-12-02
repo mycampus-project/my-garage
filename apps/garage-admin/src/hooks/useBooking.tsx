@@ -1,4 +1,4 @@
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { AxiosError, AxiosResponse } from 'axios';
 import { apiClient, BookingWithUser, useLocalStorage } from '@my-garage/common';
 
@@ -11,6 +11,23 @@ interface PaginationResponse {
 
 const useBooking = () => {
   const [token] = useLocalStorage('auth_token');
+
+  const GetAllBookingsByDate = (date: Date) => {
+    const { data, error, isLoading } = useQuery<
+      AxiosResponse<PaginationResponse> | null,
+      AxiosError
+    >(['bookingsByDate'], () => {
+      if (!token) return Promise.resolve(null);
+      return apiClient.get<PaginationResponse>('/bookings', {
+        params: {
+          date,
+        },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    });
+
+    return { data, error, isLoading };
+  };
 
   const GetThingBookings = (offset: number, thingId: string, mode: string) => {
     const {
@@ -72,7 +89,7 @@ const useBooking = () => {
     return { onFetchBookings, bookingData, isLoadingBookings, bookingsError };
   };
 
-  return { GetThingBookings, GetUserBookings };
+  return { GetThingBookings, GetUserBookings, GetAllBookingsByDate };
 };
 
 export default useBooking;

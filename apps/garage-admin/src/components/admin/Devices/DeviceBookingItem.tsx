@@ -62,15 +62,6 @@ const DeviceBookingItem = ({ item }: BookingItemProps) => {
         <Button
           type="link"
           onClick={() => {
-            setModelType('edit-booking');
-            setModelIsVisible(true);
-          }}
-        >
-          Edit
-        </Button>,
-        <Button
-          type="link"
-          onClick={() => {
             setModelType('delete-booking');
             setModelIsVisible(true);
           }}

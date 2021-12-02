@@ -6,7 +6,7 @@ import { BookingWithUser } from '@my-garage/common';
 import { PaginationResponse } from 'src/types/adminTypes';
 import useBooking from 'src/hooks/useBooking';
 import { AdminContext } from 'src/contexts/AdminContext';
-import DeviceBookingItem from '../Devices/DeviceBookingItem';
+import UserBookingItem from './UserBookingItem';
 
 interface DataProps {
   mode: string;
@@ -72,7 +72,7 @@ const PaginationUserBookingList = ({ mode }: DataProps) => {
         data-testid="deviceList"
         style={{ width: '100%' }}
         dataSource={filteredData.filter((_, index) => index >= minIndex && index < maxIndex)}
-        renderItem={(item) => <DeviceBookingItem item={item} />}
+        renderItem={(item) => <UserBookingItem item={item} />}
       />
       <StyledPagination
         pageSize={pageSize}

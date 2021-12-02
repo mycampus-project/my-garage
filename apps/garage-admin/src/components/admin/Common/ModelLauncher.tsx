@@ -5,7 +5,6 @@ import ChangeRoleModal from './Modals/ChangeRoleModal';
 import ManageTypesModal from './Modals/ManageTypesModal';
 import ManageDeviceModal from './Modals/ManageDeviceModal';
 import DeleteModal from './Modals/DeleteModal';
-import ManageBookingModal from './Modals/ManageBookingModal';
 import RestoreModal from './Modals/RestoreModal';
 
 const ModelLauncher = () => {
@@ -35,9 +34,6 @@ const ModelLauncher = () => {
     }
     case 'delete-booking': {
       return <DeleteModal isBooking />;
-    }
-    case 'edit-booking': {
-      return <ManageBookingModal />;
     }
     case 'manage-type': {
       return <ManageTypesModal />;
