@@ -1,3 +1,4 @@
+import { UserOutlined } from '@ant-design/icons';
 import { BookingWithUser } from '@my-garage/common';
 import { List, Avatar, Button } from 'antd';
 import { useContext } from 'react';
@@ -73,7 +74,8 @@ const DeviceBookingItem = ({ item }: BookingItemProps) => {
       <List.Item.Meta
         avatar={
           <Avatar
-            src="https://joeschmoe.io/api/v1/random"
+            style={{ backgroundColor: 'var(--ant-primary-2)' }}
+            icon={<UserOutlined />}
             size={{ xs: 50, sm: 50, md: 50, lg: 60, xl: 60, xxl: 60 }}
           />
         }
