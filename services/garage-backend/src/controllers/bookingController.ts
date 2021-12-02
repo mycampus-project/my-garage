@@ -26,7 +26,8 @@ export const getBookings = async (
       offset?: string;
       limit?: string;
       mode?: 'future' | 'past';
-      date?: string;
+      start?: string;
+      end?: string;
     }
   >,
   res: Response,
@@ -37,10 +38,16 @@ export const getBookings = async (
       throw new InternalServerError('Issues with finding request user');
     }
 
-    const { userId, thingId, mode = 'future', date } = req.query;
+    const { userId, thingId, mode = 'future', start, end } = req.query;
 
     if (!['future', 'past'].includes(mode)) {
       throw new BadRequestError('`mode` param should be either `future` or `past`');
+    }
+
+    if ((start && !end) || (!start && end)) {
+      throw new BadRequestError(
+        'please specify both `start` and `end` if you want to search by dates',
+      );
     }
 
     const { limit = 10, offset = 0 } = parseNumericQuery({
@@ -48,10 +55,11 @@ export const getBookings = async (
       limit: req.query.limit,
     });
 
-    const parsedDate = date !== undefined ? new Date(date) : undefined;
+    const parsedStart = start !== undefined ? new Date(start) : undefined;
+    const parsedEnd = end !== undefined ? new Date(end) : undefined;
 
-    if (Number.isNaN(parsedDate?.getTime())) {
-      throw new BadRequestError('Could not parse date');
+    if (Number.isNaN(parsedStart?.getTime()) || Number.isNaN(parsedEnd?.getTime())) {
+      throw new BadRequestError('Could not parse one of the dates');
     }
 
     const userWithRole = await req.user.populate<{ role: typeof Role }>({
@@ -65,7 +73,7 @@ export const getBookings = async (
 
     const { bookings, total } = await findBookingsFiltered(
       { userId, thingId },
-      { offset, limit, mode, date: parsedDate },
+      { offset, limit, mode, start: parsedStart, end: parsedEnd },
     );
 
     res.send({

@@ -1,23 +1,22 @@
-import { endOfDay, startOfDay } from 'date-fns';
 import { FilterQuery } from 'mongoose';
 
 import Booking, { BookingDocument } from '../models/Booking';
 
-const getFilter = (mode: 'future' | 'past', date?: Date) => {
-  if (date) {
+const getFilter = (mode: 'future' | 'past', start?: Date, end?: Date) => {
+  if (start && end) {
     return {
       $or: [
         {
           $and: [
             {
-              startAt: { $lte: startOfDay(date) },
+              startAt: { $lte: start },
             },
             {
-              endAt: { $gt: startOfDay(date) },
+              endAt: { $gt: start },
             },
           ],
         },
-        { $and: [{ startAt: { $gte: startOfDay(date) } }, { startAt: { $lt: endOfDay(date) } }] },
+        { $and: [{ startAt: { $gte: start } }, { startAt: { $lt: end } }] },
       ],
     };
   }
@@ -42,10 +41,11 @@ export const findBookingsFiltered = async (
     offset,
     limit,
     mode,
-    date,
-  }: { offset?: number; limit?: number; mode: 'future' | 'past'; date?: Date },
+    start,
+    end,
+  }: { offset?: number; limit?: number; mode: 'future' | 'past'; start?: Date; end?: Date },
 ) => {
-  const filter = getFilter(mode, date);
+  const filter = getFilter(mode, start, end);
 
   const query: FilterQuery<BookingDocument> = {
     ...filter,
