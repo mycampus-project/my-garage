@@ -35,6 +35,7 @@ export async function serializeBooking(
       description: thing.description,
       name: thing.name,
       type: (await thing.populate<{ type: TypeDocument }>('type')).type.name,
+      imageUrl: thing.imageUrl,
     },
     createdAt,
     startAt,
