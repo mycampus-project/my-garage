@@ -47,8 +47,6 @@ export const findBookingsFiltered = async (
 ) => {
   const filter = getFilter(mode, date);
 
-  console.log(filter);
-
   const query: FilterQuery<BookingDocument> = {
     ...filter,
   };
