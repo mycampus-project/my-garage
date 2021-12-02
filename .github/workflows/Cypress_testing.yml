@@ -18,6 +18,7 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_TOKEN }}
           CRYPTO_SECRET: ${{ secrets.CRYPTO_SECRET }}
         with:
+          node-version: 14.17
           build: docker-compose up --build -d
           runTests: false
 
