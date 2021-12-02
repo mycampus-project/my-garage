@@ -9,15 +9,26 @@ import {
   BookingWithUser,
 } from '@my-garage/common';
 import moment from 'moment';
-import { DatePicker, PageHeader, Space, Form, Typography, Image, Button, Spin } from 'antd';
-import { useContext, useState } from 'react';
+import {
+  DatePicker,
+  PageHeader,
+  Space,
+  Form,
+  Typography,
+  Image,
+  Button,
+  Spin,
+  notification,
+} from 'antd';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Navigate } from 'react-router-dom';
+import { CheckCircleOutlined } from '@ant-design/icons';
 
 import { useMutation, useQuery } from 'react-query';
 import { AuthContext } from 'src/contexts/AuthContext';
 import BookingTable from './BookingTable';
-import { Interval } from './utils';
+import { formatInterval, Interval } from './utils';
 
 const Root = styled.div`
   padding: var(--padding-m);
@@ -93,30 +104,46 @@ const useBookInterval = (selectedInterval: Interval | null, thingId: string) => 
     mutate: sendBooking,
     data: booking,
     ...rest
-  } = useMutation(['book interval', selectedInterval, thingId], () => {
-    if (!selectedInterval) throw Error('Interval not selected');
+  } = useMutation(
+    ['book interval', selectedInterval, thingId],
+    () => {
+      if (!selectedInterval) throw Error('Interval not selected');
 
-    return apiClient
-      .post<BookingWithUser>(
-        '/bookings',
-        {
-          thingId,
-          startAt: selectedInterval.start,
-          endAt: selectedInterval.end,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+      return apiClient
+        .post<BookingWithUser>(
+          '/bookings',
+          {
+            thingId,
+            startAt: selectedInterval.start,
+            endAt: selectedInterval.end,
           },
-        },
-      )
-      .then((response) => response.data)
-      .then((bookingData) => ({
-        ...bookingData,
-        startAt: new Date(bookingData.startAt),
-        endAt: new Date(bookingData.endAt),
-      }));
-  });
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        )
+        .then((response) => response.data)
+        .then((bookingData) => ({
+          ...bookingData,
+          startAt: new Date(bookingData.startAt),
+          endAt: new Date(bookingData.endAt),
+        }));
+    },
+    {
+      onSuccess: ({ thing, startAt, endAt }) => {
+        notification.open({
+          icon: <CheckCircleOutlined style={{ color: 'var(--ant-success-color)' }} />,
+          message: 'Booking saved!',
+          placement: 'topLeft',
+          description: `You have booked ${thing.name} for interval ${formatInterval({
+            start: startAt,
+            end: endAt,
+          })}`,
+        });
+      },
+    },
+  );
 
   return {
     sendBooking,
@@ -137,6 +164,10 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
 
   const [selectedInterval, setSelectedInterval] = useState<Interval | null>(null);
   const { sendBooking, booking, isLoading } = useBookInterval(selectedInterval, thing.id);
+
+  useEffect(() => {
+    setSelectedInterval(null);
+  }, [thing]);
 
   if (booking) {
     return <Navigate to={`/current/${booking.id}`} state={booking} />;
