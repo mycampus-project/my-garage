@@ -82,11 +82,24 @@ const useHighlightedInterval = (
 
   const highlightedInterval = { start, end };
 
-  if (isValidRange([start, end], occupiedIntervals, maxIntervalLengthMinutes)) {
+  if (isValidRange([start, end], occupiedIntervals, durationUnitMin, maxIntervalLengthMinutes)) {
     return {
       error: null,
       highlightedInterval: { start, end },
       validInterval: highlightedInterval,
+    };
+  }
+
+  if (!isInFuture(start, durationUnitMin)) {
+    const earliestStart = getEarliestStart(durationUnitMin);
+
+    return {
+      error: `Earliest allowed start for a booking is ${format(earliestStart, 'eee HH:mm')}`,
+      highlightedInterval,
+      validInterval: {
+        start: earliestStart,
+        end,
+      },
     };
   }
 
@@ -126,19 +139,6 @@ const useHighlightedInterval = (
       )}`,
       highlightedInterval,
       validInterval: calculateStartEnd(selectedInterval.start, maxAllowedEndTime, durationUnitMin),
-    };
-  }
-
-  if (!isInFuture(start, durationUnitMin)) {
-    const earliestStart = getEarliestStart(durationUnitMin);
-
-    return {
-      error: `Earliest allowed start for a booking is ${format(earliestStart, 'eee HH:mm')}`,
-      highlightedInterval,
-      validInterval: {
-        start: earliestStart,
-        end,
-      },
     };
   }
 

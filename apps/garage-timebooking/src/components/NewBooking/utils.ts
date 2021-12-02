@@ -89,9 +89,16 @@ export const getEarliestStart = (durationUnitMin: number) => {
 export const isValidRange = (
   range: Range,
   existingBookings: Array<Interval>,
+  durationUnitMin: number,
   maxRangeDurationMin?: number,
 ) => {
   if (maxRangeDurationMin && Math.abs(differenceInMinutes(...range)) > maxRangeDurationMin) {
+    return false;
+  }
+
+  const [start] = sortDates(range);
+
+  if (!isInFuture(start, durationUnitMin)) {
     return false;
   }
 
