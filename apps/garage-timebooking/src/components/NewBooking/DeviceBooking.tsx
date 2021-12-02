@@ -1,10 +1,12 @@
-import { format, getWeek, set, setDay, setWeek } from 'date-fns';
-import { Thing, START_HOUR, END_HOUR, BOOKING_UNIT } from '@my-garage/common';
+import { endOfWeek, format, getWeek, setWeek, startOfWeek } from 'date-fns';
+import { Thing, START_HOUR, END_HOUR, BOOKING_UNIT, apiClient, Booking } from '@my-garage/common';
 import moment from 'moment';
 import { DatePicker, PageHeader, Space, Form, Typography, Image, Button } from 'antd';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import styled from 'styled-components';
 
+import { useQuery } from 'react-query';
+import { AuthContext } from 'src/contexts/AuthContext';
 import BookingTable from './BookingTable';
 import { Interval } from './utils';
 
@@ -34,20 +36,32 @@ const getInitialWeekValue = () => {
   return now;
 };
 
-const useBookingsForWeek = (week: Date): Array<{ startAt: Date; endAt: Date }> => [
-  {
-    startAt: set(setDay(week, 1), { hours: 11, minutes: 0, seconds: 0, milliseconds: 0 }),
-    endAt: set(setDay(week, 1), { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 }),
-  },
-  {
-    startAt: set(setDay(week, 1), { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 }),
-    endAt: set(setDay(week, 1), { hours: 14, minutes: 0, seconds: 0, milliseconds: 0 }),
-  },
-  {
-    startAt: set(setDay(week, 2), { hours: 13, minutes: 0, seconds: 0, milliseconds: 0 }),
-    endAt: set(setDay(week, 2), { hours: 16, minutes: 0, seconds: 0, milliseconds: 0 }),
-  },
-];
+const useBookingsForWeek = (selectedWeek: Date) => {
+  const { token } = useContext(AuthContext);
+  const { data } = useQuery(['bookings', selectedWeek], async () =>
+    apiClient
+      .get<{ items: Booking[] }>('/bookings', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          start: startOfWeek(selectedWeek).toISOString(),
+          end: endOfWeek(selectedWeek).toISOString(),
+          limit: 0,
+        },
+      })
+      .then((response) => response.data)
+      .then((bookings) =>
+        bookings.items.map((booking) => ({
+          ...booking,
+          startAt: new Date(booking.startAt),
+          endAt: new Date(booking.endAt),
+        })),
+      ),
+  );
+
+  return data;
+};
 
 interface Props {
   thing: Thing;
@@ -133,19 +147,21 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
             </Form.Item>
           </Form>
         </Space>
-        <BookingTable
-          selectedWeek={selectedWeek}
-          occupiedIntervals={bookingsForWeek.map((booking) => ({
-            start: booking.startAt,
-            end: booking.endAt,
-          }))}
-          startHour={START_HOUR}
-          endHour={END_HOUR}
-          timeUnit={BOOKING_UNIT}
-          onIntervalSelect={setSelectedInterval}
-          selectedInterval={selectedInterval}
-          maxBookingLengthMinutes={2880}
-        />
+        {bookingsForWeek && (
+          <BookingTable
+            selectedWeek={selectedWeek}
+            occupiedIntervals={bookingsForWeek.map((booking) => ({
+              start: booking.startAt,
+              end: booking.endAt,
+            }))}
+            startHour={START_HOUR}
+            endHour={END_HOUR}
+            timeUnit={BOOKING_UNIT}
+            onIntervalSelect={setSelectedInterval}
+            selectedInterval={selectedInterval}
+            maxBookingLengthMinutes={2880}
+          />
+        )}
       </Root>
     </>
   );
