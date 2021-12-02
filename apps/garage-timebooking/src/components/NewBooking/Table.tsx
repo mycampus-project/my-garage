@@ -67,6 +67,7 @@ interface Props {
   getIsTableCellSelected: (cellDate: Date) => boolean;
   getIsTableCellHighlighted: (cellDate: Date) => boolean;
   getIsTableCellUnavailable: (cellDate: Date) => boolean;
+  getIsTableCellOccupiedType: (cellDate: Date) => 'user' | 'unknown' | null;
   getIsTableCellInvalid: (cellDate: Date) => boolean;
   getTimeCellText: (cellDate: Date) => string | null;
 }
@@ -77,6 +78,7 @@ const Table = ({
   getIsTableCellSelected,
   getIsTableCellHighlighted,
   getIsTableCellUnavailable,
+  getIsTableCellOccupiedType,
   getIsTableCellInvalid,
   getTimeCellText,
   onCellClick,
@@ -129,6 +131,7 @@ const Table = ({
                   isHighlighted={getIsTableCellHighlighted(date)}
                   isUnavailable={getIsTableCellUnavailable(date)}
                   isInvalid={getIsTableCellInvalid(date)}
+                  occupiedType={getIsTableCellOccupiedType(date)}
                   onMouseEnter={setHoveredCell}
                   onMouseLeave={() => setHoveredCell(null)}
                 >

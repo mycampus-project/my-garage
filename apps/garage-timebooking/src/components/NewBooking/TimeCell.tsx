@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { lighten } from 'polished';
 import { CELL_WIDTH, TableCell } from './common';
 
 const TimeTableCell = styled(TableCell)<{
@@ -6,6 +7,7 @@ const TimeTableCell = styled(TableCell)<{
   isUnavalilable: boolean;
   isSelected: boolean;
   isInvalid: boolean;
+  occupiedType: 'user' | 'unknown' | null;
 }>`
   flex: 1;
 
@@ -46,6 +48,31 @@ const TimeTableCell = styled(TableCell)<{
       }
     `};
 
+  ${({ occupiedType }) => {
+    switch (occupiedType) {
+      case 'user':
+        return css`
+          &,
+          &:hover {
+            background-color: ${lighten(0.3)('#69aa48')} !important;
+            border-color: transparent !important;
+            cursor: not-allowed;
+          }
+        `;
+      case 'unknown':
+        return css`
+          &,
+          &:hover {
+            background-color: ${lighten(0.3)('#faad14')} !important;
+            border-color: transparent !important;
+            cursor: not-allowed;
+          }
+        `;
+      default:
+        return '';
+    }
+  }}
+
   ${({ isInvalid }) =>
     isInvalid &&
     css`
@@ -68,6 +95,7 @@ interface Props {
   isUnavailable: boolean;
   isSelected: boolean;
   isInvalid: boolean;
+  occupiedType: 'user' | 'unknown' | null;
   onMouseEnter: (date: Date) => void;
   onMouseLeave: (date: Date) => void;
   onClick: (date: Date) => void;
@@ -79,6 +107,7 @@ const TimeCell: React.FC<Props> = ({
   isUnavailable,
   isSelected,
   isInvalid,
+  occupiedType,
   onClick,
   onMouseEnter,
   onMouseLeave,
@@ -90,6 +119,7 @@ const TimeCell: React.FC<Props> = ({
     isUnavalilable={isUnavailable}
     isInvalid={isInvalid}
     isSelected={isSelected}
+    occupiedType={occupiedType}
     onMouseEnter={() => onMouseEnter(date)}
     onMouseLeave={() => onMouseLeave(date)}
   >

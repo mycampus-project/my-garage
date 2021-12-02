@@ -1,11 +1,20 @@
 import { endOfWeek, format, getWeek, setWeek, startOfWeek } from 'date-fns';
-import { Thing, START_HOUR, END_HOUR, BOOKING_UNIT, apiClient, Booking } from '@my-garage/common';
+import {
+  Thing,
+  START_HOUR,
+  END_HOUR,
+  BOOKING_UNIT,
+  apiClient,
+  Booking,
+  BookingWithUser,
+} from '@my-garage/common';
 import moment from 'moment';
-import { DatePicker, PageHeader, Space, Form, Typography, Image, Button } from 'antd';
+import { DatePicker, PageHeader, Space, Form, Typography, Image, Button, Spin } from 'antd';
 import { useContext, useState } from 'react';
 import styled from 'styled-components';
+import { Navigate } from 'react-router-dom';
 
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { AuthContext } from 'src/contexts/AuthContext';
 import BookingTable from './BookingTable';
 import { Interval } from './utils';
@@ -27,6 +36,20 @@ const StyledPageHeader = styled(PageHeader)`
   flex: 1;
 `;
 
+const Loader = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background-color: rgba(0, 0, 0, 0.06);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const getInitialWeekValue = () => {
   const now = new Date();
 
@@ -36,17 +59,18 @@ const getInitialWeekValue = () => {
   return now;
 };
 
-const useBookingsForWeek = (selectedWeek: Date) => {
+const useBookingsForWeek = (selectedWeek: Date, thingId: string) => {
   const { token } = useContext(AuthContext);
-  const { data } = useQuery(['bookings', selectedWeek], async () =>
+  const { data } = useQuery(['bookings', selectedWeek, thingId], async () =>
     apiClient
-      .get<{ items: Booking[] }>('/bookings', {
+      .get<{ items: (Booking | BookingWithUser)[] }>('/bookings', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
         params: {
           start: startOfWeek(selectedWeek).toISOString(),
           end: endOfWeek(selectedWeek).toISOString(),
+          thingId,
           limit: 0,
         },
       })
@@ -63,16 +87,60 @@ const useBookingsForWeek = (selectedWeek: Date) => {
   return data;
 };
 
+const useBookInterval = (selectedInterval: Interval | null, thingId: string) => {
+  const { token } = useContext(AuthContext);
+  const {
+    mutate: sendBooking,
+    data: booking,
+    ...rest
+  } = useMutation(['book interval', selectedInterval, thingId], () => {
+    if (!selectedInterval) throw Error('Interval not selected');
+
+    return apiClient
+      .post<BookingWithUser>(
+        '/bookings',
+        {
+          thingId,
+          startAt: selectedInterval.start,
+          endAt: selectedInterval.end,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+      .then((response) => response.data)
+      .then((bookingData) => ({
+        ...bookingData,
+        startAt: new Date(bookingData.startAt),
+        endAt: new Date(bookingData.endAt),
+      }));
+  });
+
+  return {
+    sendBooking,
+    booking,
+    ...rest,
+  };
+};
+
 interface Props {
   thing: Thing;
   onBackClick: () => void;
 }
 
 const DeviceBooking = ({ thing, onBackClick }: Props) => {
+  const { user } = useContext(AuthContext);
   const [selectedWeek, setSelectedWeek] = useState<Date>(getInitialWeekValue());
-  const bookingsForWeek = useBookingsForWeek(selectedWeek);
+  const bookingsForWeek = useBookingsForWeek(selectedWeek, thing.id);
 
   const [selectedInterval, setSelectedInterval] = useState<Interval | null>(null);
+  const { sendBooking, booking, isLoading } = useBookInterval(selectedInterval, thing.id);
+
+  if (booking) {
+    return <Navigate to={`/current/${booking.id}`} state={booking} />;
+  }
 
   return (
     <>
@@ -92,6 +160,11 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
         </ImageContainer>
       </HeaderRow>
       <Root>
+        {isLoading && (
+          <Loader>
+            <Spin size="large" />
+          </Loader>
+        )}
         <Space direction="vertical">
           <Form layout="vertical">
             <Form.Item label="Select week">
@@ -141,18 +214,25 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
               </Space>
             </Form.Item>
             <Form.Item>
-              <Button size="large" type="primary" disabled={!selectedInterval}>
+              <Button
+                size="large"
+                type="primary"
+                disabled={!selectedInterval}
+                loading={isLoading}
+                onClick={() => sendBooking()}
+              >
                 Book
               </Button>
             </Form.Item>
           </Form>
         </Space>
-        {bookingsForWeek && (
+        {bookingsForWeek ? (
           <BookingTable
             selectedWeek={selectedWeek}
-            occupiedIntervals={bookingsForWeek.map((booking) => ({
-              start: booking.startAt,
-              end: booking.endAt,
+            occupiedIntervals={bookingsForWeek.map((b) => ({
+              start: b.startAt,
+              end: b.endAt,
+              type: 'user' in b && b.user.id === user?.id ? 'user' : 'unknown',
             }))}
             startHour={START_HOUR}
             endHour={END_HOUR}
@@ -161,6 +241,8 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
             selectedInterval={selectedInterval}
             maxBookingLengthMinutes={2880}
           />
+        ) : (
+          <Spin size="large" />
         )}
       </Root>
     </>

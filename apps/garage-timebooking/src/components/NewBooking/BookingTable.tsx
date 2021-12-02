@@ -147,7 +147,7 @@ const useHighlightedInterval = (
 
 interface Props {
   selectedWeek: Date;
-  occupiedIntervals: Interval[];
+  occupiedIntervals: (Interval & { type: 'user' | 'unknown' })[];
   startHour: number;
   endHour: number;
   timeUnit: 10 | 15 | 30 | 60;
@@ -223,12 +223,16 @@ const BookingTable = ({
     return isBetweenInclusive(cellDate, [start, end]) && !isEqual(cellDate, end);
   };
 
-  const getIsTableCellUnavailable = (cellDate: Date) =>
-    !isInFuture(cellDate, timeUnit) ||
-    occupiedIntervals.some(
+  const getIsTableCellUnavailable = (cellDate: Date) => !isInFuture(cellDate, timeUnit);
+
+  const getIsTableCellOccupiedType = (cellDate: Date) => {
+    const matchingInterval = occupiedIntervals.find(
       ({ start, end }) =>
         isWithinInterval(cellDate, { start: start!, end: end! }) && !isSameMinute(cellDate, end),
     );
+
+    return matchingInterval?.type ?? null;
+  };
 
   const getTimeCellText = (cellDate: Date) => {
     if (
@@ -245,6 +249,14 @@ const BookingTable = ({
       return formatInterval(highlightedInterval as Interval);
     }
 
+    const existingInterval = occupiedIntervals.find(({ start }) => isEqual(start, cellDate));
+
+    if (existingInterval) {
+      return existingInterval.type === 'user'
+        ? `Yours ${formatInterval(existingInterval as Interval)}`
+        : formatInterval(existingInterval as Interval);
+    }
+
     return null;
   };
 
@@ -257,6 +269,7 @@ const BookingTable = ({
         getIsTableCellSelected={getIsTableCellSelected}
         getIsTableCellHighlighted={getIsTableCellHighlighted}
         getIsTableCellUnavailable={getIsTableCellUnavailable}
+        getIsTableCellOccupiedType={getIsTableCellOccupiedType}
         getIsTableCellInvalid={(cellDate) =>
           getIsTableCellHighlighted(cellDate) &&
           !!hoveredCell &&
