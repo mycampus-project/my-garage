@@ -38,12 +38,10 @@ export type Role = {
 
 export type BaseBooking = {
   id: string;
-  thing: { id: string; name: string; description: string; type: string };
+  thing: { id: string; name: string; description: string; type: string; imageUrl: string };
   startAt: Date;
   endAt: Date;
   createdAt: Date;
-  removedAt?: Date;
-  removedBy?: string;
 };
 
 export type Booking = BaseBooking & {

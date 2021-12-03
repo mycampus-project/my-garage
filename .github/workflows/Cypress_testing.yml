@@ -10,7 +10,10 @@ jobs:
       # Get code to run tests on
       - name: Checkout
         uses: actions/checkout@v2
-
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.17
       # Build docker-compose container with frontend, backend and mongodb, cache them correctly
       - name: Build docker-compose
         uses: cypress-io/github-action@v2

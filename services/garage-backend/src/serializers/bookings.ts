@@ -21,12 +21,10 @@ export async function serializeBooking(
   booking: BookingDocument,
   includeUserDetails?: boolean,
 ): Promise<Booking | BookingWithUser> {
-  const { id, user, thing, removedBy, createdAt, removedAt, startAt, endAt } =
-    await booking.populate<{
-      user: UserDocument;
-      thing: ThingDocument;
-      removedBy?: UserDocument;
-    }>(['user', 'thing', 'removedBy']);
+  const { id, user, thing, createdAt, startAt, endAt } = await booking.populate<{
+    user: UserDocument;
+    thing: ThingDocument;
+  }>(['user', 'thing']);
 
   const base: BaseBooking = {
     id,
@@ -35,12 +33,11 @@ export async function serializeBooking(
       description: thing.description,
       name: thing.name,
       type: (await thing.populate<{ type: TypeDocument }>('type')).type.name,
+      imageUrl: thing.imageUrl,
     },
     createdAt,
     startAt,
     endAt,
-    removedAt,
-    removedBy: removedBy ? removedBy.id : undefined,
   };
 
   if (includeUserDetails) {

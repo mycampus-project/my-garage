@@ -3,7 +3,7 @@ import { Booking } from '@my-garage/common';
 
 export interface BookingDocument
   extends Document<Types.ObjectId>,
-    Omit<Booking, 'id' | 'thing' | 'user' | 'removedBy'> {
+    Omit<Booking, 'id' | 'thing' | 'user'> {
   user: Types.ObjectId;
   thing: Types.ObjectId;
   removedBy: Types.ObjectId;
@@ -34,14 +34,6 @@ const bookingSchema = new mongoose.Schema<BookingDocument>({
     type: Date,
     required: true,
     default: () => new Date(),
-  },
-  removedAt: {
-    type: Date,
-    required: false,
-  },
-  removedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
   },
 });
 
