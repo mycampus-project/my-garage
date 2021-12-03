@@ -5,7 +5,6 @@ import { useFullScreenHandle } from 'react-full-screen';
 import useThing from 'src/hooks/useThing';
 import useType from 'src/hooks/useType';
 import styled from 'styled-components';
-import useBooking from 'src/hooks/useBooking';
 import Banner from '../Common/Banner';
 import DashboardPicker from './DashboardPicker';
 import sortedThingArray from '../../../utilities/utilityFunctions';
@@ -45,6 +44,7 @@ const CenterContainer = styled.div`
   height: 80%;
   border: 1px solid #86868663;
   padding: 32px;
+  overflow: auto;
 `;
 
 const Top = styled.div`
@@ -57,13 +57,12 @@ function Dashboards() {
   const fullscreen = useFullScreenHandle();
   const { data, error, isLoading } = useThing().GetListOfThings();
   const { data: dataTypes } = useType().GetListOfTypes();
-  const { onFetchBookingsByDate, isLoadingBookings, bookingsError } =
-    useBooking().GetThingBookingsByDate('2022-01-10T00:00:00.000Z', '2022-01-11T00:00:00.000Z');
+
   const [filteredThingData, setFilteredThingData] = useState<Thing[]>([]);
   const [typeData, setTypeData] = useState<Type[]>([]);
   const [selectedList, setSelectedList] = useState<Thing[]>([]);
   const [selectedNames, setSelectedNames] = useState<string[]>([]);
-  // const [selectedBookingData, setSelectedBookingData] = useState<BookingWithUser[]>([]);
+  // const [show, setShow] = useState<boolean>(false);
 
   useEffect(() => {
     const filteredThings = data
@@ -81,10 +80,7 @@ function Dashboards() {
   useEffect(() => {
     const names = selectedList.map((item: Thing) => item.name);
     setSelectedNames(names);
-
-    const bookingArray = selectedList.map((item) => onFetchBookingsByDate({ thingId: item.id }));
-    console.log(bookingArray);
-  }, [onFetchBookingsByDate, selectedList]);
+  }, [selectedList]);
 
   const handleClear = () => {
     setSelectedNames([]);
@@ -112,11 +108,11 @@ function Dashboards() {
     setSelectedList(array);
   };
 
-  if (error || bookingsError) {
+  if (error) {
     return <div>Error</div>;
   }
 
-  if (isLoading || isLoadingBookings) {
+  if (isLoading) {
     return <Spin />;
   }
 
@@ -138,10 +134,20 @@ function Dashboards() {
             onPresetSelect={handlePresetSelect}
           />
           <SelectedDeviceList selectedList={selectedList} />
-          <FullscreenButton onFullscreen={fullscreen.enter} />
+          <FullscreenButton
+            onFullscreen={() => {
+              fullscreen.enter();
+              //  setShow(true);
+            }}
+          />
         </CenterContainer>
       </Main>
-      <FullscreenDashboard selectedList={selectedList} fullscreenHandler={fullscreen} />
+
+      <FullscreenDashboard
+        selectedList={selectedList}
+        fullscreenHandler={fullscreen}
+        show={fullscreen.active}
+      />
     </Container>
   );
 }

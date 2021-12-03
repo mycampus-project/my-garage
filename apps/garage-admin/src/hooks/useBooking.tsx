@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { AxiosError, AxiosResponse } from 'axios';
 import { apiClient, BookingWithUser, useLocalStorage } from '@my-garage/common';
 import openNotificationWithIcon from 'src/components/admin/Common/OpenNotificationWithIcon';
@@ -17,19 +17,11 @@ const useBooking = () => {
   const [token] = useLocalStorage('auth_token');
   const { setModelIsVisible, setSelectedBookingId } = useContext(AdminContext);
 
-  const GetThingBookingsByDate = (startAt: string, endAt: string) => {
-    const {
-      mutate: onFetchBookingsByDate,
-      data: bookingData,
-      isLoading: isLoadingBookings,
-      error: bookingsError,
-    } = useMutation<
+  const GetThingBookingsByDate = (thingId: string, startAt: string, endAt: string) => {
+    const { data, error, isLoading } = useQuery<
       AxiosResponse<PaginationResponse> | null,
-      AxiosError,
-      {
-        thingId: string;
-      }
-    >(['thingBookingsByDate'], (thingId) => {
+      AxiosError
+    >(['bookingThings', thingId], () => {
       if (!token) return Promise.resolve(null);
       return apiClient.get<PaginationResponse>('/bookings', {
         params: {
@@ -42,7 +34,7 @@ const useBooking = () => {
       });
     });
 
-    return { onFetchBookingsByDate, bookingData, isLoadingBookings, bookingsError };
+    return { data, error, isLoading };
   };
 
   const GetThingBookings = (offset: number, thingId: string, mode: string) => {
@@ -148,7 +140,7 @@ const useBooking = () => {
     };
   }
 
-  return { GetThingBookings, GetUserBookings, GetThingBookingsByDate, DeleteBooking };
+  return { GetThingBookingsByDate, GetThingBookings, GetUserBookings, DeleteBooking };
 };
 
 export default useBooking;
