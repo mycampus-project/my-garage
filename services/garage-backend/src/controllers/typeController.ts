@@ -13,7 +13,7 @@ import { serializeType } from '../serializers/types';
 // POST /types
 export const createType = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name } = req.body;
+    const { name, maxBookingDuration } = req.body;
     const typeDocument = await Type.findOne({ name: req.body.name });
     if (typeDocument) {
       next(new BadRequestError('Type already exists in Database'));
@@ -22,6 +22,7 @@ export const createType = async (req: Request, res: Response, next: NextFunction
     const type = new Type({
       name,
       createdBy: req.user,
+      maxBookingDuration,
     });
     await TypeService.createType(type);
     res.status(201).send(await serializeType(type));
@@ -58,16 +59,19 @@ export const findTypeById = async (req: Request, res: Response, next: NextFuncti
 // PUT /type/:typeId
 export const updateType = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name } = req.body;
-    const typeDocument = await Type.findOne({ name: req.body.name });
+    const { name, maxBookingDuration } = req.body;
+    const { typeId } = req.params;
+
+    const typeDocument = await Type.findOne({ name: req.body.name, id: { $not: { $eq: typeId } } });
+
     if (typeDocument) {
-      next(new BadRequestError('Type already exists in Database'));
+      next(new BadRequestError(`Type "${name}" already exists in Database`));
       return;
     }
     const update = {
       name,
+      maxBookingDuration,
     };
-    const { typeId } = req.params;
     const updatedType = await TypeService.updateType(typeId, update);
     res.json(await serializeType(updatedType));
   } catch (error: any) {

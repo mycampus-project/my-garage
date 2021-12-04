@@ -5,7 +5,7 @@ import { TypeDocument } from '../models/Type';
 
 // eslint-disable-next-line import/prefer-default-export
 export const serializeType = async (type: TypeDocument): Promise<Type> => {
-  const { _id: id, name, createdAt, removedAt } = type;
+  const { _id: id, name, createdAt, removedAt, maxBookingDuration } = type;
   const createTypeWithUser = await type.populate<{ createdBy: UserDocument }>({
     path: 'createdBy',
     model: User,
@@ -23,6 +23,7 @@ export const serializeType = async (type: TypeDocument): Promise<Type> => {
       id: createTypeWithUser.createdBy.id,
       fullName: createTypeWithUser.createdBy.fullName,
     },
+    maxBookingDuration,
     removedAt,
     removedBy: removeTypeWithUser.removedBy
       ? {
