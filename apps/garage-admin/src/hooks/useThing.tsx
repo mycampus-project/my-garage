@@ -112,6 +112,7 @@ const useThing = () => {
             createdBy: { id: '', fullName: '' },
             isAvailable: true,
             imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
+            maxBookingDuration: 0,
           };
           setSelectedThing(newThing);
           setModelIsVisible(false);

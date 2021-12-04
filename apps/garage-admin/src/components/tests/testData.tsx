@@ -119,6 +119,7 @@ export const ArrayOfThings: Thing[] = [
     createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
+    maxBookingDuration: 2880,
   },
   {
     id: '2',
@@ -129,6 +130,7 @@ export const ArrayOfThings: Thing[] = [
     createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: false,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
+    maxBookingDuration: 2880,
   },
   {
     id: '3',
@@ -139,6 +141,7 @@ export const ArrayOfThings: Thing[] = [
     createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
+    maxBookingDuration: 2880,
   },
   {
     id: '4',
@@ -149,6 +152,7 @@ export const ArrayOfThings: Thing[] = [
     createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
+    maxBookingDuration: 2880,
   },
   {
     id: '5',
@@ -159,6 +163,7 @@ export const ArrayOfThings: Thing[] = [
     createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
+    maxBookingDuration: 2880,
   },
   {
     id: '6',
@@ -169,6 +174,7 @@ export const ArrayOfThings: Thing[] = [
     createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
+    maxBookingDuration: 2880,
   },
   {
     id: '7',
@@ -179,6 +185,7 @@ export const ArrayOfThings: Thing[] = [
     createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: false,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
+    maxBookingDuration: 2880,
   },
   {
     id: '8',
@@ -189,6 +196,7 @@ export const ArrayOfThings: Thing[] = [
     createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
+    maxBookingDuration: 2880,
   },
   {
     id: '9',
@@ -199,6 +207,7 @@ export const ArrayOfThings: Thing[] = [
     createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
+    maxBookingDuration: 2880,
   },
   {
     id: '10',
@@ -209,6 +218,7 @@ export const ArrayOfThings: Thing[] = [
     createdBy: { id: '1', fullName: 'Mike' },
     isAvailable: true,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
+    maxBookingDuration: 2880,
   },
 ];
 
