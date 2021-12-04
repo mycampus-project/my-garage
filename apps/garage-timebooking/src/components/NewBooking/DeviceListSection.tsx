@@ -13,11 +13,7 @@ const DeviceListSection = ({ type, items, selectedItem, onItemSelect }: Props) =
   <>
     <Divider orientation="left">{type}</Divider>
     <List
-      dataSource={[...items].sort((a, b) => {
-        if (a.isAvailable === b.isAvailable) return 0;
-        if (!a.isAvailable && b.isAvailable) return -1;
-        return 1;
-      })}
+      dataSource={[...items].sort((a, b) => Number(b.isAvailable) - Number(a.isAvailable))}
       renderItem={(item) => (
         <DeviceListItem
           isSelected={item.id === selectedItem?.id}
