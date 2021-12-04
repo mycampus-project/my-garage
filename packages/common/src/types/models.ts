@@ -19,12 +19,14 @@ export type Thing = {
   removedAt?: Date;
   removedBy?: { id: string; fullName: string };
   imageUrl: string;
+  maxBookingDuration: number;
 };
 
 export type Type = {
   id: string;
   name: string;
   createdAt: Date;
+  maxBookingDuration: number;
   createdBy: { id: string; fullName: string };
   removedAt?: Date;
   removedBy?: { id: string; fullName: string };

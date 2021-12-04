@@ -11,11 +11,11 @@ export const serializeThing = async (thing: ThingDocument): Promise<Thing> => {
     path: 'createdBy',
     model: User,
   });
-  const removeThingWithUser = await thing.populate<{ removedBy: UserDocument | null }>({
+  const thingWithRemovedBy = await thing.populate<{ removedBy: UserDocument | null }>({
     path: 'removedBy',
     model: User,
   });
-  const createThingWithType = await thing.populate<{ type: TypeDocument | null }>({
+  const thingWithType = await thing.populate<{ type: TypeDocument | null }>({
     path: 'type',
     model: Type,
   });
@@ -24,7 +24,7 @@ export const serializeThing = async (thing: ThingDocument): Promise<Thing> => {
     id: id!.toString(),
     name,
     description,
-    type: createThingWithType.type.name,
+    type: thingWithType.type.name,
     isAvailable,
     createdAt,
     createdBy: {
@@ -32,12 +32,13 @@ export const serializeThing = async (thing: ThingDocument): Promise<Thing> => {
       fullName: createThingWithUser.createdBy.fullName,
     },
     removedAt,
-    removedBy: removeThingWithUser.removedBy
+    removedBy: thingWithRemovedBy.removedBy
       ? {
-          id: removeThingWithUser.removedBy.id,
-          fullName: removeThingWithUser.removedBy.fullName,
+          id: thingWithRemovedBy.removedBy.id,
+          fullName: thingWithRemovedBy.removedBy.fullName,
         }
       : undefined,
     imageUrl,
+    maxBookingDuration: thingWithType.type.maxBookingDuration,
   };
 };
