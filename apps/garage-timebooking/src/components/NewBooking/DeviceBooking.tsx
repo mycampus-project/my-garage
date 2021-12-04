@@ -5,7 +5,6 @@ import {
   END_HOUR,
   BOOKING_UNIT,
   apiClient,
-  Booking,
   BookingWithUser,
 } from '@my-garage/common';
 import moment from 'moment';
@@ -27,6 +26,7 @@ import { CheckCircleOutlined } from '@ant-design/icons';
 
 import { useMutation, useQuery } from 'react-query';
 import { AuthContext } from 'src/contexts/AuthContext';
+import { mapBooking } from 'src/utils';
 import BookingTable from './BookingTable';
 import { formatInterval, Interval } from './utils';
 
@@ -74,7 +74,7 @@ const useBookingsForWeek = (selectedWeek: Date, thingId: string) => {
   const { token } = useContext(AuthContext);
   const { data } = useQuery(['bookings', selectedWeek, thingId], async () =>
     apiClient
-      .get<{ items: (Booking | BookingWithUser)[] }>('/bookings', {
+      .get<{ items: Array<{ startAt: string; endAt: string }> }>('/bookings', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -86,13 +86,7 @@ const useBookingsForWeek = (selectedWeek: Date, thingId: string) => {
         },
       })
       .then((response) => response.data)
-      .then((bookings) =>
-        bookings.items.map((booking) => ({
-          ...booking,
-          startAt: new Date(booking.startAt),
-          endAt: new Date(booking.endAt),
-        })),
-      ),
+      .then(({ items }) => items.map(mapBooking)),
   );
 
   return data;
@@ -106,29 +100,24 @@ const useBookInterval = (selectedInterval: Interval | null, thingId: string) => 
     ...rest
   } = useMutation(
     ['book interval', selectedInterval, thingId],
-    () => {
+    async () => {
       if (!selectedInterval) throw Error('Interval not selected');
 
-      return apiClient
-        .post<BookingWithUser>(
-          '/bookings',
-          {
-            thingId,
-            startAt: selectedInterval.start,
-            endAt: selectedInterval.end,
+      const response = await apiClient.post<BookingWithUser & { startAt: string; endAt: string }>(
+        '/bookings',
+        {
+          thingId,
+          startAt: selectedInterval.start,
+          endAt: selectedInterval.end,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        )
-        .then((response) => response.data)
-        .then((bookingData) => ({
-          ...bookingData,
-          startAt: new Date(bookingData.startAt),
-          endAt: new Date(bookingData.endAt),
-        }));
+        },
+      );
+      const bookingData = response.data;
+      return mapBooking(bookingData);
     },
     {
       onSuccess: ({ thing, startAt, endAt }) => {
