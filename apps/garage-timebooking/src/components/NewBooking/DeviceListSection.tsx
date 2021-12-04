@@ -13,12 +13,17 @@ const DeviceListSection = ({ type, items, selectedItem, onItemSelect }: Props) =
   <>
     <Divider orientation="left">{type}</Divider>
     <List
-      dataSource={items}
+      dataSource={[...items].sort((a, b) => {
+        if (a.isAvailable === b.isAvailable) return 0;
+        if (!a.isAvailable && b.isAvailable) return -1;
+        return 1;
+      })}
       renderItem={(item) => (
         <DeviceListItem
           isSelected={item.id === selectedItem?.id}
           item={item}
           onClick={onItemSelect}
+          isDisabled={!item.isAvailable}
         />
       )}
     />
