@@ -79,6 +79,7 @@ function Root() {
             selectedKeys={[activeMenuKey]}
             onSelect={({ key }) => navigate(`/${key}`)}
           >
+            <img src="https://www.nokia.com/sites/default/files/styles/scale_720_no_crop/public/media/nokia_white_logo.png" alt="new" width="198" height="90" />
             <Menu.Item key="new">New booking</Menu.Item>
             <Menu.Item key="current">Current bookings</Menu.Item>
             <Menu.Item key="history">History</Menu.Item>

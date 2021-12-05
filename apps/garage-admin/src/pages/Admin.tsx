@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import AdminContextProvider from '../contexts/AdminContext';
 import { AuthContext } from '../contexts/AuthContext';
 
+
 const { Content, Sider } = Layout;
 
 const FullHeightLayout = styled(Layout)`
@@ -78,6 +79,7 @@ function Admin() {
               selectedKeys={[activeMenuKey]}
               onSelect={({ key }) => navigate(`/${key}`)}
             >
+              <img src="https://www.nokia.com/sites/default/files/styles/scale_720_no_crop/public/media/nokia_white_logo.png" alt="new" width="198" height="90" />
               <Menu.Item data-testid="nav.devices" key="devices">
                 Devices
               </Menu.Item>
@@ -90,6 +92,7 @@ function Admin() {
               <Menu.Item data-testid="nav.dashboard" key="config">
                 Configuration
               </Menu.Item>
+
             </Menu>
             <Spacer />
             <ButtonContainer>
