@@ -39,6 +39,10 @@ export const serializeThing = async (thing: ThingDocument): Promise<Thing> => {
         }
       : undefined,
     imageUrl,
+    contactPerson: {
+      fullName: createThingWithUser.createdBy.fullName,
+      email: createThingWithUser.createdBy.email,
+    },
     maxBookingDuration: thingWithType.type.maxBookingDuration,
   };
 };

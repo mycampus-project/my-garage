@@ -6,6 +6,7 @@ import {
   BOOKING_UNIT,
   apiClient,
   BookingWithUser,
+  Booking,
 } from '@my-garage/common';
 import moment from 'moment';
 import {
@@ -37,6 +38,7 @@ const Root = styled.div`
 
 const HeaderRow = styled.div`
   display: flex;
+  flex-wrap: wrap;
 `;
 
 const ImageContainer = styled.div`
@@ -74,17 +76,20 @@ const useBookingsForWeek = (selectedWeek: Date, thingId: string) => {
   const { token } = useContext(AuthContext);
   const { data } = useQuery(['bookings', selectedWeek, thingId], async () =>
     apiClient
-      .get<{ items: Array<{ startAt: string; endAt: string }> }>('/bookings', {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      .get<{ items: Array<(Booking | BookingWithUser) & { startAt: string; endAt: string }> }>(
+        '/bookings',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            start: startOfWeek(selectedWeek).toISOString(),
+            end: endOfWeek(selectedWeek).toISOString(),
+            thingId,
+            limit: 0,
+          },
         },
-        params: {
-          start: startOfWeek(selectedWeek).toISOString(),
-          end: endOfWeek(selectedWeek).toISOString(),
-          thingId,
-          limit: 0,
-        },
-      })
+      )
       .then((response) => response.data)
       .then(({ items }) => items.map(mapBooking)),
   );

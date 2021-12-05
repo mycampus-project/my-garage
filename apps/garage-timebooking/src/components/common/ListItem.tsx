@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components';
-import { Thing } from '@my-garage/common';
 import { Avatar, List, Tooltip, Typography } from 'antd';
 
 const StyledListItem = styled(List.Item)<{ $isSelected: boolean; $isDisabled: boolean }>`
@@ -40,27 +39,40 @@ const StyledDescription = styled(Typography.Paragraph)`
 `;
 
 interface Props {
+  title: string;
+  description: string;
+  imageUrl?: string;
   isSelected: boolean;
-  onClick: (item: Thing) => void;
-  item: Thing;
-  isDisabled: boolean;
+  isDisabled?: boolean;
+  onClick: () => void;
+  disabledTooltipText?: string;
 }
 
-const DeviceListItem = ({ isSelected, item, onClick, isDisabled }: Props) => {
+const ListItem = ({
+  isSelected,
+  title,
+  description,
+  imageUrl,
+  onClick,
+  isDisabled,
+  disabledTooltipText,
+}: Props) => {
   const content = (
     <StyledListItem
       $isSelected={isSelected}
       tabIndex={0}
-      onClick={() => !isDisabled && onClick(item)}
-      $isDisabled={isDisabled}
+      onClick={() => !isDisabled && onClick()}
+      $isDisabled={isDisabled ?? false}
     >
       <List.Item.Meta
-        title={item.name}
+        title={title}
         avatar={
-          <Avatar
-            size={{ xs: 50, sm: 50, md: 50, lg: 60, xl: 60, xxl: 60 }}
-            src={`${process.env.REACT_APP_BACKEND_URL}/static/${item.imageUrl}`}
-          />
+          imageUrl && (
+            <Avatar
+              size={{ xs: 50, sm: 50, md: 50, lg: 60, xl: 60, xxl: 60 }}
+              src={`${process.env.REACT_APP_BACKEND_URL}/static/${imageUrl}`}
+            />
+          )
         }
         description={
           <StyledDescription
@@ -72,7 +84,7 @@ const DeviceListItem = ({ isSelected, item, onClick, isDisabled }: Props) => {
               rows: 3,
             }}
           >
-            {item.description}
+            {description}
           </StyledDescription>
         }
       />
@@ -81,7 +93,7 @@ const DeviceListItem = ({ isSelected, item, onClick, isDisabled }: Props) => {
 
   if (isDisabled) {
     return (
-      <Tooltip placement="right" title="Device is temporarily disabled">
+      <Tooltip placement="right" title={disabledTooltipText}>
         {content}
       </Tooltip>
     );
@@ -89,4 +101,4 @@ const DeviceListItem = ({ isSelected, item, onClick, isDisabled }: Props) => {
   return content;
 };
 
-export default DeviceListItem;
+export default ListItem;
