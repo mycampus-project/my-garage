@@ -24,6 +24,11 @@ const typeSchema = new mongoose.Schema<TypeDocument>({
     ref: 'User',
     required: true,
   },
+  maxBookingDuration: {
+    type: Number,
+    required: true,
+    default: 2880,
+  },
   removedAt: {
     type: Date,
     required: false,

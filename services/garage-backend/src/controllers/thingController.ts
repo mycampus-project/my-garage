@@ -69,23 +69,26 @@ export const findThingById = async (req: Request, res: Response, next: NextFunct
 // PUT /things/:thingId
 export const updateThing = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const thingDocument = await Thing.findOne({ name: req.body.name });
+    const { type, name, description, isAvailable } = req.body;
+    const thingDocument = await Thing.findOne({ name });
     if (thingDocument && thingDocument.id !== req.params.thingId) {
       next(new BadRequestError('Thing with same name exists in the Database'));
       return;
     }
-    const typeDocument = await Type.findOne({ name: req.body.type });
-    if (!typeDocument) {
-      next(new BadRequestError('Type is not found in database'));
+    const typeDocument = type && (await Type.findOne({ name: req.body.type }));
+    if (type && !typeDocument) {
+      next(new BadRequestError('Thing is not found in database'));
       return;
     }
-    const update = {
-      name: req.body.name,
-      description: req.body.description,
-      type: typeDocument.id,
-      isAvailable: req.body.isAvailable,
-      imageUrl: req.file?.filename,
-    };
+    const update = Object.fromEntries(
+      Object.entries({
+        name,
+        description,
+        type: typeDocument?.id,
+        isAvailable,
+        imageUrl: req.file?.filename,
+      }).filter(([, value]) => value !== undefined || value !== null),
+    );
     const { thingId } = req.params;
     const updatedThing = await ThingService.updateThing(thingId, update);
     res.json(await serializeThing(updatedThing));

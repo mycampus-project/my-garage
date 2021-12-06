@@ -270,7 +270,7 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
             timeUnit={BOOKING_UNIT}
             onIntervalSelect={setSelectedInterval}
             selectedInterval={selectedInterval}
-            maxBookingLengthMinutes={2880}
+            maxBookingLengthMinutes={thing.maxBookingDuration}
           />
         ) : (
           <Spin size="large" />
