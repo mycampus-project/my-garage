@@ -16,7 +16,7 @@ function Devices() {
 
       <PageLayout
         Title={<Banner data-testid="banner" title="Devices" showAddThing />}
-        Element={<MainContainer list={<DeviceList />} details={<DeviceInfoPanel />} />}
+        Element={<MainContainer isDevice list={<DeviceList />} details={<DeviceInfoPanel />} />}
       />
     </>
   );

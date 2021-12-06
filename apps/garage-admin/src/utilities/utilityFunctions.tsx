@@ -31,4 +31,16 @@ function sortedThingArray(dataArray: Thing[], comparitor: string) {
   }
 }
 
-export default sortedThingArray;
+const getStartAndEndTime = () => {
+  const todayStartDate = new Date();
+  todayStartDate.setUTCHours(0, 0, 0, 0);
+  const todayEndDate = new Date();
+  todayEndDate.setUTCHours(23, 59, 59, 999);
+
+  const todayStartISOString = todayStartDate.toISOString();
+  const todayEndISOString = todayEndDate.toISOString();
+
+  return { todayStartISOString, todayEndISOString };
+};
+
+export { sortedThingArray, getStartAndEndTime };

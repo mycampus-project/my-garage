@@ -4,6 +4,7 @@ import useBooking from 'src/hooks/useBooking';
 import styled from 'styled-components';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
+import { getStartAndEndTime } from 'src/utilities/utilityFunctions';
 
 const StyledListItem = styled(List.Item)`
   background-color: #fcf8f8;
@@ -28,43 +29,40 @@ function calculateTotalBookedTime(startAt: Date, endAt: Date) {
 
 function processBookingCongestion(data: BookingWithUser[]) {
   let timeBooked = 0;
-  let imgUrl = 'amber.jpg';
 
   data.forEach((booking) => {
     timeBooked += calculateTotalBookedTime(booking.startAt, booking.endAt);
   });
 
   const percent = Math.floor((timeBooked / 24) * 100);
-  // console.log(`${item.name}, timeBooked ${timeBooked} `, percent);
 
   if (percent < 40) {
-    imgUrl = 'green.jpg';
+    return 'green.jpg';
   }
-
   if (percent > 70) {
-    imgUrl = 'red.jpg';
+    return 'red.jpg';
   }
-
-  return imgUrl;
+  return 'amber.jpg';
 }
 
 const FullscreenDashboardItem = ({ item }: FullscreenDashboardItemProps) => {
-  const startAt = '2022-01-10T00:00:00.000Z';
-  const endAt = '2022-01-11T00:00:00.000Z';
-  const today = new Date();
-  const startAt1 = today.toISOString();
-  const endAt1 = today.toISOString();
-  console.log(startAt1, endAt1);
-  const { data, isLoading, error } = useBooking().GetThingBookingsByDate(item.id, startAt, endAt);
+  // const startAt = '2022-01-10T00:00:00.000Z';
+  // const endAt = '2022-01-11T00:00:00.000Z';
+  const { todayEndISOString, todayStartISOString } = getStartAndEndTime();
+
+  const { data, isLoading, error } = useBooking().GetThingBookingsByDate(
+    item.id,
+    todayStartISOString,
+    todayEndISOString,
+  );
   const [bookingData, setBookingData] = useState<BookingWithUser[]>([]);
 
   useEffect(() => {
     const array = data ? data.data.items : [];
-
     const filteredData = array.filter((element) => {
       if (
-        new Date(element.startAt) > new Date(startAt) &&
-        new Date(element.endAt) < new Date(endAt)
+        new Date(element.startAt) > new Date(todayStartISOString) &&
+        new Date(element.endAt) < new Date(todayEndISOString)
       ) {
         return element;
       }
@@ -72,7 +70,7 @@ const FullscreenDashboardItem = ({ item }: FullscreenDashboardItemProps) => {
     });
 
     setBookingData(filteredData);
-  }, [data]);
+  }, [data, todayEndISOString, todayStartISOString]);
 
   if (error) {
     return <div>Error</div>;

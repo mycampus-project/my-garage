@@ -7,7 +7,7 @@ import useType from 'src/hooks/useType';
 import styled from 'styled-components';
 import Banner from '../Common/Banner';
 import DashboardPicker from './DashboardPicker';
-import sortedThingArray from '../../../utilities/utilityFunctions';
+import { sortedThingArray } from '../../../utilities/utilityFunctions';
 import PresetButtons from './PresetButtons';
 import SelectedDeviceList from './SelectedDeviceList';
 import FullscreenDashboard from './FullScreenDashboard';
