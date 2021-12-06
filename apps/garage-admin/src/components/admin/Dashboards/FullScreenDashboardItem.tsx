@@ -51,6 +51,10 @@ function processBookingCongestion(data: BookingWithUser[]) {
 const FullscreenDashboardItem = ({ item }: FullscreenDashboardItemProps) => {
   const startAt = '2022-01-10T00:00:00.000Z';
   const endAt = '2022-01-11T00:00:00.000Z';
+  const today = new Date();
+  const startAt1 = today.toISOString();
+  const endAt1 = today.toISOString();
+  console.log(startAt1, endAt1);
   const { data, isLoading, error } = useBooking().GetThingBookingsByDate(item.id, startAt, endAt);
   const [bookingData, setBookingData] = useState<BookingWithUser[]>([]);
 
