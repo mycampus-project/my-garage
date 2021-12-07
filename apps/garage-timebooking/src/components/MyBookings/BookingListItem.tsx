@@ -1,11 +1,35 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { format, isSameDay } from 'date-fns';
-import { Button, Popconfirm, Typography } from 'antd';
+import { Button, Popconfirm, Spin, Typography } from 'antd';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router';
 import styled from 'styled-components';
-import { BookingWithUser } from '@my-garage/common';
+import { apiClient, BookingWithUser } from '@my-garage/common';
+import { useMutation, useQueryClient } from 'react-query';
+import { AuthContext } from 'src/contexts/AuthContext';
 import ListItem from '../common/ListItem';
+
+const Root = styled.div`
+  position: relative;
+`;
+
+const Overlay = styled.div`
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background-color: rgba(0, 0, 0, 0.06);
+`;
+
+const CenteredSpin = styled(Spin)`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
 
 const ItemContent = styled.div`
   overflow: hidden;
@@ -20,8 +44,33 @@ const formatTime = (start: Date, end: Date) => {
   return `${format(start, 'eeee dd MMMM HH:mm')} - ${format(end, 'eeee dd MMMM HH:mm')}`;
 };
 
+const useDeleteBooking = (bookingId: string) => {
+  const { token } = useContext(AuthContext);
+  const client = useQueryClient();
+  const { mutate: deleteBooking, ...rest } = useMutation(
+    ['delete-booking', bookingId],
+    () =>
+      apiClient.delete(`/bookings/${bookingId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    {
+      onSuccess: () => {
+        client.invalidateQueries('my-bookings');
+      },
+    },
+  );
+
+  return {
+    deleteBooking,
+    ...rest,
+  };
+};
+
 const BookingListItem = ({ item }: { item: BookingWithUser }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { deleteBooking, isLoading } = useDeleteBooking(item.id);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { state } = useLocation();
@@ -41,7 +90,12 @@ const BookingListItem = ({ item }: { item: BookingWithUser }) => {
   }, [state, item.id]);
 
   return (
-    <>
+    <Root>
+      {isLoading && (
+        <Overlay>
+          <CenteredSpin size="large" />
+        </Overlay>
+      )}
       <ListItem
         imageUrl={item.thing.imageUrl}
         title={item.thing.name}
@@ -103,6 +157,7 @@ const BookingListItem = ({ item }: { item: BookingWithUser }) => {
                     okText="Yes"
                     okType="danger"
                     cancelText="No"
+                    onConfirm={() => deleteBooking()}
                   >
                     <Button danger>Cancel</Button>
                   </Popconfirm>
@@ -112,7 +167,7 @@ const BookingListItem = ({ item }: { item: BookingWithUser }) => {
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </Root>
   );
 };
 
