@@ -80,7 +80,7 @@ function Root() {
             onSelect={({ key }) => navigate(`/${key}`)}
           >
             <Menu.Item key="new">New booking</Menu.Item>
-            <Menu.Item key="current">Current bookings</Menu.Item>
+            <Menu.Item key="bookings">My bookings</Menu.Item>
             <Menu.Item key="history">History</Menu.Item>
           </Menu>
           <Spacer />

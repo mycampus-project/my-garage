@@ -18,6 +18,10 @@ export type Thing = {
   isAvailable: boolean;
   removedAt?: Date;
   removedBy?: { id: string; fullName: string };
+  contactPerson: {
+    fullName: string;
+    email: string;
+  };
   imageUrl: string;
   maxBookingDuration: number;
 };
@@ -40,7 +44,17 @@ export type Role = {
 
 export type BaseBooking = {
   id: string;
-  thing: { id: string; name: string; description: string; type: string; imageUrl: string };
+  thing: {
+    id: string;
+    name: string;
+    description: string;
+    type: string;
+    imageUrl: string;
+    contactPerson: {
+      fullName: string;
+      email: string;
+    };
+  };
   startAt: Date;
   endAt: Date;
   createdAt: Date;

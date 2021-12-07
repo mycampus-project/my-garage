@@ -120,6 +120,10 @@ export const ArrayOfThings: Thing[] = [
     isAvailable: true,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
     maxBookingDuration: 2880,
+    contactPerson: {
+      fullName: 'Joe Shmoe',
+      email: 'joe.shmoe@nokia.com',
+    },
   },
   {
     id: '2',
@@ -131,6 +135,10 @@ export const ArrayOfThings: Thing[] = [
     isAvailable: false,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
     maxBookingDuration: 2880,
+    contactPerson: {
+      fullName: 'Joe Shmoe',
+      email: 'joe.shmoe@nokia.com',
+    },
   },
   {
     id: '3',
@@ -142,6 +150,10 @@ export const ArrayOfThings: Thing[] = [
     isAvailable: true,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
     maxBookingDuration: 2880,
+    contactPerson: {
+      fullName: 'Joe Shmoe',
+      email: 'joe.shmoe@nokia.com',
+    },
   },
   {
     id: '4',
@@ -153,6 +165,10 @@ export const ArrayOfThings: Thing[] = [
     isAvailable: true,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
     maxBookingDuration: 2880,
+    contactPerson: {
+      fullName: 'Joe Shmoe',
+      email: 'joe.shmoe@nokia.com',
+    },
   },
   {
     id: '5',
@@ -164,6 +180,10 @@ export const ArrayOfThings: Thing[] = [
     isAvailable: true,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
     maxBookingDuration: 2880,
+    contactPerson: {
+      fullName: 'Joe Shmoe',
+      email: 'joe.shmoe@nokia.com',
+    },
   },
   {
     id: '6',
@@ -175,6 +195,10 @@ export const ArrayOfThings: Thing[] = [
     isAvailable: true,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
     maxBookingDuration: 2880,
+    contactPerson: {
+      fullName: 'Joe Shmoe',
+      email: 'joe.shmoe@nokia.com',
+    },
   },
   {
     id: '7',
@@ -186,6 +210,10 @@ export const ArrayOfThings: Thing[] = [
     isAvailable: false,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
     maxBookingDuration: 2880,
+    contactPerson: {
+      fullName: 'Joe Shmoe',
+      email: 'joe.shmoe@nokia.com',
+    },
   },
   {
     id: '8',
@@ -197,6 +225,10 @@ export const ArrayOfThings: Thing[] = [
     isAvailable: true,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
     maxBookingDuration: 2880,
+    contactPerson: {
+      fullName: 'Joe Shmoe',
+      email: 'joe.shmoe@nokia.com',
+    },
   },
   {
     id: '9',
@@ -208,6 +240,10 @@ export const ArrayOfThings: Thing[] = [
     isAvailable: true,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
     maxBookingDuration: 2880,
+    contactPerson: {
+      fullName: 'Joe Shmoe',
+      email: 'joe.shmoe@nokia.com',
+    },
   },
   {
     id: '10',
@@ -219,6 +255,10 @@ export const ArrayOfThings: Thing[] = [
     isAvailable: true,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
     maxBookingDuration: 2880,
+    contactPerson: {
+      fullName: 'Joe Shmoe',
+      email: 'joe.shmoe@nokia.com',
+    },
   },
 ];
 

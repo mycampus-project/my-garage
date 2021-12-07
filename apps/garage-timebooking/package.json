@@ -19,6 +19,7 @@
     "axios": "^0.24.0",
     "cypress-localstorage-commands": "^1.6.1",
     "date-fns": "^2.26.0",
+    "framer-motion": "^4.1.17",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "polished": "^4.1.3",

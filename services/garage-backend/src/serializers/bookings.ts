@@ -26,6 +26,8 @@ export async function serializeBooking(
     thing: ThingDocument;
   }>(['user', 'thing']);
 
+  const thingWithCreatedBy = await thing.populate<{ createdBy: UserDocument }>('createdBy');
+
   const base: BaseBooking = {
     id,
     thing: {
@@ -34,6 +36,10 @@ export async function serializeBooking(
       name: thing.name,
       type: (await thing.populate<{ type: TypeDocument }>('type')).type.name,
       imageUrl: thing.imageUrl,
+      contactPerson: {
+        fullName: thingWithCreatedBy.createdBy.fullName,
+        email: thingWithCreatedBy.createdBy.email,
+      },
     },
     createdAt,
     startAt,
