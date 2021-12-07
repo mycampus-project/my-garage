@@ -5,7 +5,6 @@ import { useLocation, useNavigate, Outlet } from 'react-router-dom';
 import { AuthContext } from 'src/contexts/AuthContext';
 import styled from 'styled-components';
 
-
 const { Content, Sider } = Layout;
 
 const FullHeightLayout = styled(Layout)`
@@ -36,10 +35,9 @@ const Spacer = styled.div`
 `;
 
 // TODO: Create logo
-const Logo = styled.div`
-background-image: url('nokia_white_logo.png');
-height: 80px;
-width: 100%;
+const Logo = styled.img`
+  height: auto;
+  width: 100%;
 `;
 
 const useActiveMenuKey = () => {
@@ -75,7 +73,7 @@ function Root() {
     <FullHeightLayout>
       <Sider breakpoint="lg" collapsedWidth="0">
         <SiderContent>
-          <Logo />
+          <Logo src="nokia_white_logo.png" />
           <Menu
             data-testid="NavigationMenu"
             mode="inline"
