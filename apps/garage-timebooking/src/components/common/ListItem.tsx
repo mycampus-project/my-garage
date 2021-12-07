@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 import { Avatar, List, Tooltip, Typography } from 'antd';
+import { RefObject } from 'react';
 
 const StyledListItem = styled(List.Item)<{ $isSelected: boolean; $isDisabled: boolean }>`
   cursor: pointer;
@@ -46,6 +47,7 @@ interface Props {
   isDisabled?: boolean;
   onClick: () => void;
   disabledTooltipText?: string;
+  containerRef?: RefObject<HTMLDivElement>;
 }
 
 const ListItem = ({
@@ -56,39 +58,42 @@ const ListItem = ({
   onClick,
   isDisabled,
   disabledTooltipText,
+  containerRef,
 }: Props) => {
   const content = (
-    <StyledListItem
-      $isSelected={isSelected}
-      tabIndex={0}
-      onClick={() => !isDisabled && onClick()}
-      $isDisabled={isDisabled ?? false}
-    >
-      <List.Item.Meta
-        title={title}
-        avatar={
-          imageUrl && (
-            <Avatar
-              size={{ xs: 50, sm: 50, md: 50, lg: 60, xl: 60, xxl: 60 }}
-              src={`${process.env.REACT_APP_BACKEND_URL}/static/${imageUrl}`}
-            />
-          )
-        }
-        description={
-          <StyledDescription
-            type="secondary"
-            style={{
-              marginBottom: 0,
-            }}
-            ellipsis={{
-              rows: 3,
-            }}
-          >
-            {description}
-          </StyledDescription>
-        }
-      />
-    </StyledListItem>
+    <div ref={containerRef}>
+      <StyledListItem
+        $isSelected={isSelected}
+        tabIndex={0}
+        onClick={() => !isDisabled && onClick()}
+        $isDisabled={isDisabled ?? false}
+      >
+        <List.Item.Meta
+          title={title}
+          avatar={
+            imageUrl && (
+              <Avatar
+                size={{ xs: 50, sm: 50, md: 50, lg: 60, xl: 60, xxl: 60 }}
+                src={`${process.env.REACT_APP_BACKEND_URL}/static/${imageUrl}`}
+              />
+            )
+          }
+          description={
+            <StyledDescription
+              type="secondary"
+              style={{
+                marginBottom: 0,
+              }}
+              ellipsis={{
+                rows: 3,
+              }}
+            >
+              {description}
+            </StyledDescription>
+          }
+        />
+      </StyledListItem>
+    </div>
   );
 
   if (isDisabled) {

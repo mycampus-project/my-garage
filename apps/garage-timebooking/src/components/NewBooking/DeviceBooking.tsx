@@ -164,7 +164,7 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
   }, [thing]);
 
   if (booking) {
-    return <Navigate to={`/current/${booking.id}`} state={booking} />;
+    return <Navigate to="/bookings" state={booking} />;
   }
 
   return (
