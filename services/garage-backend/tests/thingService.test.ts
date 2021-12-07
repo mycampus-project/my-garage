@@ -86,10 +86,17 @@ describe('thing service', () => {
     });
   });
 
-  // it('should delete an existing thing', async()=>{
-  //   expect.assertions(1);
-  //   const thing = await createThing();
-  //   await ThingService.deleteThing(thing.id);
+  it('should remove an existing thing', async () => {
+    const thing = await createThing();
+    const removedThing = await ThingService.deleteThing(thing.id, randomObjectId, new Date());
+    expect(removedThing).toHaveProperty('removedBy');
+    expect(removedThing).toHaveProperty('removedAt');
+  });
 
-  // })
+  it('should remove an existing thing', async () => {
+    const thing = await createThing();
+    const removedThing = await ThingService.deleteThing(thing.id, randomObjectId, new Date());
+    expect(removedThing).toHaveProperty('removedBy');
+    expect(removedThing).toHaveProperty('removedAt');
+  });
 });
