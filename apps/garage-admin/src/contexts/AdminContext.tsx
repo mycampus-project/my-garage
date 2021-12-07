@@ -37,6 +37,10 @@ const defaultContextState: AdminContextInterface = {
     isAvailable: true,
     imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
     maxBookingDuration: 0,
+    contactPerson: {
+      fullName: '',
+      email: '',
+    },
   },
   modelIsVisible: false,
   setModelType: () => {},
