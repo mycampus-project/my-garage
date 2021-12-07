@@ -92,11 +92,4 @@ describe('thing service', () => {
     expect(removedThing).toHaveProperty('removedBy');
     expect(removedThing).toHaveProperty('removedAt');
   });
-
-  it('should remove an existing thing', async () => {
-    const thing = await createThing();
-    const removedThing = await ThingService.deleteThing(thing.id, randomObjectId, new Date());
-    expect(removedThing).toHaveProperty('removedBy');
-    expect(removedThing).toHaveProperty('removedAt');
-  });
 });
