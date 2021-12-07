@@ -35,7 +35,11 @@ const Spacer = styled.div`
 `;
 
 // TODO: Create logo
-const Logo = styled.div``;
+const Logo = styled.div`
+background-image: url('nokia_white_logo.png');
+height: 80px;
+width: 100%;
+`;
 
 const useActiveMenuKey = () => {
   const { pathname } = useLocation();
@@ -79,7 +83,6 @@ function Admin() {
               selectedKeys={[activeMenuKey]}
               onSelect={({ key }) => navigate(`/${key}`)}
             >
-              <img src="https://www.nokia.com/sites/default/files/styles/scale_720_no_crop/public/media/nokia_white_logo.png" alt="new" width="198" height="90" />
               <Menu.Item data-testid="nav.devices" key="devices">
                 Devices
               </Menu.Item>

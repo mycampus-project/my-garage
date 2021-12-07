@@ -5,6 +5,7 @@ import { useLocation, useNavigate, Outlet } from 'react-router-dom';
 import { AuthContext } from 'src/contexts/AuthContext';
 import styled from 'styled-components';
 
+
 const { Content, Sider } = Layout;
 
 const FullHeightLayout = styled(Layout)`
@@ -35,7 +36,11 @@ const Spacer = styled.div`
 `;
 
 // TODO: Create logo
-const Logo = styled.div``;
+const Logo = styled.div`
+background-image: url('nokia_white_logo.png');
+height: 80px;
+width: 100%;
+`;
 
 const useActiveMenuKey = () => {
   const { pathname } = useLocation();
@@ -79,7 +84,6 @@ function Root() {
             selectedKeys={[activeMenuKey]}
             onSelect={({ key }) => navigate(`/${key}`)}
           >
-            <img src="https://www.nokia.com/sites/default/files/styles/scale_720_no_crop/public/media/nokia_white_logo.png" alt="new" width="198" height="90" />
             <Menu.Item key="new">New booking</Menu.Item>
             <Menu.Item key="current">Current bookings</Menu.Item>
             <Menu.Item key="history">History</Menu.Item>
