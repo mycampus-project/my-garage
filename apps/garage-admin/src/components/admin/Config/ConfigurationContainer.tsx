@@ -1,19 +1,19 @@
 import { Type } from '@my-garage/common';
-import { Button, Modal, Spin } from 'antd';
+import { Button, Card, Spin } from 'antd';
 import { useContext, useEffect, useState } from 'react';
+import { AdminContext } from 'src/contexts/AdminContext';
 import useType from 'src/hooks/useType';
 import styled from 'styled-components';
-import { AdminContext } from '../../../../contexts/AdminContext';
-import TypeList from '../../Dashboards/TypeList';
-import AddTypeForm from '../Forms/AddTypeForm';
+import TypeList from '../Dashboards/TypeList';
 
-const StyledButton = styled(Button)`
-  margin-right: 10px;
+const CenteredContainer = styled(Card)`
+  width: 50%;
+  margin-bottom: 32px;
 `;
 
-const ManageTypesModal = () => {
-  const { modelIsVisible, setModelIsVisible } = useContext(AdminContext);
-  const [toggleRestoreTypes, setToggleRestoreTypes] = useState<boolean>(false);
+const ConfigurationContainer = () => {
+  const { setModelIsVisible, setModelType } = useContext(AdminContext);
+  const [toggleRestoreTypes] = useState<boolean>(false);
 
   const { data, error, isLoading } = useType().GetListOfTypes();
   const [filteredData, setFilteredData] = useState<Type[]>([]);
@@ -43,31 +43,26 @@ const ManageTypesModal = () => {
   if (error) {
     return <div>Error</div>;
   }
-
   return (
-    <Modal
-      title={toggleRestoreTypes ? 'Deleted Types' : 'Current Types'}
-      centered
-      visible={modelIsVisible}
-      onCancel={() => setModelIsVisible(false)}
-      footer={[
-        <StyledButton
-          key={1}
+    <CenteredContainer
+      title="Manage Types"
+      extra={
+        <Button
           type="primary"
           onClick={() => {
-            setToggleRestoreTypes(!toggleRestoreTypes);
+            setModelType('manage-type');
+            setModelIsVisible(true);
           }}
         >
-          {toggleRestoreTypes ? 'Current Types' : 'Deleted Types'}
-        </StyledButton>,
-      ]}
+          Add Type
+        </Button>
+      }
     >
       <Spin spinning={isLoading}>
-        {toggleRestoreTypes && <TypeList data={filteredData} showRestore={toggleRestoreTypes} />}
-        {!toggleRestoreTypes && <AddTypeForm />}
+        <TypeList data={filteredData} showRestore={false} />
       </Spin>
-    </Modal>
+    </CenteredContainer>
   );
 };
 
-export default ManageTypesModal;
+export default ConfigurationContainer;

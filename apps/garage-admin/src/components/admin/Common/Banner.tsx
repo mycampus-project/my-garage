@@ -21,16 +21,6 @@ function Banner({ title, showAddThing, showRestoreUser }: BannerProps) {
 
   const showAddThings = [
     <Button
-      key={1}
-      type="primary"
-      onClick={() => {
-        setModelType('manage-type');
-        setModelIsVisible(true);
-      }}
-    >
-      Add Type
-    </Button>,
-    <Button
       key={2}
       type="primary"
       onClick={() => {

@@ -43,7 +43,6 @@ const LeftContainer = styled.div`
   min-width: 260px;
   width: 40%;
   padding: 0;
-  padding-top: 16px;
 `;
 
 interface MainContainerProps {
