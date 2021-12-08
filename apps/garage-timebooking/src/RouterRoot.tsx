@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import CurrentBookings from './components/CurrentBookings';
+import MyBookings from './components/MyBookings';
 import History from './components/History';
 import NewBooking from './components/NewBooking';
 
@@ -12,7 +12,7 @@ function RouterRoot() {
       <Routes>
         <Route path="/" element={<Root />}>
           <Route path="/new" element={<NewBooking />} />
-          <Route path="/current" element={<CurrentBookings />} />
+          <Route path="/bookings" element={<MyBookings />} />
           <Route path="/history" element={<History />} />
         </Route>
         <Route path="/login" element={<Login />} />
