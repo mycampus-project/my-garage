@@ -34,7 +34,6 @@ const Spacer = styled.div`
   flex: 1;
 `;
 
-// TODO: Create logo Done
 const Logo = styled.img`
   height: auto;
   width: 100%;
