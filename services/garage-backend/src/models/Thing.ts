@@ -50,6 +50,10 @@ const thingSchema = new mongoose.Schema<ThingDocument>({
     type: String,
     required: false,
   },
+  contactPerson: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
 });
 
 export default mongoose.model('Thing', thingSchema);
