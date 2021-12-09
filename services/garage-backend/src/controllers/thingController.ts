@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
+import User from '../models/User';
 import Thing from '../models/Thing';
 import Type from '../models/Type';
 import {
@@ -14,8 +15,7 @@ import { serializeThing } from '../serializers/things';
 // POST /things
 export const createThing = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const thingDocument = await Thing.findOne({ name: req.body.name });
-    if (thingDocument) {
+    if (!(await Thing.exists({ name: req.body.name }))) {
       next(new BadRequestError('Thing with same name exists in the Database'));
       return;
     }
@@ -25,7 +25,12 @@ export const createThing = async (req: Request, res: Response, next: NextFunctio
       return;
     }
 
-    const { name, description, isAvailable } = req.body;
+    const { name, description, isAvailable, contactPerson } = req.body;
+    if (!(await User.exists({ _id: contactPerson }))) {
+      next(new BadRequestError(`User with id ${contactPerson} could not be found`));
+      return;
+    }
+
     const thing = new Thing({
       name,
       description,
@@ -33,7 +38,9 @@ export const createThing = async (req: Request, res: Response, next: NextFunctio
       createdBy: req.user,
       isAvailable,
       imageUrl: req.file?.filename,
+      contactPerson,
     });
+
     await ThingService.createThing(thing);
     res.status(201).send(await serializeThing(thing));
   } catch (error: any) {
@@ -69,10 +76,14 @@ export const findThingById = async (req: Request, res: Response, next: NextFunct
 // PUT /things/:thingId
 export const updateThing = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { type, name, description, isAvailable } = req.body;
-    const thingDocument = await Thing.findOne({ name });
-    if (thingDocument && thingDocument.id !== req.params.thingId) {
+    const { type, name, description, isAvailable, contactPerson } = req.body;
+
+    if (name && !(await Thing.exists({ name, _id: { $not: { $eq: req.params.thingId } } }))) {
       next(new BadRequestError('Thing with same name exists in the Database'));
+      return;
+    }
+    if (contactPerson && !(await User.exists({ _id: contactPerson }))) {
+      next(new BadRequestError(`User with id ${contactPerson} could not be found`));
       return;
     }
     const typeDocument = type && (await Type.findOne({ name: req.body.type }));
@@ -87,6 +98,7 @@ export const updateThing = async (req: Request, res: Response, next: NextFunctio
         type: typeDocument?.id,
         isAvailable,
         imageUrl: req.file?.filename,
+        contactPerson,
       }).filter(([, value]) => value !== undefined || value !== null),
     );
     const { thingId } = req.params;
