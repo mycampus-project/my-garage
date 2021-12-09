@@ -34,8 +34,10 @@ const Spacer = styled.div`
   flex: 1;
 `;
 
-// TODO: Create logo
-const Logo = styled.div``;
+const Logo = styled.img`
+  height: auto;
+  width: 100%;
+`;
 
 const useActiveMenuKey = () => {
   const { pathname } = useLocation();
@@ -70,7 +72,7 @@ function Root() {
     <FullHeightLayout>
       <Sider breakpoint="lg" collapsedWidth="0">
         <SiderContent>
-          <Logo />
+          <Logo src="nokia_white_logos.png" />
           <Menu
             data-testid="NavigationMenu"
             mode="inline"
