@@ -26,7 +26,7 @@ export const createThing = async (req: Request, res: Response, next: NextFunctio
     }
 
     const { name, description, isAvailable, contactPerson } = req.body;
-    if (!(await User.exists({ _id: contactPerson }))) {
+    if (contactPerson && !(await User.exists({ _id: contactPerson }))) {
       next(new BadRequestError(`User with id ${contactPerson} could not be found`));
       return;
     }
