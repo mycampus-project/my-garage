@@ -1,11 +1,13 @@
 import { apiClient, Type, useLocalStorage } from '@my-garage/common';
 import { AxiosError, AxiosResponse } from 'axios';
+import { useContext } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import openNotificationWithIcon from 'src/components/admin/Common/OpenNotificationWithIcon';
+import { AdminContext } from 'src/contexts/AdminContext';
 
 const useType = () => {
   const client = useQueryClient();
-  // const { setModelIsVisible } = useContext(AdminContext);
+  const { setModelIsVisible } = useContext(AdminContext);
   const [token] = useLocalStorage('auth_token');
 
   function GetListOfTypes() {
@@ -25,22 +27,23 @@ const useType = () => {
   function AddType() {
     const {
       mutate: onSubmit,
-      data: responseThingData,
-      isLoading: isLoadingAddThing,
-      error: addThingError,
+      data: responseTypeData,
+      isLoading: isLoadingAddType,
+      error: addTypeError,
     } = useMutation<
       Type,
       AxiosError,
       {
         name: string;
+        maxBookingDuration: number;
       }
     >(
       ['addType'],
-      ({ name }) =>
+      ({ name, maxBookingDuration }) =>
         apiClient
           .post(
             '/types',
-            { name },
+            { name, maxBookingDuration },
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -59,7 +62,49 @@ const useType = () => {
         },
       },
     );
-    return { onSubmit, responseThingData, isLoadingAddThing, addThingError };
+    return { onSubmit, responseTypeData, isLoadingAddType, addTypeError };
+  }
+
+  function UpdateType() {
+    const {
+      mutate: onUpdate,
+      data: responseTypeData,
+      isLoading: isLoadingupdateType,
+      error: updateTypeError,
+    } = useMutation<
+      Type,
+      AxiosError,
+      {
+        typeId: string;
+        name: string;
+        maxBookingDuration: number;
+      }
+    >(
+      ['updateType'],
+      ({ typeId, name, maxBookingDuration }) =>
+        apiClient
+          .put(
+            `/types/${typeId}`,
+            { name, maxBookingDuration },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          )
+          .then((response) => response.data),
+      {
+        onSuccess: (data) => {
+          client.invalidateQueries('types');
+          openNotificationWithIcon('success', 'Type Added', `${data.name} was successfully added.`);
+        },
+
+        onError: (error) => {
+          openNotificationWithIcon('error', 'Type Not Added', `${error.message}`);
+        },
+      },
+    );
+    return { onUpdate, responseTypeData, isLoadingupdateType, updateTypeError };
   }
 
   function DeleteType() {
@@ -84,6 +129,7 @@ const useType = () => {
             'Type Deleted',
             `${data.name} was successfully deleted`,
           );
+          setModelIsVisible(false);
         },
 
         onError: (error) => {
@@ -139,7 +185,7 @@ const useType = () => {
       restoreTypeError,
     };
   }
-  return { GetListOfTypes, AddType, DeleteType, RestoreType };
+  return { GetListOfTypes, AddType, DeleteType, RestoreType, UpdateType };
 };
 
 export default useType;

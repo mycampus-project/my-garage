@@ -13,7 +13,6 @@ const StyledDescriptions = styled(Descriptions)`
     width: 100%;
 
     td {
-      width: 50%;
       overflow: hidden;
     }
   }

@@ -1,5 +1,5 @@
 import { Type } from '@my-garage/common';
-import { Button, Card, Spin } from 'antd';
+import { Button, Card, Divider, Space, Spin } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import { AdminContext } from 'src/contexts/AdminContext';
 import useType from 'src/hooks/useType';
@@ -8,7 +8,21 @@ import TypeList from '../Dashboards/TypeList';
 
 const CenteredContainer = styled(Card)`
   width: 50%;
+  height: 80vh;
+  overflow: auto;
   margin-bottom: 32px;
+
+  ::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.3);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    box-shadow: inset 0 0 5px var(--ant-primary-2);
+  }
 `;
 
 const ConfigurationContainer = () => {
@@ -45,22 +59,35 @@ const ConfigurationContainer = () => {
   }
   return (
     <CenteredContainer
-      title="Manage Types"
+      title={<h1>Manage Types</h1>}
       extra={
-        <Button
-          type="primary"
-          onClick={() => {
-            setModelType('manage-type');
-            setModelIsVisible(true);
-          }}
-        >
-          Add Type
-        </Button>
+        <Space direction="horizontal" size="middle">
+          <Button
+            type="primary"
+            onClick={() => {
+              setModelType('add-type');
+              setModelIsVisible(true);
+            }}
+          >
+            Add Type
+          </Button>
+          <Button
+            type="primary"
+            onClick={() => {
+              setModelType('restore-type');
+              setModelIsVisible(true);
+            }}
+          >
+            Restore Type
+          </Button>
+        </Space>
       }
     >
+      <h3>Current Types:</h3>
       <Spin spinning={isLoading}>
         <TypeList data={filteredData} showRestore={false} />
       </Spin>
+      <Divider />
     </CenteredContainer>
   );
 };

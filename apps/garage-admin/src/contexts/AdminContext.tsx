@@ -1,5 +1,5 @@
 import { createContext, useState, FC } from 'react';
-import { Thing, User } from '@my-garage/common';
+import { Thing, Type, User } from '@my-garage/common';
 
 interface AdminContextInterface {
   typeFilter: string[];
@@ -7,6 +7,7 @@ interface AdminContextInterface {
   searchValue: string;
   selectedUser: User;
   selectedThing: Thing;
+  selectedType: Type | null;
   modelIsVisible: boolean;
   modelType: string;
   image: File | undefined;
@@ -14,6 +15,7 @@ interface AdminContextInterface {
   setModelIsVisible: (name: boolean) => void;
   setSelectedUser: (name: User) => void;
   setSelectedThing: (name: Thing) => void;
+  setSelectedType: (name: Type) => void;
   setImage: (file: File) => void;
   setSearchValue: (value: string) => void;
   setSelectedBookingId: (id: string) => void;
@@ -48,8 +50,10 @@ const defaultContextState: AdminContextInterface = {
       email: '',
     },
   },
+  selectedType: null,
   modelIsVisible: false,
   setModelType: () => {},
+  setSelectedType: () => {},
   setModelIsVisible: () => {},
   setSelectedUser: () => {},
   setSelectedThing: () => {},
@@ -72,10 +76,13 @@ const AdminContextProvider: FC = ({ children }) => {
     defaultContextState.selectedBookingId,
   );
   const [typeFilter, setTypeFilter] = useState<string[]>(defaultContextState.typeFilter);
+  const [selectedType, setSelectedType] = useState<Type | null>(defaultContextState.selectedType);
 
   return (
     <AdminContext.Provider
       value={{
+        selectedType,
+        setSelectedType,
         typeFilter,
         setTypeFilter,
         selectedUser,
