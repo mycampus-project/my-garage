@@ -15,7 +15,7 @@ import { serializeThing } from '../serializers/things';
 // POST /things
 export const createThing = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!(await Thing.exists({ name: req.body.name }))) {
+    if (await Thing.exists({ name: req.body.name })) {
       next(new BadRequestError('Thing with same name exists in the Database'));
       return;
     }
@@ -78,7 +78,7 @@ export const updateThing = async (req: Request, res: Response, next: NextFunctio
   try {
     const { type, name, description, isAvailable, contactPerson } = req.body;
 
-    if (name && !(await Thing.exists({ name, _id: { $not: { $eq: req.params.thingId } } }))) {
+    if (name && (await Thing.exists({ name, _id: { $not: { $eq: req.params.thingId } } }))) {
       next(new BadRequestError('Thing with same name exists in the Database'));
       return;
     }
@@ -88,7 +88,7 @@ export const updateThing = async (req: Request, res: Response, next: NextFunctio
     }
     const typeDocument = type && (await Type.findOne({ name: req.body.type }));
     if (type && !typeDocument) {
-      next(new BadRequestError('Thing is not found in database'));
+      next(new BadRequestError('Type is not found in database'));
       return;
     }
     const update = Object.fromEntries(
