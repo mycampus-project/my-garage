@@ -37,6 +37,14 @@ const Content = styled.div`
   max-height: 100%;
   overflow: auto;
   background-color: white;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Spinner = styled(Spin)`
+  align-self: center;
+  justify-self: center;
+  margin: var(--padding-l);
 `;
 
 const useMyBookings = () => {
@@ -99,7 +107,7 @@ function MyBookings() {
     <Root>
       <CenteredLayout>
         <Content>
-          {isLoading && <Spin size="large" />}
+          {isLoading && <Spinner size="large" />}
           {groupedBookings &&
             Object.entries(groupedBookings).map(([type, itemsOfType]) => (
               <ListSection
