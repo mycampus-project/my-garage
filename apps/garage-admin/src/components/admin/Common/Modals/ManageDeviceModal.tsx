@@ -24,7 +24,7 @@ const ManageDeviceModal = ({ isEdit }: ManageDeviceModalProps) => {
       onCancel={() => {
         setModelIsVisible(false);
       }}
-      footer={[]}
+      footer={false}
     >
       {isEdit ? <DeviceForm form={form} showEdit /> : <DeviceForm form={form} />}
     </Modal>

@@ -1,7 +1,6 @@
 import { Form, Button, Input, Spin, Select, TimePicker } from 'antd';
 import moment, { Moment } from 'moment';
-import { useContext, useState } from 'react';
-import { AdminContext } from 'src/contexts/AdminContext';
+import { useState } from 'react';
 import useType from 'src/hooks/useType';
 
 const { Option } = Select;
@@ -11,18 +10,8 @@ interface SubmitProps {
   bookingTimeDays: number;
 }
 
-interface ManageTypeFormProps {
-  showAdd?: boolean;
-}
-
-const defaultProps = {
-  showAdd: false,
-};
-
-const ManageTypeForm = ({ showAdd }: ManageTypeFormProps) => {
-  const { selectedType } = useContext(AdminContext);
+const AddTypeForm = () => {
   const { onSubmit, isLoadingAddType } = useType().AddType();
-  const { onUpdate, isLoadingupdateType } = useType().UpdateType();
   const [timeInMinutes, setTimeInMinutes] = useState<number>(0);
   const days = [0, 1, 2, 3, 4, 5, 6];
 
@@ -31,24 +20,7 @@ const ManageTypeForm = ({ showAdd }: ManageTypeFormProps) => {
     const totalTime = daysInMinutes + timeInMinutes;
     const momentduration = moment.duration(totalTime, 'minutes');
 
-    let newValues = {
-      name: selectedType!.name,
-      maxBookingDuration: selectedType!.maxBookingDuration,
-    };
-
-    if (values.name.length > 0) {
-      newValues = { ...newValues, name: values.name };
-    }
-
-    if (values.bookingTimeDays > 0) {
-      newValues = { ...newValues, maxBookingDuration: momentduration.asMinutes() };
-    }
-
-    if (showAdd) {
-      onSubmit(newValues);
-    } else if (selectedType) {
-      onUpdate({ ...newValues, typeId: selectedType.id });
-    }
+    onSubmit({ name: values.name, maxBookingDuration: momentduration.asMinutes() });
   };
 
   const handleTimeChange = (value: Moment | null, dateString: string) => {
@@ -61,15 +33,15 @@ const ManageTypeForm = ({ showAdd }: ManageTypeFormProps) => {
   };
 
   return (
-    <Spin spinning={isLoadingAddType || isLoadingupdateType}>
+    <Spin spinning={isLoadingAddType}>
       <Form
-        name={showAdd ? 'Add Type' : 'Update Type'}
+        name="Add Type"
         labelCol={{ span: 15 }}
         wrapperCol={{ span: 15 }}
         layout="vertical"
         onFinish={handleSubmit}
       >
-        <Form.Item label="New Type" name="name" initialValue={showAdd ? '' : selectedType?.name}>
+        <Form.Item label="Name" name="name">
           <Input />
         </Form.Item>
         <Form.Item label="Select Booking Interval Days" name="bookingTimeDays">
@@ -87,7 +59,7 @@ const ManageTypeForm = ({ showAdd }: ManageTypeFormProps) => {
 
         <Form.Item wrapperCol={{ offset: 0 }}>
           <Button type="primary" htmlType="submit">
-            {showAdd ? 'Add' : 'Update'}
+            Add
           </Button>
         </Form.Item>
       </Form>
@@ -95,6 +67,4 @@ const ManageTypeForm = ({ showAdd }: ManageTypeFormProps) => {
   );
 };
 
-ManageTypeForm.defaultProps = defaultProps;
-
-export default ManageTypeForm;
+export default AddTypeForm;

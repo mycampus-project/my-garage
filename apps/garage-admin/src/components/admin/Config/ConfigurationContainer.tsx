@@ -1,5 +1,5 @@
 import { Type } from '@my-garage/common';
-import { Button, Card, Divider, Space, Spin } from 'antd';
+import { Button, Card, Space, Spin } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import { AdminContext } from 'src/contexts/AdminContext';
 import useType from 'src/hooks/useType';
@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import TypeList from '../Dashboards/TypeList';
 
 const CenteredContainer = styled(Card)`
-  width: 50%;
+  width: 70%;
   height: 80vh;
   overflow: auto;
   margin-bottom: 32px;
@@ -87,7 +87,6 @@ const ConfigurationContainer = () => {
       <Spin spinning={isLoading}>
         <TypeList data={filteredData} showRestore={false} />
       </Spin>
-      <Divider />
     </CenteredContainer>
   );
 };

@@ -59,7 +59,7 @@ const TypeListItem = ({ item, showRestoreButtons }: ListItemProps) => {
     const leftoverMinutes = time % 1440;
     const hours = Math.floor(leftoverMinutes / 60);
     const mins = time - days * 1440 - hours * 60;
-    return `Max Booking Duration (dd:hh:mm) : ${days} : ${hours} : ${mins}`;
+    return `${days} days ${hours} hours ${mins} mins`;
   };
 
   return (

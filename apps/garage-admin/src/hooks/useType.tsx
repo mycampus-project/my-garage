@@ -7,7 +7,7 @@ import { AdminContext } from 'src/contexts/AdminContext';
 
 const useType = () => {
   const client = useQueryClient();
-  const { setModelIsVisible } = useContext(AdminContext);
+  const { setModelIsVisible, setSelectedType } = useContext(AdminContext);
   const [token] = useLocalStorage('auth_token');
 
   function GetListOfTypes() {
@@ -55,6 +55,7 @@ const useType = () => {
         onSuccess: (data) => {
           client.invalidateQueries('types');
           openNotificationWithIcon('success', 'Type Added', `${data.name} was successfully added.`);
+          setModelIsVisible(false);
         },
 
         onError: (error) => {
@@ -96,6 +97,7 @@ const useType = () => {
       {
         onSuccess: (data) => {
           client.invalidateQueries('types');
+          setSelectedType(data);
           openNotificationWithIcon('success', 'Type Added', `${data.name} was successfully added.`);
         },
 

@@ -1,7 +1,8 @@
 import { Modal } from 'antd';
 import { useContext } from 'react';
 import { AdminContext } from '../../../../contexts/AdminContext';
-import ManageTypeForm from '../Forms/ManageTypeForm';
+import AddTypeForm from '../Forms/AddTypeForm';
+import UpdateTypeForm from '../Forms/UpdateTypeForm';
 
 interface ManageTypeModalProps {
   showAdd?: boolean;
@@ -12,16 +13,17 @@ const defaultProps = {
 };
 
 const ManageTypesModal = ({ showAdd }: ManageTypeModalProps) => {
-  const { modelIsVisible, setModelIsVisible } = useContext(AdminContext);
+  const { modelIsVisible, setModelIsVisible, selectedType } = useContext(AdminContext);
 
   return (
     <Modal
-      title={showAdd ? 'Add Device' : 'Update Device'}
+      title={showAdd ? 'Add Device' : `Update ${selectedType!.name}`}
       centered
       visible={modelIsVisible}
       onCancel={() => setModelIsVisible(false)}
+      footer={false}
     >
-      {showAdd ? <ManageTypeForm showAdd /> : <ManageTypeForm />}
+      {showAdd ? <AddTypeForm /> : <UpdateTypeForm />}
     </Modal>
   );
 };

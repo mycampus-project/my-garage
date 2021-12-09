@@ -5,8 +5,8 @@ import { List } from 'antd';
 import TypeListItem from './TypeListItem';
 
 const StyledListContainer = styled.div`
-  max-height: 800px;
-  overflow: auto;
+  max-height: 600px;
+
   width: 100%;
 `;
 

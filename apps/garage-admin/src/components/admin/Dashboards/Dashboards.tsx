@@ -1,4 +1,4 @@
-import { Thing, Type } from '@my-garage/common';
+import { Thing } from '@my-garage/common';
 import { Spin } from 'antd';
 import { useEffect, useState } from 'react';
 import { useFullScreenHandle } from 'react-full-screen';
@@ -8,7 +8,6 @@ import styled from 'styled-components';
 import Banner from '../Common/Banner';
 import DashboardPicker from './DashboardPicker';
 import { sortedThingArray } from '../../../utilities/utilityFunctions';
-import PresetButtons from './PresetButtons';
 import SelectedDeviceList from './SelectedDeviceList';
 import FullscreenDashboard from './FullScreenDashboard';
 import FullscreenButton from './FullScreenButton';
@@ -59,7 +58,7 @@ function Dashboards() {
   const { data: dataTypes } = useType().GetListOfTypes();
 
   const [filteredThingData, setFilteredThingData] = useState<Thing[]>([]);
-  const [typeData, setTypeData] = useState<Type[]>([]);
+  // const [typeData, setTypeData] = useState<Type[]>([]);
   const [selectedList, setSelectedList] = useState<Thing[]>([]);
   const [selectedNames, setSelectedNames] = useState<string[]>([]);
   // const [show, setShow] = useState<boolean>(false);
@@ -69,12 +68,12 @@ function Dashboards() {
       ? data.data.filter((item: Thing) => item.removedBy === undefined)
       : new Array<Thing>();
 
-    const filteredTypes = dataTypes
-      ? dataTypes.data.filter((item: Type) => item.removedBy === undefined)
-      : new Array<Type>();
+    // const filteredTypes = dataTypes
+    //   ? dataTypes.data.filter((item: Type) => item.removedBy === undefined)
+    //   : new Array<Type>();
 
     setFilteredThingData(sortedThingArray(filteredThings, 'type'));
-    setTypeData(filteredTypes);
+    // setTypeData(filteredTypes);
   }, [data, dataTypes]);
 
   useEffect(() => {
@@ -82,10 +81,10 @@ function Dashboards() {
     setSelectedNames(names);
   }, [selectedList]);
 
-  const handleClear = () => {
-    setSelectedNames([]);
-    setSelectedList([]);
-  };
+  // const handleClear = () => {
+  //   setSelectedNames([]);
+  //   setSelectedList([]);
+  // };
 
   const handleSelect = (value: string[]) => {
     const array = value.map((item: string) =>
@@ -98,15 +97,15 @@ function Dashboards() {
     setSelectedList(array.flat());
   };
 
-  const handlePresetSelect = (value: string) => {
-    const array = filteredThingData.filter((thing) => thing.type === value);
+  // const handlePresetSelect = (value: string) => {
+  //   const array = filteredThingData.filter((thing) => thing.type === value);
 
-    while (array.length >= 6) {
-      array.shift();
-    }
+  //   while (array.length >= 6) {
+  //     array.shift();
+  //   }
 
-    setSelectedList(array);
-  };
+  //   setSelectedList(array);
+  // };
 
   if (error) {
     return <div>Error</div>;
@@ -128,11 +127,11 @@ function Dashboards() {
             onSelect={handleSelect}
             defaultData={selectedNames}
           />
-          <PresetButtons
+          {/* <PresetButtons
             types={typeData}
             onClear={handleClear}
             onPresetSelect={handlePresetSelect}
-          />
+          /> */}
           <SelectedDeviceList selectedList={selectedList} />
           <FullscreenButton
             onFullscreen={() => {

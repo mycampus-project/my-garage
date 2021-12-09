@@ -42,6 +42,7 @@ const RestoreTypesModal = () => {
       centered
       visible={modelIsVisible}
       onCancel={() => setModelIsVisible(false)}
+      footer={false}
     >
       <Spin spinning={isLoading}>
         <TypeList data={filteredData} showRestore />
