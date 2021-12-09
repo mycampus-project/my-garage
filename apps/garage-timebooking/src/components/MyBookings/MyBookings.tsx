@@ -6,7 +6,7 @@ import { useQuery } from 'react-query';
 import { AuthContext } from 'src/contexts/AuthContext';
 import { mapBooking } from 'src/utils';
 import styled from 'styled-components';
-import { Spin } from 'antd';
+import { Empty, Spin } from 'antd';
 import { isBetweenInclusive } from '../NewBooking/utils';
 import ListSection from '../common/ListSection';
 import BookingListItem from './BookingListItem';
@@ -44,6 +44,10 @@ const Content = styled.div`
 const Spinner = styled(Spin)`
   align-self: center;
   justify-self: center;
+  margin: var(--padding-l);
+`;
+
+const StyledEmpty = styled(Empty)`
   margin: var(--padding-l);
 `;
 
@@ -108,14 +112,19 @@ function MyBookings() {
       <CenteredLayout>
         <Content>
           {isLoading && <Spinner size="large" />}
-          {groupedBookings &&
-            Object.entries(groupedBookings).map(([type, itemsOfType]) => (
-              <ListSection
-                key={type}
-                items={itemsOfType}
-                listHeader={type}
-                renderItem={(item) => <BookingListItem item={item} />}
-              />
+
+          {!isLoading &&
+            (groupedBookings && Object.keys(groupedBookings).length > 0 ? (
+              Object.entries(groupedBookings).map(([type, itemsOfType]) => (
+                <ListSection
+                  key={type}
+                  items={itemsOfType}
+                  listHeader={type}
+                  renderItem={(item) => <BookingListItem item={item} />}
+                />
+              ))
+            ) : (
+              <StyledEmpty />
             ))}
         </Content>
       </CenteredLayout>

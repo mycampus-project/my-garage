@@ -190,7 +190,7 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
             <Spin size="large" />
           </Loader>
         )}
-        <Space direction="vertical">
+        <Space direction="vertical" style={{ width: '100%' }}>
           <Form layout="vertical">
             <Form.Item label="Select week">
               <DatePicker
@@ -207,68 +207,65 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
                 picker="week"
               />
             </Form.Item>
-            <Form.Item
-              label="Selected time"
-              style={{
-                pointerEvents: 'none',
-              }}
-            >
-              <Space>
-                <DatePicker.RangePicker
-                  format={(value) => format(value.toDate(), 'eee dd.MM HH:mm')}
-                  value={
-                    selectedInterval && [
-                      moment(selectedInterval.start),
-                      moment(selectedInterval.end),
-                    ]
-                  }
-                  allowClear={false}
-                  showTime={{
-                    minuteStep: BOOKING_UNIT,
-                    showSecond: false,
-                  }}
-                />
-                <Button
-                  style={{
-                    pointerEvents: 'all',
-                  }}
-                  onClick={() => setSelectedInterval(null)}
-                >
-                  Clear
-                </Button>
-              </Space>
-            </Form.Item>
-            <Form.Item>
-              <Button
-                size="large"
-                type="primary"
-                disabled={!selectedInterval}
-                loading={isLoading}
-                onClick={() => sendBooking()}
-              >
-                Book
-              </Button>
-            </Form.Item>
           </Form>
+          {bookingsForWeek ? (
+            <BookingTable
+              selectedWeek={selectedWeek}
+              occupiedIntervals={bookingsForWeek.map((b) => ({
+                start: b.startAt,
+                end: b.endAt,
+                type: 'user' in b && b.user.id === user?.id ? 'user' : 'unknown',
+              }))}
+              startHour={START_HOUR}
+              endHour={END_HOUR}
+              timeUnit={BOOKING_UNIT}
+              onIntervalSelect={setSelectedInterval}
+              selectedInterval={selectedInterval}
+              maxBookingLengthMinutes={thing.maxBookingDuration}
+            />
+          ) : (
+            <Spin size="large" />
+          )}
+          <Form.Item
+            label="Selected time"
+            style={{
+              pointerEvents: 'none',
+            }}
+          >
+            <Space>
+              <DatePicker.RangePicker
+                format={(value) => format(value.toDate(), 'eee dd.MM HH:mm')}
+                value={
+                  selectedInterval && [moment(selectedInterval.start), moment(selectedInterval.end)]
+                }
+                allowClear={false}
+                showTime={{
+                  minuteStep: BOOKING_UNIT,
+                  showSecond: false,
+                }}
+              />
+              <Button
+                style={{
+                  pointerEvents: 'all',
+                }}
+                onClick={() => setSelectedInterval(null)}
+              >
+                Clear
+              </Button>
+            </Space>
+          </Form.Item>
+          <Form.Item>
+            <Button
+              size="large"
+              type="primary"
+              disabled={!selectedInterval}
+              loading={isLoading}
+              onClick={() => sendBooking()}
+            >
+              Book
+            </Button>
+          </Form.Item>
         </Space>
-        {bookingsForWeek ? (
-          <BookingTable
-            selectedWeek={selectedWeek}
-            occupiedIntervals={bookingsForWeek.map((b) => ({
-              start: b.startAt,
-              end: b.endAt,
-              type: 'user' in b && b.user.id === user?.id ? 'user' : 'unknown',
-            }))}
-            startHour={START_HOUR}
-            endHour={END_HOUR}
-            timeUnit={BOOKING_UNIT}
-            onIntervalSelect={setSelectedInterval}
-            selectedInterval={selectedInterval}
-            maxBookingLengthMinutes={thing.maxBookingDuration}
-          />
-        ) : (
-          <Spin size="large" />
-        )}
       </Root>
     </>
   );

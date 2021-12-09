@@ -26,6 +26,7 @@ function NewBooking() {
           isSelected={isSelected}
           isDisabled={!item.isAvailable}
           imageUrl={item.imageUrl}
+          disabledTooltipText="Device is temporarily disabled"
         />
       )}
     />
