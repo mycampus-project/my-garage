@@ -62,7 +62,10 @@ export const updateType = async (req: Request, res: Response, next: NextFunction
     const { name, maxBookingDuration } = req.body;
     const { typeId } = req.params;
 
-    const typeDocument = await Type.findOne({ name: req.body.name, id: { $not: { $eq: typeId } } });
+    const typeDocument = await Type.findOne({
+      name: req.body.name,
+      _id: { $not: { $eq: typeId } },
+    });
 
     if (typeDocument) {
       next(new BadRequestError(`Type "${name}" already exists in Database`));
