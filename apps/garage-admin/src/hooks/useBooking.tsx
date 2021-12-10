@@ -27,8 +27,8 @@ const useBooking = () => {
         params: {
           thingId,
           limit: 0,
-          startAt,
-          endAt,
+          start: startAt,
+          end: endAt,
         },
         headers: { Authorization: `Bearer ${token}` },
       });

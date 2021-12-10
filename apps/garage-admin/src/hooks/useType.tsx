@@ -99,6 +99,7 @@ const useType = () => {
           client.invalidateQueries('types');
           setSelectedType(data);
           openNotificationWithIcon('success', 'Type Added', `${data.name} was successfully added.`);
+          setModelIsVisible(false);
         },
 
         onError: (error) => {

@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import TypeList from '../Dashboards/TypeList';
 
 const CenteredContainer = styled(Card)`
-  width: 70%;
+  width: 90%;
   height: 80vh;
   overflow: auto;
   margin-bottom: 32px;
