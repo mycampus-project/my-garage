@@ -139,34 +139,33 @@ function History() {
 
           {!isLoading &&
             (groupedBookings && bookings && Object.keys(groupedBookings).length > 0 ? (
-              <>
-                {Object.entries(groupedBookings).map(([type, itemsOfType]) => (
-                  <ListSection
-                    key={type}
-                    items={itemsOfType}
-                    listHeader={type}
-                    renderItem={(item) => <BookingListItem booking={item} allowDelete={false} />}
-                  />
-                ))}
-                <PaginationContainer>
-                  <Pagination
-                    current={currentPage}
-                    onChange={(page) =>
-                      setParams({
-                        page: page.toString(),
-                        start: startDateParam ?? '',
-                        end: endDateParam ?? '',
-                      })
-                    }
-                    pageSize={perPage}
-                    total={bookings.total}
-                    responsive
-                  />
-                </PaginationContainer>
-              </>
+              Object.entries(groupedBookings).map(([type, itemsOfType]) => (
+                <ListSection
+                  key={type}
+                  items={itemsOfType}
+                  listHeader={type}
+                  renderItem={(item) => <BookingListItem booking={item} allowDelete={false} />}
+                />
+              ))
             ) : (
               <StyledEmpty />
             ))}
+          <PaginationContainer>
+            <Pagination
+              current={currentPage}
+              onChange={(page) =>
+                setParams({
+                  page: page.toString(),
+                  start: startDateParam ?? '',
+                  end: endDateParam ?? '',
+                })
+              }
+              pageSize={perPage}
+              total={bookings?.total ?? 0}
+              responsive
+              hideOnSinglePage
+            />
+          </PaginationContainer>
         </Content>
       </CenteredLayout>
     </Root>
