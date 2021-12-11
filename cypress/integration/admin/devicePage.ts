@@ -55,13 +55,13 @@ describe('Testing interactions with devices on the Admin page', () => {
   it('should click on Edit button and show modal. Test to see if OK button is disabled and form is displayed', () => {
     cy.findByTestId('edit.device.btn').should('be.visible').click();
     cy.findByTestId('device.form').should('be.visible');
-    cy.findByTestId('device.form').find('button').contains('Submit').should('not.be.disabled');
+    cy.findByTestId('device.form').find('button').contains('Update').should('not.be.disabled');
   });
 
   it('should toggle isAvailable and update device when OK is clicked.', () => {
     cy.findByTestId('isAvailable.toggle').children().find('button').click();
 
-    cy.findByTestId('device.form').find('button').contains('Submit').click();
+    cy.findByTestId('device.form').find('button').contains('Update').click();
 
     cy.findByTestId('details.table')
       .children()

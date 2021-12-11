@@ -13,6 +13,7 @@ const CenteredContainer = styled(Card)`
   overflow: auto;
   justify-self: center;
   align-self: center;
+
   ::-webkit-scrollbar {
     width: 3px;
   }
