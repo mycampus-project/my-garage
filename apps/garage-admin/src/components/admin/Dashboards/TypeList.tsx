@@ -6,8 +6,20 @@ import TypeListItem from './TypeListItem';
 
 const StyledListContainer = styled.div`
   max-height: 600px;
-
+  overflow: auto;
   width: 100%;
+
+  ::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.3);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    box-shadow: inset 0 0 5px var(--ant-primary-2);
+  }
 `;
 
 interface RestoreTypeListProps {

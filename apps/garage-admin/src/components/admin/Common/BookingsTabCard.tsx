@@ -6,7 +6,6 @@ import { useQueryClient } from 'react-query';
 import { BookingsElements, TabList } from '../../../types/adminTypes';
 import PaginationDeviceBookingList from '../Devices/PaginationDeviceBookingsList';
 import PaginationUserBookingsList from '../Users/PaginationUserBookingsList';
-import openNotificationWithIcon from './OpenNotificationWithIcon';
 
 const StyledCard = styled(Card)`
   display: flex;
@@ -41,29 +40,39 @@ const BookingsTabsCard = ({ showThings }: BookingsTabsCardProps) => {
     client.invalidateQueries('futureThingBookings');
   }, [client]);
 
-  if (selectedThing === null) {
-    openNotificationWithIcon('error', 'SelectedThing Error', 'Selected Device return null');
-    return <div>Error</div>;
-  }
-
-  if (selectedUser === null) {
-    openNotificationWithIcon('error', 'SelectedUser Error', 'Selected User return null');
-    return <div>Error</div>;
-  }
-
   // Change display dependent on tab selected
   const onTabChange = (key: string) => {
     setActiveTabKey(key);
   };
 
   const contentListUsers: BookingsElements = {
-    future: <PaginationUserBookingsList mode={activeTabKey} userId={selectedUser.id} />,
-    past: <PaginationUserBookingsList mode={activeTabKey} userId={selectedUser.id} />,
+    future: (
+      <PaginationUserBookingsList
+        mode={activeTabKey}
+        userId={selectedUser ? selectedUser.id : ''}
+      />
+    ),
+    past: (
+      <PaginationUserBookingsList
+        mode={activeTabKey}
+        userId={selectedUser ? selectedUser.id : ''}
+      />
+    ),
   };
 
   const contentListDevice: BookingsElements = {
-    future: <PaginationDeviceBookingList mode={activeTabKey} thingId={selectedThing.id} />,
-    past: <PaginationDeviceBookingList mode={activeTabKey} thingId={selectedThing.id} />,
+    future: (
+      <PaginationDeviceBookingList
+        mode={activeTabKey}
+        thingId={selectedThing ? selectedThing.id : ''}
+      />
+    ),
+    past: (
+      <PaginationDeviceBookingList
+        mode={activeTabKey}
+        thingId={selectedThing ? selectedThing.id : ''}
+      />
+    ),
   };
 
   return (

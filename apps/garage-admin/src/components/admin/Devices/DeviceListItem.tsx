@@ -4,7 +4,6 @@ import { Thing } from '@my-garage/common';
 import styled from 'styled-components';
 import baseURL from 'src/utilities/api';
 import { AdminContext } from '../../../contexts/AdminContext';
-import openNotificationWithIcon from '../Common/OpenNotificationWithIcon';
 
 interface ListItemProps {
   item: Thing;
@@ -40,12 +39,7 @@ const StyledListItem = styled(List.Item)<StyledListItemProps>`
 const DeviceListItem = ({ item }: ListItemProps) => {
   const { selectedThing, setSelectedThing } = useContext(AdminContext);
 
-  if (selectedThing === null) {
-    openNotificationWithIcon('error', 'SelectedThing Error', 'Selected Device return null');
-    return <div>Error</div>;
-  }
-
-  const isThisUserSelected = selectedThing.id === item.id;
+  const isThisUserSelected = selectedThing ? selectedThing.id === item.id : false;
 
   return (
     <StyledListItem

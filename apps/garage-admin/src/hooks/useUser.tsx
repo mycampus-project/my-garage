@@ -7,12 +7,8 @@ import { AdminContext } from 'src/contexts/AdminContext';
 
 const useUser = () => {
   const client = useQueryClient();
-  const { setSelectedUser, selectedUser, setModelIsVisible } = useContext(AdminContext);
+  const { setSelectedUser, setModelIsVisible } = useContext(AdminContext);
   const [token] = useLocalStorage('auth_token');
-
-  if (selectedUser === null) {
-    openNotificationWithIcon('error', 'SelectedUser Error', 'Selected User return null');
-  }
 
   function GetListOfUsers() {
     const { data, error, isLoading } = useQuery<AxiosResponse<User[]> | null, AxiosError>(

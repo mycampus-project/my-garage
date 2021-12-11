@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import BookingsTabsCard from '../Common/BookingsTabCard';
 import { AdminContext } from '../../../contexts/AdminContext';
 import UserDescription from './UserDescription';
-import openNotificationWithIcon from '../Common/OpenNotificationWithIcon';
 
 const StyledCard = styled(Card)`
   width: 100%;
@@ -32,56 +31,51 @@ const StyledCard = styled(Card)`
 
 const ButtonContainer = styled.div`
   display: flex;
-  flex-direction: row;
   width: 100%;
   justify-content: space-between;
 `;
-
-const avatar = (
-  <Avatar
-    size={{ xs: 50, sm: 100, md: 100, lg: 100, xl: 100, xxl: 110 }}
-    src="https://randomuser.me/api/portraits/men/75.jpg"
-  />
-);
 
 // Selected user panel to display user information, and their current and previous bookings.
 // has buttons to toggle user role and delete user from list.
 function UserInfoPanel() {
   const { selectedUser, setModelIsVisible, setModelType } = useContext(AdminContext);
 
-  if (selectedUser === null) {
-    openNotificationWithIcon('error', 'SelectedUser Error', 'Selected User return null');
-    return <div>Error</div>;
-  }
+  const buttons = (
+    <ButtonContainer>
+      <Space direction="vertical" size="large" align="center">
+        <Avatar
+          size={{ xs: 50, sm: 100, md: 100, lg: 100, xl: 100, xxl: 110 }}
+          src="https://randomuser.me/api/portraits/men/75.jpg"
+        />
+        <Space align="start">
+          <Button
+            type="primary"
+            onClick={() => {
+              setModelType('change-role');
+              setModelIsVisible(true);
+            }}
+          >
+            Change Role
+          </Button>
+          <Button
+            type="primary"
+            onClick={() => {
+              setModelType('delete-user');
+              setModelIsVisible(true);
+            }}
+          >
+            Delete
+          </Button>
+        </Space>
+      </Space>
+    </ButtonContainer>
+  );
 
-  if (selectedUser.fullName.length > 0) {
+  if (selectedUser) {
     return (
       <>
-        <StyledCard title={selectedUser.fullName} extra={avatar}>
-          <ButtonContainer>
-            <UserDescription />
-            <Space align="start">
-              <Button
-                type="primary"
-                onClick={() => {
-                  setModelType('change-role');
-                  setModelIsVisible(true);
-                }}
-              >
-                Change Role
-              </Button>
-              <Button
-                type="primary"
-                onClick={() => {
-                  setModelType('delete-user');
-                  setModelIsVisible(true);
-                }}
-              >
-                Delete
-              </Button>
-            </Space>
-          </ButtonContainer>
-
+        <StyledCard title={selectedUser.fullName} extra={buttons}>
+          <UserDescription />
           <BookingsTabsCard />
         </StyledCard>
       </>

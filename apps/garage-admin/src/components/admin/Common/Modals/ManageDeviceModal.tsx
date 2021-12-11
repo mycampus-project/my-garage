@@ -1,7 +1,8 @@
 import { Modal, Form } from 'antd';
 import { useContext } from 'react';
 import { AdminContext } from '../../../../contexts/AdminContext';
-import DeviceForm from '../Forms/DeviceForm';
+import AddDeviceForm from '../Forms/AddDeviceForm';
+import UpdateDeviceForm from '../Forms/UpdateDeviceForm';
 
 interface ManageDeviceModalProps {
   isEdit?: boolean;
@@ -26,7 +27,7 @@ const ManageDeviceModal = ({ isEdit }: ManageDeviceModalProps) => {
       }}
       footer={false}
     >
-      {isEdit ? <DeviceForm form={form} showEdit /> : <DeviceForm form={form} />}
+      {isEdit ? <UpdateDeviceForm form={form} /> : <AddDeviceForm form={form} />}
     </Modal>
   );
 };

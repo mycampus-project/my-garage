@@ -7,11 +7,12 @@ import styled from 'styled-components';
 import TypeList from '../Dashboards/TypeList';
 
 const CenteredContainer = styled(Card)`
-  width: 90%;
-  height: 80vh;
+  min-width: 600px;
+  width: 50%;
+  height: 80%;
   overflow: auto;
-  margin-bottom: 32px;
-
+  justify-self: center;
+  align-self: center;
   ::-webkit-scrollbar {
     width: 3px;
   }

@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import { Thing } from '@my-garage/common';
 import { Spin } from 'antd';
 import { AdminContext } from 'src/contexts/AdminContext';
-import sortedThingArray from 'src/utilities/utilityFunctions';
+import { sortedThingArray } from 'src/utilities/utilityFunctions';
 import DeviceListSection from './DeviceListSection';
 
 const searchList = (searchValue: string, array: Thing[]) => {

@@ -17,6 +17,7 @@ const StyledListContainer = styled.div`
   width: 100%;
   overflow: auto;
   padding: 0;
+  margin-top: 16px;
 
   ::-webkit-scrollbar {
     width: 3px;

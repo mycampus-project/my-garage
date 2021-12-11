@@ -48,34 +48,19 @@ const DeleteModal = ({ isDevice, isBooking, isUser, isType }: DeleteModalProps) 
     return <Spin />;
   }
 
-  if (selectedThing === null) {
-    openNotificationWithIcon('error', 'SelectedThing Error', 'Selected Device return null');
-    return <div>Error</div>;
-  }
-
-  if (selectedUser === null) {
-    openNotificationWithIcon('error', 'SelectedUser Error', 'Selected User return null');
-    return <div>Error</div>;
-  }
-
-  if (selectedType === null) {
-    openNotificationWithIcon('error', 'SelectedType Error', 'Selected Type return null');
-    return <div>Error</div>;
-  }
-
   return (
     <Modal
       title="Delete Device"
       centered
       visible={modelIsVisible}
       onOk={() => {
-        if (isDevice) {
+        if (isDevice && selectedThing) {
           onDelete(selectedThing.id);
         }
-        if (isUser) {
+        if (isUser && selectedUser) {
           onDeleteUser(selectedUser.id);
         }
-        if (isType) {
+        if (isType && selectedType) {
           onDeleteType(selectedType.id);
         }
         if (isBooking) {
@@ -94,9 +79,9 @@ const DeleteModal = ({ isDevice, isBooking, isUser, isType }: DeleteModalProps) 
       width={500}
     >
       <Spin spinning={isLoadingDeleteThing}>
-        {isDevice && <p>Do you want to delete device {selectedThing.name}?</p>}
+        {isDevice && <p>Do you want to delete device {selectedThing ? selectedThing.name : ''}?</p>}
         {isBooking && <p>Do you want to delete this booking?</p>}
-        {isUser && <p>Do you want to delete user {selectedUser.fullName}?</p>}
+        {isUser && <p>Do you want to delete user {selectedUser ? selectedUser.fullName : ''}?</p>}
         {isType && <p>Do you want to delete type {selectedType ? selectedType.name : ''}?</p>}
       </Spin>
     </Modal>

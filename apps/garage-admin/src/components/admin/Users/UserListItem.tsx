@@ -4,7 +4,6 @@ import { User } from '@my-garage/common';
 import styled from 'styled-components';
 import { UserOutlined } from '@ant-design/icons';
 import { AdminContext } from '../../../contexts/AdminContext';
-import openNotificationWithIcon from '../Common/OpenNotificationWithIcon';
 
 interface StyledListItemProps {
   isSelected: boolean;
@@ -42,12 +41,7 @@ const StyledListItem = styled(({ isSelected, ...props }) => (
 const UserListItem = ({ item }: ListItemProps) => {
   const { selectedUser, setSelectedUser } = useContext(AdminContext);
 
-  if (selectedUser === null) {
-    openNotificationWithIcon('error', 'SelectedUser Error', 'Selected User return null');
-    return <div>Error</div>;
-  }
-
-  const isThisUserSelected = selectedUser.fullName === item.fullName;
+  const isThisUserSelected = selectedUser ? selectedUser.fullName === item.fullName : false;
 
   return (
     <StyledListItem

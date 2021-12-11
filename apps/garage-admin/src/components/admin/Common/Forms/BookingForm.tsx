@@ -2,19 +2,14 @@ import { Form, Input } from 'antd';
 import { useContext } from 'react';
 import { AdminContext } from 'src/contexts/AdminContext';
 import { AddDeviceFormProps } from 'src/types/adminTypes';
-import openNotificationWithIcon from '../OpenNotificationWithIcon';
 
 const BookingForm = ({ form }: AddDeviceFormProps) => {
   const { selectedThing } = useContext(AdminContext);
 
-  if (selectedThing === null) {
-    return openNotificationWithIcon('error', 'SelectedThing Error', 'Selected Device return null');
-  }
-
   return (
     <Form form={form} layout="vertical" name="userForm">
       <Form.Item
-        initialValue={selectedThing.name}
+        initialValue={selectedThing ? selectedThing.name : ''}
         name="name"
         label="Booking Name"
         rules={[

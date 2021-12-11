@@ -39,15 +39,17 @@ const useThing = () => {
         description: string;
         type: string;
         isAvailable: boolean;
+        contactPerson: string;
         image: File;
       }
     >(
       ['addThing'],
-      ({ name, description, type, isAvailable, image }) => {
+      ({ name, description, type, isAvailable, image, contactPerson }) => {
         const newFormData = new FormData();
         newFormData.append('name', name);
         newFormData.append('description', description);
         newFormData.append('type', type);
+        newFormData.append('contactPerson', contactPerson);
         newFormData.append('isAvailable', JSON.stringify(isAvailable));
         if (image !== undefined) {
           newFormData.append('image', image);
@@ -70,6 +72,7 @@ const useThing = () => {
             'Device Added',
             `${data.name} was successfully added.`,
           );
+          setSelectedThing(data);
           setModelIsVisible(false);
         },
 
@@ -133,20 +136,21 @@ const useThing = () => {
       AxiosError,
       {
         thingId: string;
-        token: string;
         name: string;
         description: string;
         type: string;
         isAvailable: boolean;
+        contactPerson: string;
         image: File;
       }
     >(
       ['updateThing'],
-      ({ thingId, name, description, type, isAvailable, image }) => {
+      ({ thingId, name, description, type, isAvailable, image, contactPerson }) => {
         const newFormData = new FormData();
         newFormData.append('name', name);
         newFormData.append('description', description);
         newFormData.append('type', type);
+        newFormData.append('contactPerson', contactPerson);
         newFormData.append('isAvailable', JSON.stringify(isAvailable));
         if (image !== undefined) {
           newFormData.append('image', image);

@@ -7,7 +7,7 @@ import useType from 'src/hooks/useType';
 import styled from 'styled-components';
 import Banner from '../Common/Banner';
 import DashboardPicker from './DashboardPicker';
-import sortedThingArray from '../../../utilities/utilityFunctions';
+import { sortedThingArray } from '../../../utilities/utilityFunctions';
 import SelectedDeviceList from './SelectedDeviceList';
 import FullscreenDashboard from './FullScreenDashboard';
 import FullscreenButton from './FullScreenButton';
@@ -39,6 +39,7 @@ const CenterContainer = styled.div`
   display: flex;
   flex-direction: column;
   background-color: white;
+  min-width: 600px;
   width: 50%;
   height: 80%;
   border: 1px solid #86868663;
