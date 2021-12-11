@@ -1,81 +1,96 @@
-import { Form, Button, Input, Spin, Select, TimePicker } from 'antd';
-import moment, { Moment } from 'moment';
-import { useContext, useState } from 'react';
+import { Form, Button, Input, Spin, InputNumber } from 'antd';
+import { formatDuration } from 'date-fns';
+import { useContext, useEffect, useState } from 'react';
 import { AdminContext } from 'src/contexts/AdminContext';
 import useType from 'src/hooks/useType';
-import openNotificationWithIcon from '../OpenNotificationWithIcon';
-
-const { Option } = Select;
 
 interface SubmitProps {
   name: string;
-  bookingTimeDays: number;
+  bookingIntervalInHours: number;
+}
+
+interface MaxIntervalDate {
+  days: number;
+  hours: number;
+  minutes: number;
 }
 
 const UpdateTypeForm = () => {
   const { selectedType } = useContext(AdminContext);
   const { onUpdate, isLoadingupdateType } = useType().UpdateType();
-  const [timeInMinutes, setTimeInMinutes] = useState<number>(0);
-  const days = [0, 1, 2, 3, 4, 5, 6];
+  const [maxBookingIntervalDisplay, setMaxBookingIntervalDisplay] =
+    useState<MaxIntervalDate | null>(null);
 
   const handleSubmit = (values: SubmitProps) => {
-    const daysInMinutes = values.bookingTimeDays
-      ? values.bookingTimeDays * 1440
-      : Math.floor(selectedType!.maxBookingDuration / 1440) * 1440;
-    const totalTime = daysInMinutes + timeInMinutes;
-    const momentduration = moment.duration(totalTime, 'minutes');
-
-    const newValue = {
-      typeId: selectedType!.id,
-      name: values.name,
-      maxBookingDuration: momentduration.asMinutes(),
-    };
-
-    if (newValue.maxBookingDuration === 0) {
-      openNotificationWithIcon('error', 'Error max booking duration', 'Max booking must not be 0');
-    } else {
-      onUpdate(newValue);
+    if (selectedType) {
+      onUpdate({
+        name: values.name,
+        maxBookingDuration: values.bookingIntervalInHours * 60,
+        typeId: selectedType.id,
+      });
     }
   };
 
-  const handleTimeChange = (value: Moment | null, dateString: string) => {
-    if (value) {
-      const hours = dateString.slice(0, 2).toString();
-      const mins = dateString.slice(3, 5).toString();
-      const total = parseInt(hours, 10) * 60 + parseInt(mins, 10);
-      setTimeInMinutes(total);
-    }
+  const handleIntervalChange = (value: number) => {
+    const day = Math.floor(value / 24);
+    const hour = Math.floor(value % 24);
+    const minute = (value * 60) % 60;
+
+    setMaxBookingIntervalDisplay({ days: day, hours: hour, minutes: minute });
   };
 
-  const getDays = (value: number) => Math.floor(value / 1440).toString();
+  useEffect(() => {
+    if (selectedType) {
+      const timeInHours = selectedType.maxBookingDuration / 60;
+      handleIntervalChange(timeInHours);
+    }
+  }, [selectedType]);
 
   return (
     <Spin spinning={isLoadingupdateType}>
       <Form
-        name="Update Type"
+        name="Add Type"
         labelCol={{ span: 15 }}
         wrapperCol={{ span: 15 }}
         layout="vertical"
         onFinish={handleSubmit}
       >
-        <Form.Item label="Name" name="name">
+        <Form.Item
+          label="Name"
+          name="name"
+          initialValue={selectedType ? selectedType.name : false}
+          rules={[
+            {
+              pattern: /^[A-Za-z0-9._-]/,
+              message: 'Name is invalid. Use Alphanumeric values',
+            },
+            {
+              min: 5,
+              message: 'Name requires at least 5 characters.',
+            },
+          ]}
+        >
           <Input />
         </Form.Item>
-        <Form.Item label="Select Booking Interval Days" name="bookingTimeDays">
-          <Select
-            value=""
-            style={{ width: 120 }}
-            defaultValue={getDays(selectedType!.maxBookingDuration)}
-          >
-            {days.map((item: number) => (
-              <Option key={item} value={item}>
-                {item}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-        <Form.Item label="Select Booking Interval Hours:Minutes">
-          <TimePicker format="HH:mm" minuteStep={30} onChange={handleTimeChange} />
+        <Form.Item
+          label="Select Booking Interval In Hours"
+          name="bookingIntervalInHours"
+          initialValue={selectedType ? selectedType.maxBookingDuration / 60 : 0.5}
+          rules={[
+            {
+              pattern: /^[0-9]\d*(\.[5])?$/,
+              message: 'Max interval has to end in .0 or .5',
+            },
+          ]}
+        >
+          <InputNumber
+            addonAfter={
+              maxBookingIntervalDisplay ? formatDuration(maxBookingIntervalDisplay) : false
+            }
+            min={0.5}
+            max={168}
+            onChange={handleIntervalChange}
+          />
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 0 }}>

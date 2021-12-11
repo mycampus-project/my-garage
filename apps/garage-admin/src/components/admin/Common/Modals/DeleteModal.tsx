@@ -48,6 +48,21 @@ const DeleteModal = ({ isDevice, isBooking, isUser, isType }: DeleteModalProps) 
     return <Spin />;
   }
 
+  if (selectedThing === null) {
+    openNotificationWithIcon('error', 'SelectedThing Error', 'Selected Device return null');
+    return <div>Error</div>;
+  }
+
+  if (selectedUser === null) {
+    openNotificationWithIcon('error', 'SelectedUser Error', 'Selected User return null');
+    return <div>Error</div>;
+  }
+
+  if (selectedType === null) {
+    openNotificationWithIcon('error', 'SelectedType Error', 'Selected Type return null');
+    return <div>Error</div>;
+  }
+
   return (
     <Modal
       title="Delete Device"
@@ -61,9 +76,7 @@ const DeleteModal = ({ isDevice, isBooking, isUser, isType }: DeleteModalProps) 
           onDeleteUser(selectedUser.id);
         }
         if (isType) {
-          if (selectedType !== null) {
-            onDeleteType(selectedType.id);
-          }
+          onDeleteType(selectedType.id);
         }
         if (isBooking) {
           if (selectedBookingId !== '') {

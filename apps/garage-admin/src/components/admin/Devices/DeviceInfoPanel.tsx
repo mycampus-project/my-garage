@@ -6,6 +6,7 @@ import baseURL from 'src/utilities/api';
 import BookingsTabsCard from '../Common/BookingsTabCard';
 import { AdminContext } from '../../../contexts/AdminContext';
 import DeviceDescription from './DeviceDescription';
+import openNotificationWithIcon from '../Common/OpenNotificationWithIcon';
 
 const StyledCard = styled(Card)`
   width: 100%;
@@ -41,6 +42,11 @@ const ButtonContainer = styled.div`
 // has buttons to toggle user role and delete user from list.
 function DeviceInfoPanel() {
   const { selectedThing, setModelIsVisible, setModelType } = useContext(AdminContext);
+
+  if (selectedThing === null) {
+    openNotificationWithIcon('error', 'Error with SelectedType', 'Selected Type returns null');
+    return <div>Error</div>;
+  }
 
   const avatar = (
     <Avatar

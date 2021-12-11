@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import BookingsTabsCard from '../Common/BookingsTabCard';
 import { AdminContext } from '../../../contexts/AdminContext';
 import UserDescription from './UserDescription';
+import openNotificationWithIcon from '../Common/OpenNotificationWithIcon';
 
 const StyledCard = styled(Card)`
   width: 100%;
@@ -47,6 +48,11 @@ const avatar = (
 // has buttons to toggle user role and delete user from list.
 function UserInfoPanel() {
   const { selectedUser, setModelIsVisible, setModelType } = useContext(AdminContext);
+
+  if (selectedUser === null) {
+    openNotificationWithIcon('error', 'SelectedUser Error', 'Selected User return null');
+    return <div>Error</div>;
+  }
 
   if (selectedUser.fullName.length > 0) {
     return (

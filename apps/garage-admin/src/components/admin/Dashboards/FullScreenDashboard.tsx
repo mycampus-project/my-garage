@@ -12,12 +12,14 @@ const StyledFullScreen = styled(FullScreen)`
 
 const ListContainer = styled.div`
   width: 100%;
+  height: 90vh;
   overflow: hidden;
   padding: 0 60px;
 `;
 
 const PageHeader = styled.h1`
   font-size: 60px;
+  height: 10vh;
   margin-bottom: 0;
   text-align: center;
 `;

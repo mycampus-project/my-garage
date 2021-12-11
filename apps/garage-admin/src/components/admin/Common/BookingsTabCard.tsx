@@ -6,6 +6,7 @@ import { useQueryClient } from 'react-query';
 import { BookingsElements, TabList } from '../../../types/adminTypes';
 import PaginationDeviceBookingList from '../Devices/PaginationDeviceBookingsList';
 import PaginationUserBookingsList from '../Users/PaginationUserBookingsList';
+import openNotificationWithIcon from './OpenNotificationWithIcon';
 
 const StyledCard = styled(Card)`
   display: flex;
@@ -39,6 +40,16 @@ const BookingsTabsCard = ({ showThings }: BookingsTabsCardProps) => {
   useEffect(() => {
     client.invalidateQueries('futureThingBookings');
   }, [client]);
+
+  if (selectedThing === null) {
+    openNotificationWithIcon('error', 'SelectedThing Error', 'Selected Device return null');
+    return <div>Error</div>;
+  }
+
+  if (selectedUser === null) {
+    openNotificationWithIcon('error', 'SelectedUser Error', 'Selected User return null');
+    return <div>Error</div>;
+  }
 
   // Change display dependent on tab selected
   const onTabChange = (key: string) => {

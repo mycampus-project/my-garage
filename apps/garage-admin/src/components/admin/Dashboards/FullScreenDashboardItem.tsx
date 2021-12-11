@@ -2,9 +2,8 @@ import { BookingWithUser, Thing } from '@my-garage/common';
 import { Avatar, List, Spin } from 'antd';
 import useBooking from 'src/hooks/useBooking';
 import styled from 'styled-components';
-import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
-import { getStartAndEndTime } from 'src/utilities/utilityFunctions';
+import { differenceInMinutes, parseISO, endOfToday, formatISO } from 'date-fns';
 
 const StyledListItem = styled(List.Item)`
   background-color: #fcf8f8;
@@ -23,18 +22,17 @@ interface FullscreenDashboardItemProps {
   item: Thing;
 }
 
-function calculateTotalBookedTime(startAt: Date, endAt: Date) {
-  return dayjs(endAt).diff(startAt, 'h');
-}
-
-function processBookingCongestion(data: BookingWithUser[]) {
+function processBookingCongestion(data: BookingWithUser[], minutesLeftInDay: number) {
   let timeBooked = 0;
 
   data.forEach((booking) => {
-    timeBooked += calculateTotalBookedTime(booking.startAt, booking.endAt);
+    timeBooked += differenceInMinutes(
+      parseISO(booking.endAt.toString()),
+      parseISO(booking.startAt.toString()),
+    );
   });
 
-  const percent = Math.floor((timeBooked / 24) * 100);
+  const percent = Math.floor((timeBooked / minutesLeftInDay) * 100);
 
   if (percent < 40) {
     return 'green.jpg';
@@ -46,31 +44,22 @@ function processBookingCongestion(data: BookingWithUser[]) {
 }
 
 const FullscreenDashboardItem = ({ item }: FullscreenDashboardItemProps) => {
-  // const startAt = '2022-01-10T00:00:00.000Z';
-  // const endAt = '2022-01-11T00:00:00.000Z';
-  const { todayEndISOString, todayStartISOString } = getStartAndEndTime();
+  const currentTime = formatISO(new Date());
+  const endOfDay = endOfToday().toISOString();
+
+  const diffInMinutes = differenceInMinutes(parseISO(endOfDay), parseISO(currentTime));
 
   const { data, isLoading, error } = useBooking().GetThingBookingsByDate(
     item.id,
-    todayStartISOString,
-    todayEndISOString,
+    currentTime,
+    endOfDay,
   );
   const [bookingData, setBookingData] = useState<BookingWithUser[]>([]);
 
   useEffect(() => {
     const array = data ? data.data.items : [];
-    const filteredData = array.filter((element) => {
-      if (
-        new Date(element.startAt) > new Date(todayStartISOString) &&
-        new Date(element.endAt) < new Date(todayEndISOString)
-      ) {
-        return element;
-      }
-      return false;
-    });
-
-    setBookingData(filteredData);
-  }, [data, todayEndISOString, todayStartISOString]);
+    setBookingData(array);
+  }, [data]);
 
   if (error) {
     return <div>Error</div>;
@@ -85,8 +74,8 @@ const FullscreenDashboardItem = ({ item }: FullscreenDashboardItemProps) => {
       <List.Item.Meta
         avatar={
           <Avatar
-            size={{ lg: 100, xl: 150, xxl: 150 }}
-            src={processBookingCongestion(bookingData)}
+            size={{ lg: 70, xl: 70, xxl: 100 }}
+            src={processBookingCongestion(bookingData, diffInMinutes)}
           />
         }
       />

@@ -24,6 +24,11 @@ const DeviceForm = ({ form, showEdit }: AddDeviceFormProps) => {
 
   const dataArray = data ? data.data.filter((item: Type) => item.removedBy === undefined) : [];
 
+  if (selectedThing === null) {
+    openNotificationWithIcon('error', 'SelectedThing Error', 'Selected Device return null');
+    return <div>Error</div>;
+  }
+
   const handleSubmit = (values: any) => {
     form
       .validateFields()
@@ -102,6 +107,32 @@ const DeviceForm = ({ form, showEdit }: AddDeviceFormProps) => {
           <UploadAvatar />
         </Form.Item>
         <Form.Item
+          initialValue={showEdit ? selectedThing.contactPerson : ''}
+          name="type"
+          label="Type"
+          rules={[
+            {
+              required: true,
+            },
+            {
+              pattern: /^[A-Za-z0-9._-]/,
+              message: 'Name is invalid. Use Alphanumeric values',
+            },
+            {
+              min: 4,
+              message: 'Type requires at least 5 characters.',
+            },
+          ]}
+        >
+          <Select value="" style={{ width: 160 }}>
+            {dataArray.map((item: Type) => (
+              <Option key={item.id} value={item.name}>
+                {item.name}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
           initialValue={showEdit ? selectedThing.type : ''}
           name="type"
           label="Type"
@@ -137,9 +168,10 @@ const DeviceForm = ({ form, showEdit }: AddDeviceFormProps) => {
         >
           <Switch checkedChildren="Yes" unCheckedChildren="No" checked />
         </Form.Item>
+
         <Form.Item
           wrapperCol={{
-            offset: 20,
+            offset: 0,
             span: 20,
           }}
         >

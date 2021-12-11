@@ -4,7 +4,7 @@ import { Thing } from '@my-garage/common';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { List } from 'antd';
-import { sortedThingArray } from 'src/utilities/utilityFunctions';
+import sortedThingArray from 'src/utilities/utilityFunctions';
 import RestoreDeviceListItem from './RestoreDeviceListItem';
 
 const StyledListContainer = styled.div`

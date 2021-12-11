@@ -69,12 +69,13 @@ function Admin() {
   return (
     <AdminContextProvider>
       <FullHeightLayout>
-        <Sider breakpoint="lg" collapsedWidth="0">
+        <Sider breakpoint="lg" collapsedWidth="0" style={{ backgroundColor: '#124191' }}>
           <SiderContent>
             <Logo src="nokia_white_logos.png" />
             <Menu
               data-testid="NavigationMenu"
               theme="dark"
+              style={{ backgroundColor: '#124191' }}
               mode="inline"
               selectable
               selectedKeys={[activeMenuKey]}

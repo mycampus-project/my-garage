@@ -132,6 +132,7 @@ const useType = () => {
             'Type Deleted',
             `${data.name} was successfully deleted`,
           );
+          setSelectedType(null);
           setModelIsVisible(false);
         },
 

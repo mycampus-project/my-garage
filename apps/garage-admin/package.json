@@ -20,6 +20,7 @@
     "axios": "^0.24.0",
     "cypress": "^9.0.0",
     "cypress-localstorage-commands": "^1.6.1",
+    "date-fns": "^2.27.0",
     "dayjs": "^1.10.7",
     "less": "^4.1.2",
     "lodash": "^4.17.21",

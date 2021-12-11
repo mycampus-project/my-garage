@@ -10,6 +10,10 @@ const useUser = () => {
   const { setSelectedUser, selectedUser, setModelIsVisible } = useContext(AdminContext);
   const [token] = useLocalStorage('auth_token');
 
+  if (selectedUser === null) {
+    openNotificationWithIcon('error', 'SelectedUser Error', 'Selected User return null');
+  }
+
   function GetListOfUsers() {
     const { data, error, isLoading } = useQuery<AxiosResponse<User[]> | null, AxiosError>(
       ['users'],
@@ -101,11 +105,8 @@ const useUser = () => {
             'User Role Updated',
             `${data.fullName} was successfully updated`,
           );
-          const newUser: User = {
-            ...selectedUser,
-            role: data.role,
-          };
-          setSelectedUser(newUser);
+
+          setSelectedUser(data);
           setModelIsVisible(false);
         },
 

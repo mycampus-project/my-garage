@@ -4,6 +4,7 @@ import { apiClient, BookingWithUser, useLocalStorage } from '@my-garage/common';
 import openNotificationWithIcon from 'src/components/admin/Common/OpenNotificationWithIcon';
 import { AdminContext } from 'src/contexts/AdminContext';
 import { useContext } from 'react';
+import { minutesToMilliseconds } from 'date-fns';
 
 interface PaginationResponse {
   offset: number;
@@ -21,18 +22,24 @@ const useBooking = () => {
     const { data, error, isLoading } = useQuery<
       AxiosResponse<PaginationResponse> | null,
       AxiosError
-    >(['bookingThings', thingId], () => {
-      if (!token) return Promise.resolve(null);
-      return apiClient.get<PaginationResponse>('/bookings', {
-        params: {
-          thingId,
-          limit: 0,
-          start: startAt,
-          end: endAt,
-        },
-        headers: { Authorization: `Bearer ${token}` },
-      });
-    });
+    >(
+      ['bookingThings', thingId],
+      () => {
+        if (!token) return Promise.resolve(null);
+        return apiClient.get<PaginationResponse>('/bookings', {
+          params: {
+            thingId,
+            limit: 0,
+            start: startAt,
+            end: endAt,
+          },
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      },
+      {
+        refetchInterval: minutesToMilliseconds(30),
+      },
+    );
 
     return { data, error, isLoading };
   };

@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { Descriptions } from 'antd';
 import styled from 'styled-components';
 import { AdminContext } from '../../../contexts/AdminContext';
+import openNotificationWithIcon from '../Common/OpenNotificationWithIcon';
 
 const StyledDescriptions = styled(Descriptions)`
   margin-bottom: 32px;
@@ -32,6 +33,11 @@ const StyledDescriptions = styled(Descriptions)`
 
 const DeviceDescription = () => {
   const { selectedThing } = useContext(AdminContext);
+
+  if (selectedThing === null) {
+    openNotificationWithIcon('error', 'Error with SelectedType', 'Selected Type returns null');
+    return <div>Error</div>;
+  }
 
   return (
     <div data-testid="details.table">
