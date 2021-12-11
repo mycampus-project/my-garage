@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { apiClient, BookingWithUser } from '@my-garage/common';
 import { useMutation, useQueryClient } from 'react-query';
 import { AuthContext } from 'src/contexts/AuthContext';
-import ListItem from '../common/ListItem';
+import ListItem from './ListItem';
 
 const Root = styled.div`
   position: relative;
@@ -68,9 +68,14 @@ const useDeleteBooking = (bookingId: string) => {
   };
 };
 
-const BookingListItem = ({ item }: { item: BookingWithUser }) => {
+interface Props {
+  booking: BookingWithUser;
+  allowDelete?: boolean;
+}
+
+const BookingListItem = ({ booking, allowDelete = true }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { deleteBooking, isLoading } = useDeleteBooking(item.id);
+  const { deleteBooking, isLoading } = useDeleteBooking(booking.id);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { state } = useLocation();
@@ -80,14 +85,14 @@ const BookingListItem = ({ item }: { item: BookingWithUser }) => {
 
     const typedState = state as BookingWithUser;
 
-    if (typedState.id !== item.id) return;
+    if (typedState.id !== booking.id) return;
 
     setIsOpen(true);
 
     if (containerRef.current) {
       containerRef.current.scrollIntoView();
     }
-  }, [state, item.id]);
+  }, [state, booking.id]);
 
   return (
     <Root>
@@ -97,9 +102,9 @@ const BookingListItem = ({ item }: { item: BookingWithUser }) => {
         </Overlay>
       )}
       <ListItem
-        imageUrl={item.thing.imageUrl}
-        title={item.thing.name}
-        description={formatTime(item.startAt, item.endAt)}
+        imageUrl={booking.thing.imageUrl}
+        title={booking.thing.name}
+        description={formatTime(booking.startAt, booking.endAt)}
         onClick={() => {
           setIsOpen((current) => !current);
         }}
@@ -128,40 +133,44 @@ const BookingListItem = ({ item }: { item: BookingWithUser }) => {
                 </dt>
                 <dd>
                   <Typography.Paragraph>
-                    {formatTime(item.startAt, item.endAt)}
+                    {formatTime(booking.startAt, booking.endAt)}
                   </Typography.Paragraph>
                 </dd>
                 <dt>
                   <Typography.Title level={5}>Description</Typography.Title>
                 </dt>
                 <dd>
-                  <Typography.Paragraph>{item.thing.description}</Typography.Paragraph>
+                  <Typography.Paragraph>{booking.thing.description}</Typography.Paragraph>
                 </dd>
                 <dt>
                   <Typography.Title level={5}>Contact person</Typography.Title>
                 </dt>
                 <dd>
                   <Typography.Paragraph>
-                    {item.thing.contactPerson.fullName}{' '}
-                    <a href={`mailto:${item.thing.contactPerson.email}`}>
-                      {item.thing.contactPerson.email}
+                    {booking.thing.contactPerson.fullName}{' '}
+                    <a href={`mailto:${booking.thing.contactPerson.email}`}>
+                      {booking.thing.contactPerson.email}
                     </a>
                   </Typography.Paragraph>
                 </dd>
-                <dt>
-                  <Typography.Title level={5}>Actions</Typography.Title>
-                </dt>
-                <dd>
-                  <Popconfirm
-                    title="Sure you want to cancel this booking?"
-                    okText="Yes"
-                    okType="danger"
-                    cancelText="No"
-                    onConfirm={() => deleteBooking()}
-                  >
-                    <Button danger>Cancel</Button>
-                  </Popconfirm>
-                </dd>
+                {allowDelete && (
+                  <>
+                    <dt>
+                      <Typography.Title level={5}>Actions</Typography.Title>
+                    </dt>
+                    <dd>
+                      <Popconfirm
+                        title="Sure you want to cancel this booking?"
+                        okText="Yes"
+                        okType="danger"
+                        cancelText="No"
+                        onConfirm={() => deleteBooking()}
+                      >
+                        <Button danger>Cancel</Button>
+                      </Popconfirm>
+                    </dd>
+                  </>
+                )}
               </dl>
             </ItemContent>
           </motion.div>
