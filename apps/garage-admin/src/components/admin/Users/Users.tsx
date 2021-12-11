@@ -16,7 +16,7 @@ function Users() {
       {modelIsVisible && <ModelLauncher />}
       <PageLayout
         Title={<Banner data-testid="banner" title="Users" showRestoreUser />}
-        Element={<MainContainer list={<UserList />} details={<UserInfoPanel />} />}
+        Element={<MainContainer isDevice={false} list={<UserList />} details={<UserInfoPanel />} />}
       />
     </>
   );

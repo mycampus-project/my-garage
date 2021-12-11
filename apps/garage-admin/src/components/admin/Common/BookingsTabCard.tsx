@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Card } from 'antd';
 import styled from 'styled-components';
+import { AdminContext } from 'src/contexts/AdminContext';
+import { useQueryClient } from 'react-query';
 import { BookingsElements, TabList } from '../../../types/adminTypes';
-import { CurrentBooking, PreviousBooking } from '../../tests/testData';
-import PaginationDeviceList from '../Devices/PaginationDeviceBookingsList';
+import PaginationDeviceBookingList from '../Devices/PaginationDeviceBookingsList';
 import PaginationUserBookingsList from '../Users/PaginationUserBookingsList';
 
 const StyledCard = styled(Card)`
@@ -14,38 +15,64 @@ const StyledCard = styled(Card)`
 
 const tabListNoTitle: TabList[] = [
   {
-    key: 'current',
+    key: 'future',
     tab: 'Current Bookings',
   },
   {
-    key: 'previous',
+    key: 'past',
     tab: 'Previous Bookings',
   },
 ];
 
-const contentListUsers: BookingsElements = {
-  current: <PaginationUserBookingsList data={CurrentBooking} />,
-  previous: <PaginationUserBookingsList data={PreviousBooking} />,
-};
-
-const contentListDevice: BookingsElements = {
-  current: <PaginationDeviceList data={CurrentBooking} />,
-  previous: <PaginationDeviceList data={PreviousBooking} />,
-};
-
 interface BookingsTabsCardProps {
-  things?: boolean;
+  showThings?: boolean;
 }
 const defaultProps = {
-  things: false,
+  showThings: false,
 };
 
-const BookingsTabsCard = ({ things }: BookingsTabsCardProps) => {
-  const [activeTabKey, setActiveTabKey] = useState('current');
+const BookingsTabsCard = ({ showThings }: BookingsTabsCardProps) => {
+  const client = useQueryClient();
+  const [activeTabKey, setActiveTabKey] = useState('future');
+  const { selectedThing, selectedUser } = useContext(AdminContext);
+
+  useEffect(() => {
+    client.invalidateQueries('futureThingBookings');
+  }, [client]);
 
   // Change display dependent on tab selected
   const onTabChange = (key: string) => {
     setActiveTabKey(key);
+  };
+
+  const contentListUsers: BookingsElements = {
+    future: (
+      <PaginationUserBookingsList
+        mode={activeTabKey}
+        userId={selectedUser ? selectedUser.id : ''}
+      />
+    ),
+    past: (
+      <PaginationUserBookingsList
+        mode={activeTabKey}
+        userId={selectedUser ? selectedUser.id : ''}
+      />
+    ),
+  };
+
+  const contentListDevice: BookingsElements = {
+    future: (
+      <PaginationDeviceBookingList
+        mode={activeTabKey}
+        thingId={selectedThing ? selectedThing.id : ''}
+      />
+    ),
+    past: (
+      <PaginationDeviceBookingList
+        mode={activeTabKey}
+        thingId={selectedThing ? selectedThing.id : ''}
+      />
+    ),
   };
 
   return (
@@ -56,7 +83,7 @@ const BookingsTabsCard = ({ things }: BookingsTabsCardProps) => {
         onTabChange(key);
       }}
     >
-      {things ? contentListDevice[activeTabKey] : contentListUsers[activeTabKey]}
+      {showThings ? contentListDevice[activeTabKey] : contentListUsers[activeTabKey]}
     </StyledCard>
   );
 };

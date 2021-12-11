@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { List, Avatar } from 'antd';
 import { User } from '@my-garage/common';
 import styled from 'styled-components';
+import { UserOutlined } from '@ant-design/icons';
 import { AdminContext } from '../../../contexts/AdminContext';
 
 interface StyledListItemProps {
@@ -40,7 +41,7 @@ const StyledListItem = styled(({ isSelected, ...props }) => (
 const UserListItem = ({ item }: ListItemProps) => {
   const { selectedUser, setSelectedUser } = useContext(AdminContext);
 
-  const isThisUserSelected = selectedUser.fullName === item.fullName;
+  const isThisUserSelected = selectedUser ? selectedUser.fullName === item.fullName : false;
 
   return (
     <StyledListItem
@@ -57,7 +58,8 @@ const UserListItem = ({ item }: ListItemProps) => {
         avatar={
           <Avatar
             size={{ xs: 50, sm: 50, md: 50, lg: 60, xl: 60, xxl: 60 }}
-            src="https://randomuser.me/api/portraits/men/75.jpg"
+            style={{ backgroundColor: 'var(--ant-primary-2)' }}
+            icon={<UserOutlined />}
           />
         }
         title={item.fullName}

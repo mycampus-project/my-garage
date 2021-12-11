@@ -1,6 +1,7 @@
-import { Form, Button, Input, InputNumber, Spin } from 'antd';
+import { Form, Button, Input, Spin, InputNumber } from 'antd';
 import { formatDuration } from 'date-fns';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { AdminContext } from 'src/contexts/AdminContext';
 import useType from 'src/hooks/useType';
 
 interface SubmitProps {
@@ -14,13 +15,20 @@ interface MaxIntervalDate {
   minutes: number;
 }
 
-const AddTypeForm = () => {
-  const { onSubmit, isLoadingAddType } = useType().AddType();
+const UpdateTypeForm = () => {
+  const { selectedType } = useContext(AdminContext);
+  const { onUpdate, isLoadingupdateType } = useType().UpdateType();
   const [maxBookingIntervalDisplay, setMaxBookingIntervalDisplay] =
     useState<MaxIntervalDate | null>(null);
 
   const handleSubmit = (values: SubmitProps) => {
-    onSubmit({ name: values.name, maxBookingDuration: values.bookingIntervalInHours * 60 });
+    if (selectedType) {
+      onUpdate({
+        name: values.name,
+        maxBookingDuration: values.bookingIntervalInHours * 60,
+        typeId: selectedType.id,
+      });
+    }
   };
 
   const handleIntervalChange = (value: number) => {
@@ -31,8 +39,15 @@ const AddTypeForm = () => {
     setMaxBookingIntervalDisplay({ days: day, hours: hour, minutes: minute });
   };
 
+  useEffect(() => {
+    if (selectedType) {
+      const timeInHours = selectedType.maxBookingDuration / 60;
+      handleIntervalChange(timeInHours);
+    }
+  }, [selectedType]);
+
   return (
-    <Spin spinning={isLoadingAddType}>
+    <Spin spinning={isLoadingupdateType}>
       <Form
         name="Add Type"
         labelCol={{ span: 15 }}
@@ -43,10 +58,8 @@ const AddTypeForm = () => {
         <Form.Item
           label="Name"
           name="name"
+          initialValue={selectedType ? selectedType.name : false}
           rules={[
-            {
-              required: true,
-            },
             {
               pattern: /^[A-Za-z0-9._-]/,
               message: 'Name is invalid. Use Alphanumeric values',
@@ -62,10 +75,8 @@ const AddTypeForm = () => {
         <Form.Item
           label="Select Booking Interval In Hours"
           name="bookingIntervalInHours"
+          initialValue={selectedType ? selectedType.maxBookingDuration / 60 : 0.5}
           rules={[
-            {
-              required: true,
-            },
             {
               pattern: /^[0-9]\d*(\.[5])?$/,
               message: 'Max interval has to end in .0 or .5',
@@ -84,7 +95,7 @@ const AddTypeForm = () => {
 
         <Form.Item wrapperCol={{ offset: 0 }}>
           <Button type="primary" htmlType="submit">
-            Add
+            Update
           </Button>
         </Form.Item>
       </Form>
@@ -92,4 +103,4 @@ const AddTypeForm = () => {
   );
 };
 
-export default AddTypeForm;
+export default UpdateTypeForm;

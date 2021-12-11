@@ -14,7 +14,7 @@ const ButtonContainer = styled.div`
 `;
 
 interface FullscreenButtonProps {
-  onFullscreen: () => Promise<void>;
+  onFullscreen: () => void;
 }
 
 const FullscreenButton = ({ onFullscreen }: FullscreenButtonProps) => (

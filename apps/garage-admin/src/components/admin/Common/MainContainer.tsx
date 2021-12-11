@@ -1,7 +1,9 @@
+import { Space } from 'antd';
 import Search from 'antd/lib/input/Search';
 import { useContext } from 'react';
 import { AdminContext } from 'src/contexts/AdminContext';
 import styled from 'styled-components';
+import DeviceTypeSelector from '../Devices/DeviceTypeSelector';
 
 const StyledOuterContainer = styled.div`
   display: flex;
@@ -15,6 +17,7 @@ const StyledListContainer = styled.div`
   width: 100%;
   overflow: auto;
   padding: 0;
+  margin-top: 16px;
 
   ::-webkit-scrollbar {
     width: 3px;
@@ -46,10 +49,11 @@ const LeftContainer = styled.div`
 interface MainContainerProps {
   list: JSX.Element;
   details: JSX.Element;
+  isDevice: boolean;
 }
 
 // Overall user component. List all users on right, and selected user details on left.
-function MainContainer({ list, details }: MainContainerProps) {
+function MainContainer({ list, details, isDevice }: MainContainerProps) {
   const { setSearchValue } = useContext(AdminContext);
 
   const onSearch = (value: string) => {
@@ -58,7 +62,10 @@ function MainContainer({ list, details }: MainContainerProps) {
   return (
     <StyledOuterContainer>
       <LeftContainer>
-        <Search placeholder="input search text" onSearch={onSearch} allowClear />
+        <Space direction="vertical" size="middle">
+          {isDevice && <DeviceTypeSelector />}
+          <Search placeholder="input search text" onSearch={onSearch} allowClear />
+        </Space>
         <StyledListContainer>{list}</StyledListContainer>
       </LeftContainer>
       <StyledDetailsContainer>{details}</StyledDetailsContainer>

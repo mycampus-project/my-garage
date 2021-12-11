@@ -15,7 +15,7 @@ const SelectedDeviceList = ({ selectedList }: SelectedDeviceListProps) => (
     <Space direction="vertical" size="middle">
       <h3>Selected Devices:</h3>
       {selectedList.map((item) => (
-        <p>{item.name}</p>
+        <p key={item.id}>{item.name}</p>
       ))}
     </Space>
   </Container>

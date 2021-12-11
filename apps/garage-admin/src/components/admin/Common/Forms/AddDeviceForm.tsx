@@ -1,10 +1,12 @@
-import { Type } from '@my-garage/common';
+import { Type, User } from '@my-garage/common';
 import { Form, Input, Switch, Select, Button, Spin } from 'antd';
 import { useContext } from 'react';
 import { AdminContext } from 'src/contexts/AdminContext';
 import useThing from 'src/hooks/useThing';
 import useType from 'src/hooks/useType';
+import useUser from 'src/hooks/useUser';
 import { AddDeviceFormProps } from 'src/types/adminTypes';
+import { sortedUserArray } from 'src/utilities/utilityFunctions';
 
 import openNotificationWithIcon from '../OpenNotificationWithIcon';
 import UploadAvatar from '../UploadAvatar';
@@ -12,37 +14,37 @@ import UploadAvatar from '../UploadAvatar';
 const { Option } = Select;
 const { TextArea } = Input;
 
-const defaultProps = {
-  showEdit: false,
-};
-
-const DeviceForm = ({ form, showEdit }: AddDeviceFormProps) => {
-  const { image, selectedThing } = useContext(AdminContext);
-  const { data } = useType().GetListOfTypes();
-  const { onSubmit, isLoadingAddThing } = useThing().AddThing();
-  const { onUpdate, isLoadingUpdateThing } = useThing().UpdateThing();
+const AddDeviceForm = ({ form }: AddDeviceFormProps) => {
+  const { image } = useContext(AdminContext);
+  const { data, isLoading, error } = useType().GetListOfTypes();
+  const {
+    data: userList,
+    isLoading: isLoadingUserList,
+    error: userListError,
+  } = useUser().GetListOfUsers();
+  const { onSubmit, isLoadingAddThing, addThingError } = useThing().AddThing();
 
   const dataArray = data ? data.data.filter((item: Type) => item.removedBy === undefined) : [];
+  const userArray = userList
+    ? userList.data.filter((item: User) => item.removedBy === undefined)
+    : [];
+
+  const sortedUserList = sortedUserArray(userArray, 'fullname');
+
+  if (error || addThingError || userListError) {
+    return <div>Error</div>;
+  }
 
   const handleSubmit = (values: any) => {
     form
       .validateFields()
       .then(() => {
-        if (showEdit) {
-          const newObject = {
-            ...values,
-            image: image as File,
-            thingId: selectedThing.id,
-          };
-          onUpdate(newObject);
-        } else {
-          const newObject = {
-            ...values,
-            image: image as File,
-          };
+        const newObject = {
+          ...values,
+          image: image as File,
+        };
 
-          onSubmit(newObject);
-        }
+        onSubmit(newObject);
       })
       .catch(() => {
         openNotificationWithIcon('error', 'Something went wrong', 'oops validation failed');
@@ -50,7 +52,7 @@ const DeviceForm = ({ form, showEdit }: AddDeviceFormProps) => {
   };
 
   return (
-    <Spin spinning={isLoadingAddThing || isLoadingUpdateThing}>
+    <Spin spinning={isLoadingAddThing || isLoading || isLoadingUserList}>
       <Form
         data-testid="device.form"
         form={form}
@@ -59,7 +61,6 @@ const DeviceForm = ({ form, showEdit }: AddDeviceFormProps) => {
         onFinish={handleSubmit}
       >
         <Form.Item
-          initialValue={showEdit ? selectedThing.name : ''}
           name="name"
           label="Device Name"
           rules={[
@@ -79,7 +80,6 @@ const DeviceForm = ({ form, showEdit }: AddDeviceFormProps) => {
           <Input />
         </Form.Item>
         <Form.Item
-          initialValue={showEdit ? selectedThing.description : ''}
           name="description"
           label="Description"
           rules={[
@@ -102,7 +102,31 @@ const DeviceForm = ({ form, showEdit }: AddDeviceFormProps) => {
           <UploadAvatar />
         </Form.Item>
         <Form.Item
-          initialValue={showEdit ? selectedThing.type : ''}
+          name="contactPerson"
+          label="Device Contact Person"
+          rules={[
+            {
+              required: true,
+            },
+            {
+              pattern: /^[A-Za-z0-9._-]/,
+              message: 'Name is invalid. Use Alphanumeric values',
+            },
+            {
+              min: 4,
+              message: 'Type requires at least 5 characters.',
+            },
+          ]}
+        >
+          <Select value="" style={{ width: 160 }}>
+            {sortedUserList.map((item: User) => (
+              <Option key={item.id} value={item.id}>
+                {item.fullName}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
           name="type"
           label="Type"
           rules={[
@@ -129,7 +153,6 @@ const DeviceForm = ({ form, showEdit }: AddDeviceFormProps) => {
         </Form.Item>
         <Form.Item
           data-testid="isAvailable.toggle"
-          initialValue={showEdit ? selectedThing.isAvailable : ''}
           valuePropName="checked"
           name="isAvailable"
           label="Available"
@@ -137,14 +160,15 @@ const DeviceForm = ({ form, showEdit }: AddDeviceFormProps) => {
         >
           <Switch checkedChildren="Yes" unCheckedChildren="No" checked />
         </Form.Item>
+
         <Form.Item
           wrapperCol={{
-            offset: 20,
+            offset: 0,
             span: 20,
           }}
         >
           <Button key={1} type="primary" htmlType="submit">
-            Submit
+            Add
           </Button>
         </Form.Item>
       </Form>
@@ -152,6 +176,4 @@ const DeviceForm = ({ form, showEdit }: AddDeviceFormProps) => {
   );
 };
 
-DeviceForm.defaultProps = defaultProps;
-
-export default DeviceForm;
+export default AddDeviceForm;

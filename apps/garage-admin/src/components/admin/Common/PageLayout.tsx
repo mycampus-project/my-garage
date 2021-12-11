@@ -11,6 +11,8 @@ const HorizontalContainer = styled.div`
   flex-direction: row;
   width: 100%;
   height: 90vh;
+  justify-content: center;
+  align-content: center;
 `;
 
 const BannerContainer = styled.div`

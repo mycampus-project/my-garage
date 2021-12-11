@@ -7,7 +7,7 @@ import openNotificationWithIcon from '../components/admin/Common/OpenNotificatio
 
 const useThing = () => {
   const client = useQueryClient();
-  const { setModelIsVisible, setSelectedThing, selectedThing } = useContext(AdminContext);
+  const { setModelIsVisible, setSelectedThing } = useContext(AdminContext);
   const [token] = useLocalStorage('auth_token');
 
   function GetListOfThings() {
@@ -39,15 +39,17 @@ const useThing = () => {
         description: string;
         type: string;
         isAvailable: boolean;
+        contactPerson: string;
         image: File;
       }
     >(
       ['addThing'],
-      ({ name, description, type, isAvailable, image }) => {
+      ({ name, description, type, isAvailable, image, contactPerson }) => {
         const newFormData = new FormData();
         newFormData.append('name', name);
         newFormData.append('description', description);
         newFormData.append('type', type);
+        newFormData.append('contactPerson', contactPerson);
         newFormData.append('isAvailable', JSON.stringify(isAvailable));
         if (image !== undefined) {
           newFormData.append('image', image);
@@ -70,6 +72,7 @@ const useThing = () => {
             'Device Added',
             `${data.name} was successfully added.`,
           );
+          setSelectedThing(data);
           setModelIsVisible(false);
         },
 
@@ -103,22 +106,8 @@ const useThing = () => {
             'Device Deleted',
             `${data.name} was successfully deleted`,
           );
-          const newThing: Thing = {
-            id: '',
-            name: '',
-            description: '',
-            type: '',
-            createdAt: new Date(),
-            createdBy: { id: '', fullName: '' },
-            isAvailable: true,
-            imageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
-            maxBookingDuration: 0,
-            contactPerson: {
-              email: '',
-              fullName: '',
-            },
-          };
-          setSelectedThing(newThing);
+
+          setSelectedThing(null);
           setModelIsVisible(false);
         },
 
@@ -147,20 +136,21 @@ const useThing = () => {
       AxiosError,
       {
         thingId: string;
-        token: string;
         name: string;
         description: string;
         type: string;
         isAvailable: boolean;
+        contactPerson: string;
         image: File;
       }
     >(
       ['updateThing'],
-      ({ thingId, name, description, type, isAvailable, image }) => {
+      ({ thingId, name, description, type, isAvailable, image, contactPerson }) => {
         const newFormData = new FormData();
         newFormData.append('name', name);
         newFormData.append('description', description);
         newFormData.append('type', type);
+        newFormData.append('contactPerson', contactPerson);
         newFormData.append('isAvailable', JSON.stringify(isAvailable));
         if (image !== undefined) {
           newFormData.append('image', image);
@@ -183,15 +173,8 @@ const useThing = () => {
             'Device Updated',
             `${data.name} was successfully updated`,
           );
-          const newThing: Thing = {
-            ...selectedThing,
-            name: data.name,
-            description: data.description,
-            type: data.type,
-            isAvailable: data.isAvailable,
-            imageUrl: data.imageUrl,
-          };
-          setSelectedThing(newThing);
+
+          setSelectedThing(data);
           setModelIsVisible(false);
         },
 

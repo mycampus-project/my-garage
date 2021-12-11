@@ -1,4 +1,4 @@
-import { User, Thing } from '@my-garage/common';
+import { User, Thing, BookingWithUser } from '@my-garage/common';
 import { FormInstance } from 'antd';
 
 export type BookingData = {
@@ -8,8 +8,8 @@ export type BookingData = {
 };
 
 export type BookingsElements = {
-  [current: string]: JSX.Element;
-  previous: JSX.Element;
+  [future: string]: JSX.Element;
+  past: JSX.Element;
 };
 
 export type TabList = {
@@ -39,4 +39,11 @@ export type UserSorted = {
   removedAt?: Date;
   removedBy?: User;
   surname: string;
+};
+
+export type PaginationResponse = {
+  offset: number;
+  limit: number;
+  total: number;
+  items: BookingWithUser[];
 };
