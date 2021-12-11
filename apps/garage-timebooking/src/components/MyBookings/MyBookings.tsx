@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { Empty, Spin } from 'antd';
 import { isBetweenInclusive } from '../NewBooking/utils';
 import ListSection from '../common/ListSection';
-import BookingListItem from './BookingListItem';
+import BookingListItem from '../common/BookingListItem';
 
 const Root = styled.div`
   display: flex;
@@ -21,9 +21,6 @@ const CenteredLayout = styled.div`
   @media screen and (max-width: 992px) {
     padding: var(--padding-m);
   }
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 
   padding: var(--padding-xl);
   width: 100%;
@@ -33,6 +30,7 @@ const CenteredLayout = styled.div`
 
 const Content = styled.div`
   width: 100%;
+  margin: auto;
   max-width: 600px;
   max-height: 100%;
   overflow: auto;
@@ -120,7 +118,7 @@ function MyBookings() {
                   key={type}
                   items={itemsOfType}
                   listHeader={type}
-                  renderItem={(item) => <BookingListItem item={item} />}
+                  renderItem={(item) => <BookingListItem booking={item} />}
                 />
               ))
             ) : (

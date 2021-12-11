@@ -9,7 +9,7 @@ const TimeTableCell = styled(TableCell)<{
   isInvalid: boolean;
   occupiedType: 'user' | 'unknown' | null;
 }>`
-  flex: 1;
+  white-space: nowrap;
 
   &:hover {
     background-color: var(--ant-primary-1) !important;
