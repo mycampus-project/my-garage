@@ -5,9 +5,10 @@ import { useQuery } from 'react-query';
 import { AuthContext } from 'src/contexts/AuthContext';
 import { mapBooking } from 'src/utils';
 import styled from 'styled-components';
-import { Empty, Pagination, Spin } from 'antd';
-import { format } from 'date-fns';
+import { DatePicker, Empty, Pagination, Spin } from 'antd';
+import { format, isFuture } from 'date-fns';
 import { useSearchParams } from 'react-router-dom';
+import moment from 'moment';
 import ListSection from '../common/ListSection';
 import BookingListItem from '../common/BookingListItem';
 
@@ -55,15 +56,17 @@ const StyledEmpty = styled(Empty)`
   margin: var(--padding-l);
 `;
 
-const useMyBookings = (page: number, perPage: number) => {
+const useMyBookings = (page: number, perPage: number, start: Date | null, end: Date | null) => {
   const { user, token } = useContext(AuthContext);
+  const isoStart = start?.toISOString();
+  const isoEnd = end?.toISOString();
 
   const {
     data: bookings,
     isLoading,
     error,
     ...rest
-  } = useQuery(['my-bookings', user, page], () => {
+  } = useQuery(['my-bookings', user, page, isoStart, isoEnd], () => {
     if (!user) return null;
 
     return apiClient
@@ -78,6 +81,8 @@ const useMyBookings = (page: number, perPage: number) => {
             limit: perPage,
             offset: (page - 1) * perPage,
             mode: 'past',
+            start: isoStart,
+            end: isoEnd,
           },
         },
       )
@@ -95,8 +100,15 @@ function History() {
   const [params, setParams] = useSearchParams({ page: '1' });
   const contentRef = useRef<HTMLDivElement>(null);
   const currentPage = Number(params.get('page'));
+  const startDateParam = params.get('start');
+  const startDate = startDateParam ? new Date(startDateParam) : null;
+
+  const endDateParam = params.get('end');
+  const endDate = endDateParam ? new Date(endDateParam) : null;
+
   const perPage = 10;
-  const { bookings, isLoading } = useMyBookings(currentPage, perPage);
+
+  const { bookings, isLoading } = useMyBookings(currentPage, perPage, startDate, endDate);
 
   const groupedBookings = useMemo(() => {
     if (!bookings?.items) return null;
@@ -112,6 +124,17 @@ function History() {
     <Root>
       <CenteredLayout>
         <Content ref={contentRef}>
+          <DatePicker.RangePicker
+            value={startDate && endDate ? [moment(startDate), moment(endDate)] : null}
+            onChange={(range) =>
+              setParams({
+                start: range?.[0]?.toDate().toISOString() ?? '',
+                end: range?.[1]?.toDate().toISOString() ?? '',
+                page: '1',
+              })
+            }
+            disabledDate={(cell) => isFuture(cell.toDate())}
+          />
           {isLoading && <Spinner size="large" />}
 
           {!isLoading &&
@@ -128,7 +151,13 @@ function History() {
                 <PaginationContainer>
                   <Pagination
                     current={currentPage}
-                    onChange={(page) => setParams({ page: page.toString() })}
+                    onChange={(page) =>
+                      setParams({
+                        page: page.toString(),
+                        start: startDateParam ?? '',
+                        end: endDateParam ?? '',
+                      })
+                    }
                     pageSize={perPage}
                     total={bookings.total}
                     responsive
