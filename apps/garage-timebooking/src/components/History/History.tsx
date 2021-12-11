@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import { apiClient, BookingWithUser } from '@my-garage/common';
 import { groupBy } from 'lodash';
 import { useQuery } from 'react-query';
@@ -93,9 +93,10 @@ const useMyBookings = (page: number, perPage: number) => {
 
 function History() {
   const [params, setParams] = useSearchParams({ page: '1' });
+  const contentRef = useRef<HTMLDivElement>(null);
+  const currentPage = Number(params.get('page'));
   const perPage = 10;
-  const { bookings, isLoading } = useMyBookings(Number(params.get('page')), perPage);
-  console.log(bookings);
+  const { bookings, isLoading } = useMyBookings(currentPage, perPage);
 
   const groupedBookings = useMemo(() => {
     if (!bookings?.items) return null;
@@ -103,10 +104,14 @@ function History() {
     return groupBy(bookings?.items, (booking) => format(booking.startAt, 'eee dd MMMM yy'));
   }, [bookings]);
 
+  useEffect(() => {
+    contentRef.current?.scrollTo({ top: 0 });
+  }, [currentPage]);
+
   return (
     <Root>
       <CenteredLayout>
-        <Content>
+        <Content ref={contentRef}>
           {isLoading && <Spinner size="large" />}
 
           {!isLoading &&
@@ -122,7 +127,7 @@ function History() {
                 ))}
                 <PaginationContainer>
                   <Pagination
-                    current={Number(params.get('page'))}
+                    current={currentPage}
                     onChange={(page) => setParams({ page: page.toString() })}
                     pageSize={perPage}
                     total={bookings.total}
