@@ -9,7 +9,7 @@ const BookingForm = ({ form }: AddDeviceFormProps) => {
   return (
     <Form form={form} layout="vertical" name="userForm">
       <Form.Item
-        initialValue={selectedThing.name}
+        initialValue={selectedThing ? selectedThing.name : ''}
         name="name"
         label="Booking Name"
         rules={[

@@ -2,6 +2,7 @@ import { Modal, Spin } from 'antd';
 import { useContext } from 'react';
 import useUser from 'src/hooks/useUser';
 import { AdminContext } from '../../../../contexts/AdminContext';
+import openNotificationWithIcon from '../OpenNotificationWithIcon';
 
 const DeleteDeviceModal = () => {
   const { modelIsVisible, setModelIsVisible, selectedUser } = useContext(AdminContext);
@@ -13,6 +14,11 @@ const DeleteDeviceModal = () => {
 
   if (isLoadingUpdateUserRole) {
     return <Spin />;
+  }
+
+  if (selectedUser === null) {
+    openNotificationWithIcon('error', 'SelectedUser Error', 'Selected User return null');
+    return <div>Error</div>;
   }
 
   return (

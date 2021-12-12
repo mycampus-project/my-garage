@@ -6,14 +6,14 @@ import { AdminContext } from '../../../contexts/AdminContext';
 const StyledDescriptions = styled(Descriptions)`
   margin-bottom: 32px;
   margin-top: 8px;
-  width: 100%;
+  min-width: 400px;
+  width: 70%;
 
   table {
     table-layout: fixed;
     width: 100%;
 
     td {
-      width: 50%;
       overflow: hidden;
     }
   }
@@ -43,12 +43,12 @@ const UserDescription = () => {
         column={{ xxl: 2, xl: 2, lg: 1, md: 1, sm: 1, xs: 1 }}
       >
         <Descriptions.Item className="testDescriptionItem" label="Full Name">
-          {selectedUser.fullName}
+          {selectedUser?.fullName}
         </Descriptions.Item>
-        <Descriptions.Item label="Email">{selectedUser.email}</Descriptions.Item>
-        <Descriptions.Item label="Role">{selectedUser.role}</Descriptions.Item>
+        <Descriptions.Item label="Email">{selectedUser?.email}</Descriptions.Item>
+        <Descriptions.Item label="Role">{selectedUser?.role}</Descriptions.Item>
         <Descriptions.Item label="Created At">
-          {new Date(selectedUser.createdAt).toDateString()}
+          {new Date(selectedUser ? selectedUser.createdAt : '').toDateString()}
         </Descriptions.Item>
       </StyledDescriptions>
     </>

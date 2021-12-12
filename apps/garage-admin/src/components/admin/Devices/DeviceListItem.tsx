@@ -39,7 +39,7 @@ const StyledListItem = styled(List.Item)<StyledListItemProps>`
 const DeviceListItem = ({ item }: ListItemProps) => {
   const { selectedThing, setSelectedThing } = useContext(AdminContext);
 
-  const isThisUserSelected = selectedThing.id === item.id;
+  const isThisUserSelected = selectedThing ? selectedThing.id === item.id : false;
 
   return (
     <StyledListItem

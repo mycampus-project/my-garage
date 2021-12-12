@@ -1,7 +1,8 @@
 import { Thing } from '@my-garage/common';
-import { Avatar, Divider, List } from 'antd';
+import { Divider, List } from 'antd';
 import { FullScreen, FullScreenHandle } from 'react-full-screen';
 import styled from 'styled-components';
+import FullscreenDashboardItem from './FullScreenDashboardItem';
 
 const StyledFullScreen = styled(FullScreen)`
   display: flex;
@@ -11,25 +12,14 @@ const StyledFullScreen = styled(FullScreen)`
 
 const ListContainer = styled.div`
   width: 100%;
+  height: 90vh;
   overflow: hidden;
   padding: 0 60px;
 `;
 
-const StyledListItem = styled(List.Item)`
-  background-color: #fcf8f8;
-  border-radius: 10px;
-  padding: 16px;
-  margin: 32px;
-`;
-
-const Title = styled.h1`
-  display: flex;
-  flex-grow: 1;
-  font-size: 60px;
-`;
-
 const PageHeader = styled.h1`
   font-size: 60px;
+  height: 10vh;
   margin-bottom: 0;
   text-align: center;
 `;
@@ -37,27 +27,27 @@ const PageHeader = styled.h1`
 interface FullscreenDashboardProps {
   fullscreenHandler: FullScreenHandle;
   selectedList: Thing[];
+  show: boolean;
 }
 
-const FullscreenDashboard = ({ fullscreenHandler, selectedList }: FullscreenDashboardProps) => (
+const FullscreenDashboard = ({
+  fullscreenHandler,
+  selectedList,
+  show,
+}: FullscreenDashboardProps) => (
   <StyledFullScreen handle={fullscreenHandler} className="full-screenable-node">
     <div style={{ width: '100%' }}>
       <PageHeader>Current Booking Congestion</PageHeader>
       <Divider />
     </div>
-    <ListContainer>
-      <List
-        dataSource={selectedList}
-        renderItem={(item: Thing) => (
-          <StyledListItem>
-            <List.Item.Meta
-              avatar={<Avatar size={{ lg: 100, xl: 150, xxl: 150 }} src="amber.jpg" />}
-            />
-            <Title>{item.name}</Title>
-          </StyledListItem>
-        )}
-      />
-    </ListContainer>
+    {show && (
+      <ListContainer>
+        <List
+          dataSource={selectedList}
+          renderItem={(item: Thing) => <FullscreenDashboardItem item={item} />}
+        />
+      </ListContainer>
+    )}
   </StyledFullScreen>
 );
 

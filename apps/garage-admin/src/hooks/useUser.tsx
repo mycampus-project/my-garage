@@ -7,7 +7,7 @@ import { AdminContext } from 'src/contexts/AdminContext';
 
 const useUser = () => {
   const client = useQueryClient();
-  const { setSelectedUser, selectedUser, setModelIsVisible } = useContext(AdminContext);
+  const { setSelectedUser, setModelIsVisible } = useContext(AdminContext);
   const [token] = useLocalStorage('auth_token');
 
   function GetListOfUsers() {
@@ -101,11 +101,8 @@ const useUser = () => {
             'User Role Updated',
             `${data.fullName} was successfully updated`,
           );
-          const newUser: User = {
-            ...selectedUser,
-            role: data.role,
-          };
-          setSelectedUser(newUser);
+
+          setSelectedUser(data);
           setModelIsVisible(false);
         },
 

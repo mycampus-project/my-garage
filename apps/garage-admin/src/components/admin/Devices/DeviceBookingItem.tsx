@@ -1,12 +1,15 @@
+import { UserOutlined } from '@ant-design/icons';
+import { BookingWithUser } from '@my-garage/common';
 import { List, Avatar, Button } from 'antd';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AdminContext } from 'src/contexts/AdminContext';
 import styled from 'styled-components';
-import { BookingData } from '../../../types/adminTypes';
 
 interface BookingItemProps {
-  item: BookingData;
+  item: BookingWithUser;
+  mode: string;
 }
+
 const DescriptionContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -27,7 +30,7 @@ const DescriptionContainer = styled.div`
   }
 `;
 
-const StyledListItem = styled(List.Item)`
+const StyledListItem = styled(({ mode, ...props }) => <List.Item {...props} />)<BookingItemProps>`
   @media screen and (max-width: 800px) {
     font-size: 12px;
 
@@ -53,36 +56,39 @@ const StyledSpan = styled.span`
   font-weight: 700;
 `;
 
-const DeviceBookingItem = ({ item }: BookingItemProps) => {
-  const { setModelIsVisible, setModelType } = useContext(AdminContext);
+const DeviceBookingItem = ({ item, mode }: BookingItemProps) => {
+  const { setModelIsVisible, setModelType, setSelectedBookingId } = useContext(AdminContext);
+  const [showDelete, setDelete] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (mode === 'future') {
+      setDelete(true);
+    } else {
+      setDelete(false);
+    }
+  }, [mode]);
 
   return (
     <StyledListItem
-      actions={[
-        <Button
-          type="link"
-          onClick={() => {
-            setModelType('edit-booking');
-            setModelIsVisible(true);
-          }}
-        >
-          Edit
-        </Button>,
-        <Button
-          type="link"
-          onClick={() => {
-            setModelType('delete-booking');
-            setModelIsVisible(true);
-          }}
-        >
-          Delete
-        </Button>,
-      ]}
+      actions={
+        showDelete && [
+          <Button
+            onClick={() => {
+              setSelectedBookingId(item.id);
+              setModelType('delete-booking');
+              setModelIsVisible(true);
+            }}
+          >
+            Delete
+          </Button>,
+        ]
+      }
     >
       <List.Item.Meta
         avatar={
           <Avatar
-            src="https://joeschmoe.io/api/v1/random"
+            style={{ backgroundColor: 'var(--ant-primary-2)' }}
+            icon={<UserOutlined />}
             size={{ xs: 50, sm: 50, md: 50, lg: 60, xl: 60, xxl: 60 }}
           />
         }
@@ -90,13 +96,13 @@ const DeviceBookingItem = ({ item }: BookingItemProps) => {
         description={
           <DescriptionContainer>
             <p>
-              <StyledSpan>Date:</StyledSpan> {new Date(item.date).toLocaleDateString()}
+              <StyledSpan>Date:</StyledSpan> {new Date(item.startAt).toLocaleDateString()}
             </p>
             <p>
-              <StyledSpan>Start Time:</StyledSpan> {new Date(item.date).toLocaleTimeString()}
+              <StyledSpan>Start Time:</StyledSpan> {new Date(item.startAt).toLocaleTimeString()}
             </p>
             <p>
-              <StyledSpan>End Time:</StyledSpan> {new Date(item.date).toLocaleTimeString()}
+              <StyledSpan>End Time:</StyledSpan> {new Date(item.endAt).toLocaleTimeString()}
             </p>
           </DescriptionContainer>
         }

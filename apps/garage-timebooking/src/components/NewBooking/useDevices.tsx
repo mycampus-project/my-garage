@@ -9,7 +9,8 @@ const useDevices = () => {
   return useQuery(['devices', token], () =>
     apiClient
       .get<Array<Thing>>('/things', { headers: { Authorization: `Bearer ${token}` } })
-      .then((response) => response.data),
+      .then((response) => response.data)
+      .then((things) => things.filter((item) => !item.removedAt)),
   );
 };
 

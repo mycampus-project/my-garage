@@ -42,18 +42,14 @@ const ButtonContainer = styled.div`
 function DeviceInfoPanel() {
   const { selectedThing, setModelIsVisible, setModelType } = useContext(AdminContext);
 
-  const avatar = (
-    <Avatar
-      size={{ xs: 50, sm: 100, md: 100, lg: 100, xl: 100, xxl: 110 }}
-      src={`${baseURL}/static/${selectedThing.imageUrl}`}
-    />
-  );
-
-  if (selectedThing.name.length > 0) {
-    return (
-      <StyledCard title={selectedThing.name} extra={avatar}>
-        <ButtonContainer>
-          <DeviceDescription />
+  if (selectedThing) {
+    const avatar = (
+      <ButtonContainer>
+        <Space direction="vertical" size="large" align="center">
+          <Avatar
+            size={{ xs: 50, sm: 100, md: 100, lg: 100, xl: 100, xxl: 110 }}
+            src={`${baseURL}/static/${selectedThing.imageUrl}`}
+          />
           <Space align="start">
             <Button
               data-testid="edit.device.btn"
@@ -76,9 +72,13 @@ function DeviceInfoPanel() {
               Delete
             </Button>
           </Space>
-        </ButtonContainer>
-
-        <BookingsTabsCard things />
+        </Space>
+      </ButtonContainer>
+    );
+    return (
+      <StyledCard title={selectedThing.name} extra={avatar}>
+        <DeviceDescription />
+        <BookingsTabsCard showThings />
       </StyledCard>
     );
   }

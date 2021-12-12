@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import { Thing } from '@my-garage/common';
 import { Spin } from 'antd';
 import { AdminContext } from 'src/contexts/AdminContext';
-import sortedThingArray from 'src/utilities/utilityFunctions';
+import { sortedThingArray } from 'src/utilities/utilityFunctions';
 import DeviceListSection from './DeviceListSection';
 
 const searchList = (searchValue: string, array: Thing[]) => {
@@ -24,15 +24,19 @@ const searchList = (searchValue: string, array: Thing[]) => {
 };
 
 const DeviceList = () => {
-  const { searchValue } = useContext(AdminContext);
+  const { searchValue, typeFilter } = useContext(AdminContext);
   const { data, error, isLoading } = useThing().GetListOfThings();
   const [filteredData, setFilteredData] = useState<Thing[]>([]);
   const groupedItems = filteredData && Object.entries(groupBy(filteredData, (thing) => thing.type));
 
   useEffect(() => {
-    const filteredArray = data
+    let filteredArray = data
       ? data.data.filter((item: Thing) => item.removedBy === undefined)
       : new Array<Thing>();
+
+    if (typeFilter.length !== 0) {
+      filteredArray = filteredArray.filter((item) => typeFilter.includes(item.type));
+    }
 
     if (searchValue === '') {
       setFilteredData(sortedThingArray(filteredArray, 'type'));
@@ -40,7 +44,7 @@ const DeviceList = () => {
     if (searchValue !== '') {
       setFilteredData(searchList(searchValue, sortedThingArray(filteredArray, 'type')));
     }
-  }, [data, searchValue]);
+  }, [data, searchValue, typeFilter]);
 
   if (error) {
     return <div>Error</div>;

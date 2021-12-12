@@ -29,7 +29,7 @@ const RestoreModal = ({ isDevice, isUser, isBooking }: RestoreModalProps) => {
       }}
       onCancel={() => setModelIsVisible(false)}
       width={500}
-      footer={[]}
+      footer={false}
     >
       {isDevice && <RestoreDeviceList />}
       {isUser && <RestoreUserList />}

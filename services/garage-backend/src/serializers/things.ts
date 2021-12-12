@@ -1,44 +1,55 @@
 import { Thing } from '@my-garage/common';
 
-import User, { UserDocument } from '../models/User';
+import { UserDocument } from '../models/User';
 import { ThingDocument } from '../models/Thing';
-import Type, { TypeDocument } from '../models/Type';
+import { TypeDocument } from '../models/Type';
 
 // eslint-disable-next-line import/prefer-default-export
 export const serializeThing = async (thing: ThingDocument): Promise<Thing> => {
-  const { _id: id, name, description, isAvailable, createdAt, removedAt, imageUrl } = thing;
-  const createThingWithUser = await thing.populate<{ createdBy: UserDocument }>({
-    path: 'createdBy',
-    model: User,
-  });
-  const thingWithRemovedBy = await thing.populate<{ removedBy: UserDocument | null }>({
-    path: 'removedBy',
-    model: User,
-  });
-  const thingWithType = await thing.populate<{ type: TypeDocument | null }>({
-    path: 'type',
-    model: Type,
-  });
+  const {
+    _id: id,
+    name,
+    description,
+    isAvailable,
+    createdAt,
+    removedAt,
+    imageUrl,
+    type,
+    createdBy,
+    removedBy,
+    contactPerson,
+  } = await thing.populate<{
+    createdBy: UserDocument;
+    removedBy: UserDocument | null;
+    type: TypeDocument | null;
+    contactPerson: UserDocument | null;
+  }>(['createdBy', 'removedBy', 'type', 'contactPerson']);
 
   return {
     id: id!.toString(),
     name,
     description,
-    type: thingWithType.type.name,
     isAvailable,
+    type: type.name,
     createdAt,
     createdBy: {
-      id: createThingWithUser.createdBy.id,
-      fullName: createThingWithUser.createdBy.fullName,
+      id: createdBy.id,
+      fullName: createdBy.fullName,
     },
     removedAt,
-    removedBy: thingWithRemovedBy.removedBy
+    removedBy: removedBy
       ? {
-          id: thingWithRemovedBy.removedBy.id,
-          fullName: thingWithRemovedBy.removedBy.fullName,
+          id: removedBy.id,
+          fullName: removedBy.fullName,
         }
       : undefined,
     imageUrl,
-    maxBookingDuration: thingWithType.type.maxBookingDuration,
+    contactPerson: contactPerson
+      ? { fullName: contactPerson.fullName, email: contactPerson.email }
+      : {
+          fullName: createdBy.fullName,
+          email: createdBy.email,
+        },
+    maxBookingDuration: type.maxBookingDuration,
   };
 };

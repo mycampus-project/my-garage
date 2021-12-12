@@ -34,8 +34,10 @@ const Spacer = styled.div`
   flex: 1;
 `;
 
-// TODO: Create logo
-const Logo = styled.div``;
+const Logo = styled.img`
+  height: auto;
+  width: 100%;
+`;
 
 const useActiveMenuKey = () => {
   const { pathname } = useLocation();
@@ -68,19 +70,20 @@ function Root() {
 
   return (
     <FullHeightLayout>
-      <Sider breakpoint="lg" collapsedWidth="0">
+      <Sider breakpoint="lg" collapsedWidth="0" style={{ backgroundColor: '#124191' }}>
         <SiderContent>
-          <Logo />
+          <Logo src="nokia_white_logos.png" />
           <Menu
             data-testid="NavigationMenu"
             mode="inline"
             selectable
             theme="dark"
+            style={{ backgroundColor: '#124191' }}
             selectedKeys={[activeMenuKey]}
             onSelect={({ key }) => navigate(`/${key}`)}
           >
             <Menu.Item key="new">New booking</Menu.Item>
-            <Menu.Item key="current">Current bookings</Menu.Item>
+            <Menu.Item key="bookings">My bookings</Menu.Item>
             <Menu.Item key="history">History</Menu.Item>
           </Menu>
           <Spacer />
