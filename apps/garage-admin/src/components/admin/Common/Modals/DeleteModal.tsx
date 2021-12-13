@@ -44,10 +44,6 @@ const DeleteModal = ({ isDevice, isBooking, isUser, isType }: DeleteModalProps) 
     return <div>Error</div>;
   }
 
-  if (isLoadingDeleteThing || isLoadingUser || isLoadingDeleteBooking || isLoadingDeleteType) {
-    return <Spin />;
-  }
-
   return (
     <Modal
       title="Delete Device"
@@ -78,7 +74,11 @@ const DeleteModal = ({ isDevice, isBooking, isUser, isType }: DeleteModalProps) 
       onCancel={() => setModelIsVisible(false)}
       width={500}
     >
-      <Spin spinning={isLoadingDeleteThing}>
+      <Spin
+        spinning={
+          isLoadingDeleteThing || isLoadingUser || isLoadingDeleteBooking || isLoadingDeleteType
+        }
+      >
         {isDevice && <p>Do you want to delete device {selectedThing ? selectedThing.name : ''}?</p>}
         {isBooking && <p>Do you want to delete this booking?</p>}
         {isUser && <p>Do you want to delete user {selectedUser ? selectedUser.fullName : ''}?</p>}
