@@ -35,12 +35,18 @@ const AddDeviceForm = ({ form }: AddDeviceFormProps) => {
     return <div>Error</div>;
   }
 
+  const findUserId = (name: string) => {
+    const array = sortedUserList.filter((user) => user.fullName === name);
+    return array[0].id;
+  };
+
   const handleSubmit = (values: any) => {
     form
       .validateFields()
       .then(() => {
         const newObject = {
           ...values,
+          contactPerson: findUserId(values.contactPerson),
           image: image as File,
         };
 
@@ -118,9 +124,9 @@ const AddDeviceForm = ({ form }: AddDeviceFormProps) => {
             },
           ]}
         >
-          <Select value="" style={{ width: 160 }}>
+          <Select value="" style={{ width: 160 }} showSearch>
             {sortedUserList.map((item: User) => (
-              <Option key={item.id} value={item.id}>
+              <Option key={item.id} value={item.fullName}>
                 {item.fullName}
               </Option>
             ))}

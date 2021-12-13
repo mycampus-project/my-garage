@@ -3,6 +3,7 @@ import { Type } from '@my-garage/common';
 import useType from 'src/hooks/useType';
 import { useContext } from 'react';
 import { AdminContext } from 'src/contexts/AdminContext';
+import styled from 'styled-components';
 
 interface ListItemProps {
   item: Type;
@@ -16,6 +17,11 @@ const defaultProps = {
 const listItemMeta = {
   paddingTop: '16px',
 };
+
+const BoldSpan = styled.span`
+  font-weight: 500;
+  color: #292929b5;
+`;
 
 const TypeListItem = ({ item, showRestoreButtons }: ListItemProps) => {
   const { onRestore, isLoadingRestoreType } = useType().RestoreType();
@@ -72,7 +78,11 @@ const TypeListItem = ({ item, showRestoreButtons }: ListItemProps) => {
           data-testid="typeList.item.meta"
           style={listItemMeta}
           title={item.name}
-          description={handleTime(item.maxBookingDuration)}
+          description={
+            <p>
+              <BoldSpan>Max Booking Time:</BoldSpan> {handleTime(item.maxBookingDuration)}
+            </p>
+          }
         />
       </List.Item>
     </Spin>

@@ -56,7 +56,7 @@ const BlueBar = styled.div`
   left: 0;
   height: 100vh;
   width: 200px;
-  background-color: var(--ant-primary-7);
+  background-color: #124191;
 
   @media only screen and (max-width: 650px) {
     position: absolute;
@@ -68,13 +68,24 @@ const BlueBar = styled.div`
   }
 `;
 
+const Logo = styled.img`
+  height: auto;
+  width: 100%;
+
+  @media only screen and (max-width: 650px) {
+    display: none;
+  }
+`;
+
 function Login() {
   return (
     <FullHeightLayout>
-      <BlueBar />
+      <BlueBar>
+        <Logo src="nokia_white_logos.png" />
+      </BlueBar>
       <Content>
         <WidthContainer>
-          <Header>Nokia Garage</Header>
+          <Header>The Garage</Header>
           <CenteredContent>
             <LoginForm />
           </CenteredContent>

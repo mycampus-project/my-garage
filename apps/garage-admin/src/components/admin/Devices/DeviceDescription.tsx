@@ -41,7 +41,7 @@ const DeviceDescription = () => {
           title="Device Details"
           bordered
           size="small"
-          column={{ xxl: 2, xl: 2, lg: 1, md: 1, sm: 1, xs: 1 }}
+          column={{ xxl: 2, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}
         >
           <Descriptions.Item label="Name">{selectedThing.name}</Descriptions.Item>
 

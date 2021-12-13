@@ -126,7 +126,7 @@ const UpdateDeviceForm = ({ form }: AddDeviceFormProps) => {
             },
           ]}
         >
-          <Select value="" style={{ width: 160 }}>
+          <Select value="" style={{ width: 160 }} showSearch>
             {sortedUserList.map((item: User) => (
               <Option key={item.id} value={item.fullName}>
                 {item.fullName}

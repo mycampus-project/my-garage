@@ -98,12 +98,16 @@ const useType = () => {
         onSuccess: (data) => {
           client.invalidateQueries('types');
           setSelectedType(data);
-          openNotificationWithIcon('success', 'Type Added', `${data.name} was successfully added.`);
+          openNotificationWithIcon(
+            'success',
+            'Type Updated',
+            `${data.name} was successfully updated.`,
+          );
           setModelIsVisible(false);
         },
 
         onError: (error) => {
-          openNotificationWithIcon('error', 'Type Not Added', `${error.message}`);
+          openNotificationWithIcon('error', 'Type Not Updated', `${error.message}`);
         },
       },
     );
