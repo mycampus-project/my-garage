@@ -107,7 +107,7 @@ const useUser = () => {
         },
 
         onError: (error) => {
-          openNotificationWithIcon('error', 'User Not Updated', `${error.message}`);
+          openNotificationWithIcon('error', 'User Role Not Updated', `${error.message}`);
         },
       },
     );
@@ -148,7 +148,7 @@ const useUser = () => {
         },
 
         onError: (error) => {
-          openNotificationWithIcon('error', 'Device Not Restored', `${error.message}`);
+          openNotificationWithIcon('error', 'User Not Restored', `${error.message}`);
         },
       },
     );
