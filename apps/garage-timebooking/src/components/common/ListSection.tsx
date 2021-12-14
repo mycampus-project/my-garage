@@ -17,7 +17,9 @@ const ListSection = <T extends { id: string }>({
   renderItem,
 }: Props<T>) => (
   <>
-    <Divider orientation="left">{listHeader}</Divider>
+    <Divider data-testid="newBookingDivider" orientation="left">
+      {listHeader}
+    </Divider>
     <List
       dataSource={items}
       renderItem={(item) => (

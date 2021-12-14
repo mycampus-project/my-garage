@@ -1,4 +1,4 @@
-describe('Testing interactions with users on the Admin page', () => {
+describe('Testing interactions with users on the Booking page', () => {
   const username = Cypress.env('username');
   const password = Cypress.env('password');
 
@@ -22,7 +22,7 @@ describe('Testing interactions with users on the Admin page', () => {
       throw new Error('Missing password value, set using CYPRESS_password=...');
     }
 
-    cy.visit('/');
+    cy.visit('localhost:8081');
     cy.findByRole('textbox', {
       name: /email/i,
     }).type(username, { log: false });
@@ -30,21 +30,13 @@ describe('Testing interactions with users on the Admin page', () => {
     cy.findByRole('button', {
       name: /submit/i,
     }).click();
-    cy.findByTestId('nav.users').should('be.visible');
+    cy.findByTestId('newBooking').should('be.visible');
   });
-
-  it('should click devices in navigation and display a list of 10 sections', () => {
-    cy.findByTestId('nav.users').click();
+  it('should click devices in navigation and display a list of 5 sections', () => {
+    cy.findByTestId('newBooking').click();
     localStorage.getItem('token');
-    cy.findAllByTestId('user.list.divider').children().should('be.length', 10);
+    cy.findAllByTestId('newBookingDivider').children().should('be.length', 5);
 
-    cy.findAllByTestId('user.list.divider').contains('O');
-  });
-  it('should click on Roberto Davidson and check is that isRole is set to Admin', () => {
-    cy.findByTestId('nav.users').click();
-
-    cy.findAllByTestId('user.list').contains('Roberto Davidson').click();
-
-    cy.findByTestId('details.table.user').children().find('.testIsRoleUser').contains('admin');
+    cy.findAllByTestId('newBookingDivider').contains('Room');
   });
 });

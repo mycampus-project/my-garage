@@ -6,6 +6,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@my-garage/common": "^1.0.0",
+    "@testing-library/cypress": "^8.0.2",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -17,6 +18,7 @@
     "@types/react-dom": "^17.0.0",
     "antd": "^4.17.0-alpha.9",
     "axios": "^0.24.0",
+    "cypress": "^9.1.1",
     "cypress-localstorage-commands": "^1.6.1",
     "date-fns": "^2.26.0",
     "framer-motion": "^4.1.17",
