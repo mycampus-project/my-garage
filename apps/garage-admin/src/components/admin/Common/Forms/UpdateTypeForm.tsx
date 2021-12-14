@@ -73,7 +73,7 @@ const UpdateTypeForm = () => {
           <Input />
         </Form.Item>
         <Form.Item
-          label="Select Booking Interval In Hours"
+          label="Type max booking interval in hours"
           name="bookingIntervalInHours"
           initialValue={selectedType ? selectedType.maxBookingDuration / 60 : 0.5}
           rules={[

@@ -60,7 +60,7 @@ const AddTypeForm = () => {
           <Input />
         </Form.Item>
         <Form.Item
-          label="Select Booking Interval In Hours"
+          label="Type max booking interval in hours"
           name="bookingIntervalInHours"
           rules={[
             {
