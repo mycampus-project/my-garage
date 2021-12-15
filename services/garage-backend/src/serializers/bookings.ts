@@ -1,30 +1,14 @@
-import { BaseBooking, Booking, BookingWithUser } from '@my-garage/common';
+import { BaseBooking, Booking, BookingWithPrevious, BookingWithUser } from '@my-garage/common';
 
 import { TypeDocument } from '../models/Type';
 import { ThingDocument } from '../models/Thing';
 import { UserDocument } from '../models/User';
-import { BookingDocument } from '../models/Booking';
+import BookingModel, { BookingDocument } from '../models/Booking';
 
-export async function serializeBooking(
-  booking: BookingDocument,
-  includeUserDetails: true,
-): Promise<BookingWithUser>;
-export async function serializeBooking(
-  booking: BookingDocument,
-  includeUserDetails?: false,
-): Promise<Booking>;
-export async function serializeBooking(
-  booking: BookingDocument,
-  includeUserDetails?: boolean,
-): Promise<Booking | BookingWithUser>;
-export async function serializeBooking(
-  booking: BookingDocument,
-  includeUserDetails?: boolean,
-): Promise<Booking | BookingWithUser> {
-  const { id, user, thing, createdAt, startAt, endAt } = await booking.populate<{
-    user: UserDocument;
+async function serializeBaseBooking(booking: BookingDocument) {
+  const { id, thing, createdAt, startAt, endAt } = await booking.populate<{
     thing: ThingDocument;
-  }>(['user', 'thing']);
+  }>(['thing']);
 
   const { contactPerson, createdBy: thingCreatedBy } = await thing.populate<{
     createdBy: UserDocument;
@@ -51,18 +35,50 @@ export async function serializeBooking(
     endAt,
   };
 
-  if (includeUserDetails) {
-    return {
-      ...base,
-      user: {
-        fullName: user.fullName,
-        id: user.id,
-        email: user.email,
-      },
-    };
-  }
+  return base;
+}
+
+export async function serializeSimpleBooking(booking: BookingDocument): Promise<Booking> {
+  const base = await serializeBaseBooking(booking);
+
+  return { ...base, userId: booking.userId };
+}
+
+export async function serializeBookingWithUser(
+  booking: BookingDocument,
+  includePrevious?: boolean,
+): Promise<Booking | BookingWithUser | BookingWithPrevious> {
+  const base = await serializeBaseBooking(booking);
+
+  const { user } = await booking.populate<{
+    user: UserDocument;
+  }>(['user']);
+
+  const previousBookingList = await BookingModel.find({
+    thing: booking.thing,
+    endAt: {
+      $lt: booking.startAt,
+    },
+  })
+    .sort({ endAt: -1 })
+    .limit(1)
+    .exec();
+
+  const previousBooking = await previousBookingList[0]?.populate<{ user: UserDocument }>('user');
+
   return {
     ...base,
-    userId: user.id,
+    user: {
+      fullName: user.fullName,
+      id: user.id,
+      email: user.email,
+    },
+    previousUser:
+      includePrevious && previousBooking
+        ? {
+            fullName: previousBooking.user.fullName,
+            email: previousBooking.user.email,
+          }
+        : undefined,
   };
 }

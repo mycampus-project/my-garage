@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { Booking, BookingWithUser } from '@my-garage/common';
 
 import validateBookingParams from '../helpers/validateBookingParams';
-import { serializeBooking } from '../serializers/bookings';
+import { serializeSimpleBooking, serializeBookingWithUser } from '../serializers/bookings';
 import parseNumericQuery from '../helpers/parseQuery';
 import Role from '../models/Role';
 import {
@@ -28,6 +28,7 @@ export const getBookings = async (
       mode?: 'future' | 'past';
       start?: string;
       end?: string;
+      includePrevious?: boolean;
     }
   >,
   res: Response,
@@ -38,7 +39,7 @@ export const getBookings = async (
       throw new InternalServerError('Issues with finding request user');
     }
 
-    const { userId, thingId, mode = 'future', start, end } = req.query;
+    const { userId, thingId, mode = 'future', start, end, includePrevious } = req.query;
 
     if (!['future', 'past'].includes(mode)) {
       throw new BadRequestError('`mode` param should be either `future` or `past`');
@@ -81,7 +82,12 @@ export const getBookings = async (
       limit,
       total,
       items: await Promise.all(
-        bookings.map((booking) => serializeBooking(booking, userWithRole.role.name === 'admin')),
+        bookings.map((booking) => {
+          if (userWithRole.role.name === 'admin' || booking.userId === req.user?.id) {
+            return serializeBookingWithUser(booking, includePrevious);
+          }
+          return serializeSimpleBooking(booking);
+        }),
       ),
     });
   } catch (e) {
@@ -119,7 +125,7 @@ export const postBooking = async (
       endAt: new Date(endAt),
     });
 
-    res.send(await serializeBooking(booking, true));
+    res.send(await serializeBookingWithUser(booking));
   } catch (error) {
     next(isOwnError(error as Error) ? error : new InternalServerError(undefined, error as Error));
   }
@@ -145,7 +151,7 @@ export const getBooking = async (
     if (!userRole) throw new InternalServerError("Could not get user's role");
 
     if (userRole.name === 'admin' || booking.user.toString() === req.user.id) {
-      res.send(await serializeBooking(booking, true));
+      res.send(await serializeBookingWithUser(booking, true));
     } else {
       throw new NotFoundError(`Booking with id ${bookingId} could not be found`);
     }
@@ -189,7 +195,7 @@ export const putBooking = async (
         startAt: new Date(startAt),
         endAt: new Date(endAt),
       });
-      res.send(await serializeBooking(booking, true));
+      res.send(await serializeBookingWithUser(booking));
     } else {
       throw new NotFoundError(`Booking with id ${bookingId} could not be found`);
     }

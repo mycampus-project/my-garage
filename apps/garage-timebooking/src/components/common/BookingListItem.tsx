@@ -4,7 +4,7 @@ import { Button, Popconfirm, Spin, Typography } from 'antd';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router';
 import styled from 'styled-components';
-import { apiClient, BookingWithUser } from '@my-garage/common';
+import { apiClient, BookingWithPrevious, BookingWithUser } from '@my-garage/common';
 import { useMutation, useQueryClient } from 'react-query';
 import { AuthContext } from 'src/contexts/AuthContext';
 import ListItem from './ListItem';
@@ -69,7 +69,7 @@ const useDeleteBooking = (bookingId: string) => {
 };
 
 interface Props {
-  booking: BookingWithUser;
+  booking: BookingWithUser | BookingWithPrevious;
   allowDelete?: boolean;
 }
 
@@ -142,6 +142,21 @@ const BookingListItem = ({ booking, allowDelete = true }: Props) => {
                 <dd>
                   <Typography.Paragraph>{booking.thing.description}</Typography.Paragraph>
                 </dd>
+                {'previousUser' in booking && booking.previousUser && (
+                  <>
+                    <dt>
+                      <Typography.Title level={5}>Previous user</Typography.Title>
+                    </dt>
+                    <dd>
+                      <Typography.Paragraph>
+                        {booking.previousUser.fullName}{' '}
+                        <a href={`mailto:${booking.previousUser.email}`}>
+                          {booking.previousUser.email}
+                        </a>
+                      </Typography.Paragraph>
+                    </dd>
+                  </>
+                )}
                 <dt>
                   <Typography.Title level={5}>Contact person</Typography.Title>
                 </dt>
