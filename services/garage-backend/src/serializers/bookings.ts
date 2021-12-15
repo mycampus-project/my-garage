@@ -1,4 +1,5 @@
 import { BaseBooking, Booking, BookingWithPrevious, BookingWithUser } from '@my-garage/common';
+import { isWithinInterval } from 'date-fns';
 
 import { TypeDocument } from '../models/Type';
 import { ThingDocument } from '../models/Thing';
@@ -64,6 +65,10 @@ export async function serializeBookingWithUser(
     .limit(1)
     .exec();
 
+  const isBookingCurrentlyActive = isWithinInterval(new Date(), {
+    start: booking.startAt,
+    end: booking.endAt,
+  });
   const previousBooking = await previousBookingList[0]?.populate<{ user: UserDocument }>('user');
 
   return {
@@ -74,7 +79,7 @@ export async function serializeBookingWithUser(
       email: user.email,
     },
     previousUser:
-      includePrevious && previousBooking
+      includePrevious && previousBooking && isBookingCurrentlyActive
         ? {
             fullName: previousBooking.user.fullName,
             email: previousBooking.user.email,
