@@ -69,6 +69,7 @@ const useMyBookings = () => {
           userId: user.id,
           limit: 0,
           mode: 'future',
+          includePrevious: true,
         },
       })
       .then((response) => response.data)
