@@ -34,25 +34,32 @@ const StyledDescriptions = styled(Descriptions)`
 const UserDescription = () => {
   const { selectedUser } = useContext(AdminContext);
 
-  return (
-    <>
-      <StyledDescriptions
-        title="User Details"
-        bordered
-        size="small"
-        column={{ xxl: 2, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}
-      >
-        <Descriptions.Item className="testDescriptionItem" label="Full Name">
-          {selectedUser?.fullName}
-        </Descriptions.Item>
-        <Descriptions.Item label="Email">{selectedUser?.email}</Descriptions.Item>
-        <Descriptions.Item label="Role">{selectedUser?.role}</Descriptions.Item>
-        <Descriptions.Item label="Created At">
-          {new Date(selectedUser ? selectedUser.createdAt : '').toDateString()}
-        </Descriptions.Item>
-      </StyledDescriptions>
-    </>
-  );
+  if (selectedUser) {
+    return (
+      <div data-testid="details.table.user">
+        <StyledDescriptions
+          title="User Details"
+          bordered
+          size="small"
+          column={{ xxl: 2, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}
+        >
+          <Descriptions.Item className="testDescriptionItem" label="Full Name">
+            {selectedUser?.fullName}
+          </Descriptions.Item>
+          <Descriptions.Item label="ID">{selectedUser.id}</Descriptions.Item>
+          <Descriptions.Item className="testIsRoleUser" label="Is Role">
+            {selectedUser.role ? 'admin' : 'user'}
+          </Descriptions.Item>
+          <Descriptions.Item label="Email">{selectedUser?.email}</Descriptions.Item>
+          <Descriptions.Item label="Role">{selectedUser?.role}</Descriptions.Item>
+          <Descriptions.Item label="Created At">
+            {new Date(selectedUser ? selectedUser.createdAt : '').toDateString()}
+          </Descriptions.Item>
+        </StyledDescriptions>
+      </div>
+    );
+  }
+  return null;
 };
 
 export default UserDescription;

@@ -1,3 +1,5 @@
+import { contains } from 'cypress/types/jquery';
+
 describe('Testing interactions with devices on the Admin page', () => {
   const username = Cypress.env('username');
   const password = Cypress.env('password');
@@ -41,7 +43,7 @@ describe('Testing interactions with devices on the Admin page', () => {
     cy.findAllByTestId('device.list.divider').contains('Printer');
   });
 
-  it('should click on 3D Printer -3 and check is that isAvailable is set to Unavailable', () => {
+  it('should click on 3D Printer - 3 and check that isAvailable is matches "Unavailable"', () => {
     cy.findByTestId('nav.devices').click();
 
     cy.findAllByTestId('device.list').contains('3D Printer - 3').click();
@@ -68,5 +70,20 @@ describe('Testing interactions with devices on the Admin page', () => {
       .find('.testIsAvailableItem')
       .children('td > span')
       .should('have.text', 'Available');
+  });
+
+  it('should press delete device for 3D printer - 3 .', () => {
+    cy.findAllByTestId('delete.device.btn').click();
+    cy.contains('OK').click();
+  });
+
+  it('should restore 3D printer - 3 ', () => {
+    cy.findByTestId('RestoreDevice').click();
+    cy.findAllByTestId('restoreList.item')
+      .contains('3D Printer - 3')
+      .parents()
+      .children('ul.ant-list-item-action')
+      .contains('Restore')
+      .click();
   });
 });

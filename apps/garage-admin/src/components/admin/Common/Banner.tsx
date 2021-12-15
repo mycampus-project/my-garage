@@ -31,6 +31,7 @@ function Banner({ title, showAddThing, showRestoreUser }: BannerProps) {
       Add Device
     </Button>,
     <Button
+      data-testid="RestoreDevice"
       key={3}
       type="primary"
       onClick={() => {
@@ -45,6 +46,7 @@ function Banner({ title, showAddThing, showRestoreUser }: BannerProps) {
 
   const showRestoreUsers = [
     <Button
+      data-testid="RestoreUser"
       key={1}
       type="primary"
       onClick={() => {

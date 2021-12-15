@@ -82,7 +82,9 @@ function Root() {
             selectedKeys={[activeMenuKey]}
             onSelect={({ key }) => navigate(`/${key}`)}
           >
-            <Menu.Item key="new">New booking</Menu.Item>
+            <Menu.Item data-testid="newBooking" key="new">
+              New booking
+            </Menu.Item>
             <Menu.Item key="bookings">My bookings</Menu.Item>
             <Menu.Item key="history">History</Menu.Item>
           </Menu>
