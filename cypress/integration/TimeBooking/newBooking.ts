@@ -1,4 +1,6 @@
-describe('Testing interactions with users on the Booking page', () => {
+import { Children } from 'react';
+
+describe('Testing interactions with users on the TimeBooking page', () => {
   const username = Cypress.env('username');
   const password = Cypress.env('password');
 
@@ -38,5 +40,18 @@ describe('Testing interactions with users on the Booking page', () => {
     cy.findAllByTestId('newBookingDivider').children().should('be.length', 5);
 
     cy.findAllByTestId('newBookingDivider').contains('Room');
+  });
+  it('make new booking and also deletes it later', () => {
+    cy.findByTestId('newBooking').click();
+    localStorage.getItem('token');
+    cy.findAllByTestId('newBookingDivider').children();
+    cy.contains('3D Printer - 3').click();
+    cy.findAllByTestId('DatePicker');
+    cy.contains('19:00');
+    cy.get('table  >tbody >tr td:nth-child(6)');
+    cy.get('tbody>tr td:nth-child(6)').eq(30).dblclick();
+    cy.findByText('Book').click();
+    cy.findByText('Cancel').click();
+    cy.findByText('Yes').click();
   });
 });

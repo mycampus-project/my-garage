@@ -1,3 +1,6 @@
+import { Button } from 'antd';
+import ButtonGroup from 'antd/lib/button/button-group';
+import { contains } from 'cypress/types/jquery';
 describe('Testing interactions with users on the Admin page', () => {
   const username = Cypress.env('username');
   const password = Cypress.env('password');
@@ -46,5 +49,11 @@ describe('Testing interactions with users on the Admin page', () => {
     cy.findAllByTestId('user.list').contains('Roberto Davidson').click();
 
     cy.findByTestId('details.table.user').children().find('.testIsRoleUser').contains('admin');
+  });
+  it('should click on Delete button to delete user and after to restore the user back', () => {
+    cy.findByTestId('BtnDelete').children().click();
+    cy.contains('OK').click();
+    cy.findByTestId('RestoreUser').click();
+    cy.findAllByText('Restore').click();
   });
 });

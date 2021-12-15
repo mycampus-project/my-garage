@@ -58,6 +58,7 @@ function UserInfoPanel() {
             Change Role
           </Button>
           <Button
+            data-testid="BtnDelete"
             type="primary"
             onClick={() => {
               setModelType('delete-user');

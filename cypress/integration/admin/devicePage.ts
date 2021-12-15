@@ -69,4 +69,11 @@ describe('Testing interactions with devices on the Admin page', () => {
       .children('td > span')
       .should('have.text', 'Available');
   });
+
+  it('should press delete device and restore it later.', () => {
+    cy.findAllByText('Delete').click();
+    cy.contains('OK').click();
+    cy.findByTestId('RestoreDevice').click();
+    cy.findAllByText('Restore').click();
+  });
 });
