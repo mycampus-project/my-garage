@@ -71,7 +71,7 @@ describe('Testing interactions with devices on the Admin page', () => {
   });
 
   it('should press delete device and restore it later.', () => {
-    cy.findAllByText('Delete').click();
+    cy.findAllByTestId('delete.device.btn').click();
     cy.contains('OK').click();
     cy.findByTestId('RestoreDevice').click();
     cy.findAllByText('Restore').click();
