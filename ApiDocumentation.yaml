@@ -1,0 +1,926 @@
+---
+openapi: 3.0.0
+info:
+  title: Nokia-Garage API
+  description: REST API for Nokia garage
+  termsOfService: https://localhost.com/terms-of-use
+  contact:
+    name: Ashif Iqbal
+    email: Ashif.Iqbal@metropolia.fi
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Dev Server
+  - url: https://backend-app.azurewebsites.net/
+    description: Production Server
+paths:
+  /things:
+    get:
+      description: Getting information about all the things from Thing database
+      operationId: getAllThings
+      responses:
+        "200":
+          description: Successfull pull of all things
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Thing"
+        "500":
+          description: Unsuccessfull pull of things
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InternalServerError"
+    post:
+      description: creates new thing to the database
+      operationId: createThing
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/addThing"
+        required: true
+      responses:
+        "201":
+          description: Thing with ID  has been posted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Thing"
+        "400":
+          description: Thing with same name exists in the Database/Type is not found in database/Request Not Valid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestError"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /things/{thingId}:
+    get:
+      description: Obtain information about specific thing
+      operationId: getThingById
+      parameters:
+        - name: thingId
+          in: path
+          description: ID of the thing
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            example: 61a5569cd713a7e008adf7b0
+      responses:
+        "200":
+          description: Thing with ID  has been returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Thing"
+        "404":
+          description: Thing not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+    put:
+      description: edit thing from the database
+      operationId: updateThing
+      parameters:
+        - name: thingId
+          in: path
+          description: ID of the thing
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            example: 61a5569cd713a7e008adf7b0
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/addThing"
+        required: true
+      responses:
+        "200":
+          description: Thing has been updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Thing"
+        "400":
+          description: Thing with same name exists in the Database/Type is not found in database
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestError"
+        "404":
+          description: Thing not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+    delete:
+      description: delete thing from the database
+      operationId: deleteThing
+      parameters:
+        - name: thingId
+          in: path
+          description: ID of the thing
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            example: 61a5569cd713a7e008adf7b0
+      responses:
+        "200":
+          description: product has been removed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/deleteThing"
+        "400":
+          description: Thing already deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestError"
+        "404":
+          description: Thing not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+  /things/{thingId}/restore:
+    put:
+      description: restore thing from the database
+      operationId: restoreThing
+      parameters:
+        - name: thingId
+          in: path
+          description: ID of the thing
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            example: 61a5569cd713a7e008adf7b0
+      responses:
+        "200":
+          description: thing has been restored
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Thing"
+        "400":
+          description: Thing is not deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestError"
+        "404":
+          description: Thing not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+  /types:
+    get:
+      description: Getting information about all the types from Type database
+      operationId: getAllTypes
+      responses:
+        "200":
+          description: Successfull pull of all types
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Type"
+        "500":
+          description: Unsuccessfull pull of types
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InternalServerError"
+    post:
+      description: creates new type to the database
+      operationId: createType
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/addType"
+        required: true
+      responses:
+        "201":
+          description: Type with ID  has been posted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Type"
+        "400":
+          description: Type with same name exists in the Database/Request Not Valid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestError"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /types/{typeId}:
+    get:
+      description: Obtain information about specific type
+      operationId: getTypeById
+      parameters:
+        - name: typeId
+          in: path
+          description: ID of the type
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            example: 61b8ed8bb4e3299e50c4e9bb
+      responses:
+        "200":
+          description: Type with ID  has been returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Type"
+        "404":
+          description: Type not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+    put:
+      description: edit type from the database
+      operationId: updateType
+      parameters:
+        - name: typeId
+          in: path
+          description: ID of the type
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            example: 61b8ed8bb4e3299e50c4e9bb
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/addType"
+        required: true
+      responses:
+        "200":
+          description: type has been updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Type"
+        "400":
+          description: Type with same name exists in the Database
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestError"
+        "404":
+          description: Type not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+    delete:
+      description: delete type from the database
+      operationId: deleteType
+      parameters:
+        - name: typeId
+          in: path
+          description: ID of the type
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            example: 61b8ed8bb4e3299e50c4e9bb
+      responses:
+        "200":
+          description: type has been removed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/deleteType"
+        "400":
+          description: Type already deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestError"
+        "404":
+          description: Type not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+  /types/{typeId}/restore:
+    put:
+      description: restore type from the database
+      operationId: restoreType
+      parameters:
+        - name: typeId
+          in: path
+          description: ID of the type
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            example: 61a5569cd713a7e008adf7b0
+      responses:
+        "200":
+          description: type has been restored
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Type"
+        "400":
+          description: Type is not deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestError"
+        "404":
+          description: Type not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+  /bookings:
+    get:
+      description: Getting information about all the bookings from Booking database
+      operationId: getAllBookings
+      responses:
+        "200":
+          description: Successfull pull of all bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Booking"
+        "500":
+          description: Unsuccessfull pull of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InternalServerError"
+    post:
+      description: creates new booking to the database
+      operationId: createBooking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createBooking"
+        required: true
+      responses:
+        "201":
+          description: Booking with ID  has been posted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "400":
+          description: Request Not Valid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestError"
+        "500":
+          description: Can not find user.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /bookings/{bookingId}:
+    get:
+      description: Obtain information about specific booking
+      operationId: getBookingById
+      parameters:
+        - name: bookingId
+          in: path
+          description: ID of the booking
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            example: 61b8f6acb4e3299e50c4ea33
+      responses:
+        "200":
+          description: Booking with ID  has been returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "404":
+          description: Booking not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+    put:
+      description: edit booking from the database
+      operationId: updateBooking
+      parameters:
+        - name: bookingId
+          in: path
+          description: ID of the booking
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            example: 61b8f6acb4e3299e50c4ea33
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/editBooking"
+        required: true
+      responses:
+        "200":
+          description: Booking has been updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "404":
+          description: Booking not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+    delete:
+      description: delete Booking from the database
+      operationId: deleteBooking
+      parameters:
+        - name: bookingId
+          in: path
+          description: ID of the booking
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            example: 61b8f6acb4e3299e50c4ea33
+      responses:
+        "200":
+          description: status success
+        "404":
+          description: Booking not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+  /users:
+    get:
+      description: Getting information about all the users from User database
+      operationId: getAllUsers
+      responses:
+        "200":
+          description: Successfull pull of all users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "500":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NotFoundError"
+  /users/{userId}:
+    get:
+      description: Obtain information about specific user
+      operationId: getUserById
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the user
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            example: 61b6567eac84340c3c48daa7
+      responses:
+        "200":
+          description: User with ID  has been returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+    put:
+      description: edit user role from the database
+      operationId: updateUser
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the user
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            example: 61b6567eac84340c3c48daa7
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/editUser"
+        required: true
+      responses:
+        "200":
+          description: user has been updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Role not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestError"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+    delete:
+      description: delete user from the database
+      operationId: deleteUser
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the user
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            example: 61b8ed8bb4e3299e50c4e9bb
+      responses:
+        "200":
+          description: user has been removed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/deleteUser"
+        "400":
+          description: User already deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestError"
+        "401":
+          description: User not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestError"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+  /users/{userId}/restore:
+    put:
+      description: restore user from the database
+      operationId: restoreUser
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the user
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            example: 61a5569cd713a7e008adf7b0
+      responses:
+        "200":
+          description: type has been restored
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Type"
+        "400":
+          description: Type is not deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestError"
+        "404":
+          description: Type not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+components:
+  schemas:
+    addThing:
+      type: object
+      properties:
+        name:
+          type: string
+          example: drone
+        description:
+          type: string
+          example: explore
+        type:
+          type: object
+          example: Multi-rotor
+        isAvailable:
+          type: boolean
+        contactPerson:
+          type: object
+          example: 61a5569cd713a7e008adf7b0
+    Thing:
+      properties:
+        id:
+          type: string
+          example: 61a5569cd713a7e008adf7b0
+        createdAt:
+          type: string
+          example: 2021-11-29T22:39:24.208Z
+        createdBy:
+          $ref: "#/components/schemas/Thing_createdBy"
+        imageUrl:
+          type: string
+          example: 4bb679b6-dc5f-4ed2-a2c6-08ed8cd7ed05.jpg
+        contactPerson:
+          $ref: "#/components/schemas/Thing_contactPerson"
+        maxBookingDuration:
+          type: number
+          example: 120
+      allOf:
+        - type: object
+        - $ref: "#/components/schemas/addThing"
+    deleteThing:
+      properties:
+        removedAt:
+          type: string
+          example: 2021-12-01T00:03:17.856Z
+        removedBy:
+          $ref: "#/components/schemas/deleteThing_removedBy"
+      allOf:
+        - type: object
+        - $ref: "#/components/schemas/Thing"
+    addType:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Compute
+        maxBookingDuration:
+          type: number
+          example: 120
+    Type:
+      properties:
+        id:
+          type: string
+          example: 61a5569cd713a7e008adf7b0
+        createdAt:
+          type: string
+          example: 2021-11-29T22:39:24.208Z
+        createdBy:
+          $ref: "#/components/schemas/Thing_createdBy"
+      allOf:
+        - type: object
+        - $ref: "#/components/schemas/addType"
+    deleteType:
+      properties:
+        removedAt:
+          type: string
+          example: 2021-12-14T19:39:13.190Z
+        removedBy:
+          $ref: "#/components/schemas/deleteType_removedBy"
+      allOf:
+        - type: object
+        - $ref: "#/components/schemas/Type"
+    createBooking:
+      type: object
+      properties:
+        thingId:
+          type: string
+          example: 61b74f7db232f6d307356ac8
+        startAt:
+          type: string
+          example: 2021-12-16T13:30:00.000Z
+        endAt:
+          type: string
+          example: 2021-12-17T13:30:00.000Z
+    Booking:
+      properties:
+        id:
+          type: string
+          example: 61a5569cd713a7e008adf7b0
+        createdAt:
+          type: string
+          example: 2021-11-29T22:39:24.208Z
+        startAt:
+          type: string
+          example: 2021-12-16T13:30:00.000Z
+        endAt:
+          type: string
+          example: 2021-12-17T13:30:00.000Z
+        user:
+          $ref: "#/components/schemas/Booking_user"
+    editBooking:
+      type: object
+      properties:
+        startAt:
+          type: string
+          example: 2021-12-16T13:30:00.000Z
+        endAt:
+          type: string
+          example: 2021-12-17T13:30:00.000Z
+    User:
+      properties:
+        id:
+          type: string
+          example: 61b6567eac84340c3c48daa7
+        fullName:
+          type: string
+          example: Mr Y
+        email:
+          type: string
+          example: mry@example.com
+        createdAt:
+          type: string
+          example: 2021-12-12T20:07:26.267Z
+        role:
+          type: string
+          example: admin
+    editUser:
+      type: object
+      properties:
+        role:
+          type: string
+          example: admin
+    deleteUser:
+      properties:
+        removedAt:
+          type: string
+          example: 2021-12-01T00:03:17.856Z
+        removedBy:
+          $ref: "#/components/schemas/deleteThing_removedBy"
+      allOf:
+        - type: object
+        - $ref: "#/components/schemas/User"
+    InternalServerError:
+      required:
+        - code
+        - message
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 500
+        message:
+          type: string
+          example: Internal Server error
+    NotFoundError:
+      required:
+        - code
+        - message
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 404
+        message:
+          type: string
+          example: Not found
+    ForbiddenError:
+      required:
+        - code
+        - message
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 403
+        message:
+          type: string
+          example: Forbidden
+    UnauthorizedError:
+      required:
+        - code
+        - message
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 401
+        message:
+          type: string
+          example: Unauthorized Request
+    BadRequestError:
+      required:
+        - code
+        - message
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 400
+        message:
+          type: string
+          example: Bad Request
+    Thing_createdBy:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 61a5547ad713a7e008adf75a
+        fullName:
+          type: string
+          example: Mr X
+    Thing_contactPerson:
+      type: object
+      properties:
+        fullName:
+          type: string
+          example: My Y
+        email:
+          type: string
+          example: mry@example.com
+    deleteThing_removedBy:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 61a5547ad713a7e008adf75b
+        fullName:
+          type: string
+          example: Mr Y
+    deleteType_removedBy:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 61b6567eac84340c3c48daa7
+        fullName:
+          type: string
+          example: Mr Y
+    Booking_user:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 61a5547ad713a7e008adf75a
+        fullName:
+          type: string
+          example: Mr X
+        email:
+          type: string
+          example: mry@example.com
