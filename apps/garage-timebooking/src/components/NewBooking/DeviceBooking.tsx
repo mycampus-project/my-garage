@@ -63,6 +63,16 @@ const Loader = styled.div`
   justify-content: center;
 `;
 
+const NextWeekNote = styled.div`
+  font-size: 12px;
+  text-align: end;
+
+  & > * {
+    max-width: 300px;
+    margin-left: auto;
+  }
+`;
+
 const getInitialWeekValue = () => {
   const now = new Date();
 
@@ -226,6 +236,11 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
           ) : (
             <Spin size="large" />
           )}
+          <NextWeekNote>
+            <Typography.Paragraph type="secondary">
+              If you wish book hours on next week too, it has to be done with a separate booking.
+            </Typography.Paragraph>
+          </NextWeekNote>
           <Form.Item
             label="Selected time"
             style={{
