@@ -238,7 +238,8 @@ const DeviceBooking = ({ thing, onBackClick }: Props) => {
           )}
           <NextWeekNote>
             <Typography.Paragraph type="secondary">
-              If you wish book hours on next week too, it has to be done with a separate booking.
+              If you wish your booking to spread into next week, it has to be done as two separate
+              bookings
             </Typography.Paragraph>
           </NextWeekNote>
           <Form.Item
