@@ -93,7 +93,9 @@ const Table = ({
     <Root>
       <thead>
         <tr>
-          <TableCell as="th">Week {getWeek(dateCells[0][0])}</TableCell>
+          <TableCell data-testid="DatePicker" as="th">
+            Week {getWeek(dateCells[0][0])}
+          </TableCell>
           {dateCells.map(([first]) => (
             <WeekdayHeaderCell key={first.getTime()}>
               {format(first, 'eee d.MM.y')}

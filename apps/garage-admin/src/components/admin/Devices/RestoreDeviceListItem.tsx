@@ -50,11 +50,12 @@ const RestoreDeviceListItem = ({ item, showRestoreButtons }: ListItemProps) => {
   return (
     <Spin spinning={isLoadingRestoreThing}>
       <StyledListItem
-        data-testid="deviceList.item"
+        data-testid="restoreList.item"
         key={item.id}
         actions={
           showRestoreButtons && [
             <Button
+              data-testid="restoreList.item.restoreBtn"
               onClick={() => {
                 onRestore(item.id);
                 setModelIsVisible(false);

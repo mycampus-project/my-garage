@@ -67,3 +67,10 @@ export type Booking = BaseBooking & {
 export type BookingWithUser = BaseBooking & {
   user: { id: string; fullName: string; email: string };
 };
+
+export type BookingWithPrevious = BookingWithUser & {
+  previousUser?: {
+    fullName: string;
+    email: string;
+  };
+};

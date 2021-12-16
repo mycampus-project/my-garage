@@ -20,6 +20,7 @@ function NewBooking() {
       }
       renderItem={(item, isSelected, onClick) => (
         <ListItem
+          data-testid="ItemBook"
           title={item.name}
           description={item.description}
           onClick={onClick}
